@@ -52,8 +52,8 @@
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Due to Upload Profile Images</string>
 		<key>NSCameraUsageDescription</key>
-		<string>Due to Take Images/videos  And Upload Profile</string>
+		<string>Due to Take Images/videos And Upload Profile</string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>Due to Take Images/videos  And Upload Profile</string>
+		<string>Due to Take Images/videos And Upload Profile</string>
 	</dict>
 </plist>

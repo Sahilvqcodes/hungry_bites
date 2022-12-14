@@ -69,6 +69,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final TextEditingController _controller = TextEditingController();
+
   getCategoryList() async {
     String url = 'http://157.245.97.144:8000/find-category';
     var response = await http.get(Uri.parse(url), headers: {
@@ -92,6 +93,7 @@ class _HomePageState extends State<HomePage> {
     {'image': 'assets/images/Vector1.png'},
   ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,19 +181,23 @@ class _HomePageState extends State<HomePage> {
                     width: MediaQuery.of(context).size.width / 1.3,
                     height: 50,
                     child: TextField(
+                      cursorColor: Color(0xffED4322),
                       controller: _controller,
-                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.black87, width: 12.0),
+                            borderRadius: BorderRadius.circular(0.0)),
                         fillColor: Colors.white,
                         focusedBorder: OutlineInputBorder(
                           borderSide:
                               BorderSide(color: Colors.black87, width: 1.0),
-                          borderRadius: BorderRadius.circular(15.0),
+                          borderRadius: BorderRadius.circular(0.0),
                         ),
                         filled: true,
-                        suffixIcon: Icon(Icons.search),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffAEACBA)),
+                        suffixIcon: Icon(
+                          Icons.search,
+                          color: Color(0xffED4322),
                         ),
                         hintText: 'Search Here',
                       ),
@@ -228,7 +234,10 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.w800),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Navigator.pushNamed(
+                      //     context,'/details_page');
+                    },
                     child: Text(
                       "See All",
                       style: TextStyle(
@@ -278,36 +287,50 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 10,
               ),
-              CarouselSlider(
-                options: CarouselOptions(
-                    enlargeCenterPage: false,
-                    onPageChanged: (i, r) {
-                      setState(() {
-                        _current = i;
-                      });
-                    }),
-                items: [1, 2, 3, 4, 5]
-                    .map((e) => Container(
-                        margin: EdgeInsets.all(20),
-                        height: 150,
-                        width: MediaQuery.of(context).size.height,
-                        child: Image.asset(
-                          'assets/images/Rectangle17.png',
-                          fit: BoxFit.fill,
-                        )))
-                    .toList(),
-              ),
-              Center(
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                  child: AnimatedSmoothIndicator(
-                    activeIndex: _current,
-                    count: 5,
-                    effect: ExpandingDotsEffect(
-                        activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
-                        dotWidth: 5,
-                        dotHeight: 8),
-                  ),
+              Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                          autoPlay: true,
+                          viewportFraction: 1,
+                          autoPlayInterval: Duration(seconds: 10),
+                          //enlargeCenterPage: false,
+                          onPageChanged: (i, r) {
+                            setState(() {
+                              _current = i;
+                            });
+                          }),
+                      items: [1, 2, 3, 4, 5]
+                          .map(
+                            (e) => Container(
+                              margin: EdgeInsets.only(left: 15.0, right: 15),
+                              height: 250,
+                              width: MediaQuery.of(context).size.width,
+                              child: Image.asset(
+                                'assets/images/Rectangle17.png',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 2.0),
+                        child: AnimatedSmoothIndicator(
+                          activeIndex: _current,
+                          count: 5,
+                          effect: ExpandingDotsEffect(
+                              activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
+                              dotWidth: 5,
+                              dotHeight: 8),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -325,7 +348,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/super_market');
+                    },
                     child: Text(
                       "See All",
                       style: TextStyle(

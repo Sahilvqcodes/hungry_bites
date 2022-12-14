@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hunger_bites/User/screens/Sign_up.dart';
+import 'package:hunger_bites/Sign_up.dart';
 import 'package:hunger_bites/User/screens/home/view/home_page.dart';
 
 import 'package:hunger_bites/routes.dart';
@@ -43,6 +43,11 @@ class _MyAppState extends State<MyApp> {
       routes: Routes.routes,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+        // primaryColor: const Color(0xffED4322),
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: const Color(0xffED4322),
+          // secondary: const Color(0xFFFFC107),
+        ),
       ),
       debugShowCheckedModeBanner: false,
       // home: SplashScreen(),

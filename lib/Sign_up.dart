@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_bites/User/Apis/allApi.dart';
-import 'package:hunger_bites/User/screens/sign_in.dart';
+import 'package:hunger_bites/sign_in.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);

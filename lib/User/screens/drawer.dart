@@ -165,15 +165,20 @@ class _UserDrawerState extends State<UserDrawer> {
               onTap: () {},
             ),
             ListTile(
-              title: const Center(
-                child: Text(
-                  'Log Out',
-                  style: TextStyle(
-                      color: Color(0xFF3D3D3D),
-                      fontSize: 16,
-                      fontFamily: "Poppins",
-                      fontWeight: FontWeight.w600),
-                ),
+              title:  Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.logout_rounded,color: Color(0xffED4322),),
+
+                  Text(
+                    'Log Out',
+                    style: TextStyle(
+                        color: Color(0xffED4322),
+                        fontSize: 16,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
               onTap: () async {
                 final SharedPreferences sharedPreferences =

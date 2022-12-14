@@ -108,7 +108,7 @@ class _AddCategoryState extends State<AddCategory> {
               ),
               GestureDetector(
                 onTap: () {
-                  HomePageApi.AddCategory(categoryName, imagePath);
+                  HomePageApi.AddCategory(context, categoryName, imagePath);
                 },
                 child: Container(
                   height: 50.0,
@@ -144,7 +144,10 @@ class _AddCategoryState extends State<AddCategory> {
       actions: [
         TextButton(
           onPressed: _cancel,
-          child: const Text('Cancel'),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
         ),
       ],
     );

@@ -1,13 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hunger_bites/Admin/screens/add_category_shops.dart';
+import 'package:hunger_bites/Admin/screens/addShops/addItems.dart';
+import 'package:hunger_bites/Admin/screens/addShops/add_category_shops.dart';
+import 'package:hunger_bites/Admin/screens/addShops/add_shops.dart';
+import 'package:hunger_bites/Admin/screens/addShops/shops_profile.dart';
 import 'package:hunger_bites/Admin/screens/admin_home.dart';
 import 'package:hunger_bites/Admin/screens/category_Shops_list.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
-import 'package:hunger_bites/User/screens/sign_in.dart';
+import 'package:hunger_bites/sign_in.dart';
 import 'package:hunger_bites/User/screens/splash_screen.dart';
 
-import 'User/screens/Sign_up.dart';
+import 'Sign_up.dart';
+import 'User/screens/details_screen.dart';
 import 'User/screens/home/view/home_page.dart';
+import 'User/screens/super_market.dart';
 
 class Routes {
   static const String splash = '/splash';
@@ -18,6 +23,11 @@ class Routes {
   static const String adminCategoryShopList = '/admin_category_shop_list';
   static const String admin_home = '/admin_home';
   static const String add_category_shops = '/add_category_shops';
+  static const String add_shops = '/add_shops';
+  static const String shops_profile = '/shops_profile';
+  static const String add_items = '/add_items';
+  static const String details_page = '/details_page';
+  static const String super_market = '/super_market';
 
   static Map<String, WidgetBuilder> routes = {
     '/splash': (context) => SplashScreen(),
@@ -28,5 +38,10 @@ class Routes {
     '/admin_home': (context) => AdminHomePage(),
     '/admin_category_shop_list': (context) => AdminCategoryShopList(),
     '/add_category_shops': (context) => AddCategoryShops(),
+    '/add_shops': (context) => AddShops(),
+    '/shops_profile': (context) => ShopsProfile(),
+    '/add_items': (context) => AddItems(),
+    '/details_page': (context) => DetailsScreen(),
+    '/super_market': (context) => SuperMarket(),
   };
 }

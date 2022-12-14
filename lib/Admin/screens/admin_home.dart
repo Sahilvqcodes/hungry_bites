@@ -15,12 +15,15 @@ class _AdminHomePageState extends State<AdminHomePage> {
   // ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   void _showAddCategoryDialog() async {
-    await showDialog(
+    String data = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AddCategory();
       },
     );
+    if (data == "active") {
+      setState(() {});
+    }
   }
 
   @override
@@ -36,7 +39,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
               CategoryList? _categoryList = snapshot.data;
               print("_categoryList $_categoryList");
               if (snapshot.data == null) {
-                return Container();
+                return Center(
+                  child: CircularProgressIndicator(color: Color(0xffED4322)),
+                );
               }
               return Container(
                 height: size.height,
@@ -69,7 +74,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                 letterSpacing: 1.01,
                                 fontFamily: 'Poppins'),
                           ),
-                          IconButton(onPressed: () {}, icon: Icon(Icons.search))
+                          // IconButton(onPressed: () {}, icon: Icon(Icons.search))
+                          Container(
+                            width: 50,
+                          )
                         ],
                       ),
                     ),
@@ -98,7 +106,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                         height: 70,
                                         width: 70,
                                         decoration: const BoxDecoration(
-                                          color: Colors.red,
+                                          color: Color(0xffED4322),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(50),
                                           ),
@@ -110,10 +118,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                                           color: Colors.white,
                                         )),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
-                                      Text(
+                                      const Text(
                                         "Add Category",
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
@@ -129,7 +137,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             (index) => GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
-                                    context, "/admin_category_shop_list");
+                                    context, "/admin_category_shop_list",
+                                    arguments:
+                                        "${_categoryList.data![index].name}");
                               },
                               child: Container(
                                 margin: EdgeInsets.only(
