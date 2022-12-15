@@ -138,8 +138,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                               onTap: () {
                                 Navigator.pushNamed(
                                     context, "/admin_category_shop_list",
-                                    arguments:
-                                        "${_categoryList.data![index].name}");
+                                    arguments: [
+                                      "${_categoryList.data![index].name}",
+                                      "${_categoryList.data![index].sId}"
+                                    ]);
                               },
                               child: Container(
                                 margin: EdgeInsets.only(

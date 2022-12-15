@@ -75,12 +75,16 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     Shops shops = ModalRoute.of(context)!.settings.arguments as Shops;
-    // print(shops.city);
+    print(shops.category);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
+        title: Image.asset(
+          "assets/images/logo.png",
+          scale: 10,
+        ),
       ),
       body: Form(
         key: _key,
@@ -345,7 +349,7 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                obscureText: true,
+                                // obscureText: true,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',

@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -13,25 +13,28 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+  bool isReadmore = false;
   int current = 0;
   int _counter = 0;
   bool isFavorite = false;
 
-  // int simpleIntInput = 0;
-  increment() {
+  void _incrementCounter() {
     setState(() {
       _counter++;
     });
   }
 
-  decrement() {
-    setState(() {
-      _counter--;
-    });
+  void _decrementCounter() {
+    if (_counter > 0) {
+      setState(() {
+        _counter--;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -51,8 +54,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
       body: Padding(
         padding: EdgeInsets.all(12.0),
         child: ListView(
+
           shrinkWrap: true,
-          scrollDirection: Axis.vertical,
+          //scrollDirection: Axis.vertical,
           children: [
             Container(
               color: Colors.white,
@@ -60,17 +64,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 children: [
                   CarouselSlider(
                     options: CarouselOptions(
-                      autoPlay: true,
-
-
-                      viewportFraction: 1,
-                      autoPlayInterval: Duration( seconds:5),
+                        autoPlay: true,
+                        viewportFraction: 1,
+                        autoPlayInterval: Duration(seconds: 5),
                         //enlargeCenterPage: false,
                         onPageChanged: (i, r) {
-                      setState(() {
-                        current = i;
-                      });
-                    }),
+                          setState(() {
+                            current = i;
+                          });
+                        }),
                     items: [1, 2, 3, 4, 5]
                         .map(
                           (e) => Container(
@@ -87,7 +89,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
                   Center(
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                       child: AnimatedSmoothIndicator(
                         activeIndex: current,
                         count: 5,
@@ -135,12 +138,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         color: Color(0xffED4322)),
                   ),
                   SizedBox(height: 20),
-
                 ],
               ),
             ),
-
-
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.3,
+                  height: 50,
+                  child: TextField(
+                    cursorColor: Color(0xffED4322),
+                   // controller: _controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.black87, width: 12.0),
+                          borderRadius: BorderRadius.circular(0.0)),
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.black87, width: 1.0),
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                      filled: true,
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: Color(0xffED4322),
+                      ),
+                      hintText: 'Search Here',
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.white,
+                  ),
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.filter_list,
+                        size: 40,
+                        color: Color(0xffED4322),
+                      )),
+                ),
+              ],
+            ),
             SizedBox(
               height: 10,
             ),
@@ -178,90 +227,186 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
               ),
             ),
-          //  SizedBox(height: 10),
-            ...List.generate(10, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: ListTile(
-                  tileColor: Colors.white,
-                  contentPadding:
-                      EdgeInsets.only(left: 5.0, right: 5.0),
-                  leading: Image.asset(
-                    "assets/images/Rectangle36.png",
-                  ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Shahi Paneer\n14"),
-                      InkWell(
-                          onTap: () {
-                            isFavorite = !isFavorite;
-                            setState(() {});
-                          },
-                          child: isFavorite
-                              ? Icon(
-                                  Icons.favorite,size: 12,
-                                  color: Colors.red,
-                                )
-                              : Icon(Icons.favorite_border_outlined,size: 12,)),
-                    ],
-                  ),
-                  subtitle: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      RatingBar.builder(
-                        direction: Axis.horizontal,
-                        itemCount: 5,
-                        itemSize:15,
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
+            SizedBox(height: 10),
+            SizedBox(
+              // height: size.height - 50,
+              child: ListView.builder(
+                shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemCount: 15,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details_page');
+                      },
+                      child: Stack(children: [
+                        Card(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            padding: EdgeInsets.all(0),
+                            child: Row(children: [
+                              Expanded(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(height: 50),
+                                      Text(
+                                        "Shahi Paneer",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 15,
+                                            fontFamily: "Poppins"),
+                                      ),
+                                      SizedBox(height: 2.0),
+                                      Text(
+                                        "\$14",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 18,
+                                            fontFamily: "Poppins",
+                                            color: Color(0xffED4322)),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                        RatingBar.builder(
+
+                                        initialRating: 3,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        itemSize: 15,
+                                        //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          print(rating);
+                                        },
+
+                                      ),
+                                          Text("(3.9)")
+                                        ],
+                                      ),
+                                      SizedBox(height:5.0),
+                                      buildText(
+                                          "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                              " city of Belfast, Northern Ireland. We want to help people discover"
+                                              " the magic of tea by sourcing great "
+                                              "loose leaf tea and brewing delicious kombucha and"
+                                              " other innovative, healthy tea drinks."),
+
+
+
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Spacer(
+                                flex: 1,
+                              ),
+                              Card(
+                                child: Container(
+                                  height: 150,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/Rectangle35.png'),
+                                          fit: BoxFit.fill)),
+                                ),
+                              ),
+                            ]),
+                          ),
                         ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      ),
-                      Container(
-                        height: 20,
-                        // color: Colors.red,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              onTap: decrement(),
-                              child: CircleAvatar(
-                                  backgroundColor: Color(0xffAEACBA),
-                                  radius: 10,
-                                  child: Icon(
-                                    Icons.remove,
-                                    size: 12,
-                                    color: Colors.red,
-                                  )),
+                        Positioned(
+                          top: 160,
+                          left: 190,
+                          child: Card(
+                            elevation: 10,
+                            child: Container(
+                              height: 40,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      onPressed: _decrementCounter,
+                                      icon: Icon(
+                                        Icons.remove,
+                                        color: Color(0xffED4322),
+                                      )),
+                                  Text('$_counter',
+                                      style: TextStyle(
+                                        color: Color(0xffED4322),
+                                      )),
+                                  IconButton(
+                                      onPressed: _incrementCounter,
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: Color(0xffED4322),
+                                      )),
+                                ],
+                              ),
                             ),
-                            Text("$_counter"),
-                            InkWell(
-                              onTap: increment(),
-                              child: CircleAvatar(
-                                  backgroundColor: Color(0xffAEACBA),
-                                  radius: 10,
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 12,
-                                    color: Colors.red,
-                                  )),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }),
+                          ),
+                        )
+                      ]),
+                    );
+                  }),
+            ),
+            SizedBox(
+              height: 100,
+            )
           ],
         ),
       ),
     );
+  }
+
+  Widget buildText(String text) {
+    final lines = isReadmore ? null:3;
+
+
+
+
+    return Column(
+      children: [
+         Text(
+          text,
+          style: TextStyle(fontSize: 5),
+          maxLines: lines,
+          overflow: isReadmore ? TextOverflow.visible : TextOverflow.ellipsis,
+        ),
+        TextButton(
+            onPressed: () {
+              setState(() {
+                isReadmore = !isReadmore;
+              });
+            },
+            child: Text(
+              (isReadmore ? 'less' : 'more'),style: TextStyle(fontSize:8),)),
+
+      ],
+    );
+    // return Text(
+    //   text,
+    //   style: TextStyle(fontSize: 5),
+    //   maxLines: lines,
+    //   overflow: isReadmore ? TextOverflow.visible : TextOverflow.ellipsis,
+    // );
   }
 }

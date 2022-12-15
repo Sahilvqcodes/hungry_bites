@@ -151,15 +151,25 @@ class _AdminDrawerState extends State<AdminDrawer> {
               onTap: () {},
             ),
             ListTile(
-              title: const Center(
-                child: Text(
-                  'Log Out',
-                  style: TextStyle(
-                      color: Color(0xFF3D3D3D),
-                      fontSize: 16,
-                      fontFamily: "Poppins",
-                      fontWeight: FontWeight.w600),
-                ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.logout_rounded,
+                    color: Color(0xffED4322),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'Log Out',
+                    style: TextStyle(
+                        color: Color(0xffED4322),
+                        fontSize: 16,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
               onTap: () async {
                 final SharedPreferences sharedPreferences =

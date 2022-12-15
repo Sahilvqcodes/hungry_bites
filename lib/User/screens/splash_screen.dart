@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hunger_bites/sign_in.dart';
+
 
 class SplashScreen extends StatefulWidget {
   @override

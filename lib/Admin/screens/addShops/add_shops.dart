@@ -58,12 +58,20 @@ class _AddShopsState extends State<AddShops> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    String categoryName = ModalRoute.of(context)!.settings.arguments as String;
+    List passData = ModalRoute.of(context)!.settings.arguments as List;
+    String categoryName = passData[0];
+    // String categoryId = passData[1];
+    shops.category = categoryName;
+    shops.categoryId = passData[1];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
+        title: Image.asset(
+          "assets/images/logo.png",
+          scale: 10,
+        ),
       ),
       body: Form(
         key: _key,
@@ -301,7 +309,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                obscureText: true,
+                                // obscureText: true,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -340,7 +348,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                obscureText: true,
+                                // obscureText: true,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -380,7 +388,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                obscureText: true,
+                                // obscureText: true,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',

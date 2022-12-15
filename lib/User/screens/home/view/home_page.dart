@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   List grocery = [
     {
       'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle21.png'
+      'image': 'assets/images/Rectangle30.png'
     },
     {
       'name': 'Enjoy your favourite treats',
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     },
     {
       'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle21.png'
+      'image': 'assets/images/Rectangle30.png'
     },
     {
       'name': 'Enjoy your favourite treats',
@@ -114,10 +114,9 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.notification_add_outlined),
               color: Colors.black,
               onPressed: () {},
-            ), //IconButton
-          ], //<Widget>[]
+            ),
+          ],
           backgroundColor: Colors.white,
-
           leading: IconButton(
             icon: Icon(
               Icons.sort,
@@ -235,8 +234,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navigator.pushNamed(
-                      //     context,'/details_page');
+                     // Navigator.pushNamed(context, '/forgot_password');
                     },
                     child: Text(
                       "See All",
@@ -287,51 +285,53 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 10,
               ),
-              Container(
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                          autoPlay: true,
-                          viewportFraction: 1,
-                          autoPlayInterval: Duration(seconds: 10),
-                          //enlargeCenterPage: false,
-                          onPageChanged: (i, r) {
-                            setState(() {
-                              _current = i;
-                            });
-                          }),
-                      items: [1, 2, 3, 4, 5]
-                          .map(
-                            (e) => Container(
-                              margin: EdgeInsets.only(left: 15.0, right: 15),
-                              height: 250,
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.asset(
-                                'assets/images/Rectangle17.png',
-                                fit: BoxFit.contain,
-                              ),
+              Stack(
+                children: [
+                  CarouselSlider(
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        viewportFraction: 1,
+                        autoPlayInterval: Duration(seconds: 5),
+                        //enlargeCenterPage: false,
+                        onPageChanged: (i, r) {
+                          setState(() {
+                            _current = i;
+                          });
+                        }),
+                    items: [1, 2, 3, 4, 5]
+                        .map(
+                          (e) => Container(
+                            margin: EdgeInsets.all(5.0),
+                            height: 250,
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.asset(
+                              'assets/images/Rectangle17.png',
+                              fit: BoxFit.contain,
                             ),
-                          )
-                          .toList(),
-                    ),
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 2.0),
-                        child: AnimatedSmoothIndicator(
-                          activeIndex: _current,
-                          count: 5,
-                          effect: ExpandingDotsEffect(
-                              activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
-                              dotWidth: 5,
-                              dotHeight: 8),
-                        ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  Positioned(
+                    left: 20,
+                    top: 140,
+                    child: Container(
+
+
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                      child: AnimatedSmoothIndicator(
+                        activeIndex: _current,
+                        count: 5,
+                        effect: ExpandingDotsEffect(
+                            activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
+                            dotColor: Colors.white,
+                            dotWidth: 4,
+                            dotHeight: 8),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 10,
