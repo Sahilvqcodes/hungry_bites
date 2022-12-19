@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/category_list.dart';
-import '../model/category_list.dart';
+
 
 
 class SuperMarket extends StatefulWidget {
@@ -59,7 +58,7 @@ class _SuperMarketState extends State<SuperMarket> {
         .size;
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           height: size.height,
           // padding: EdgeInsets.all(10.0),
           child: Column(

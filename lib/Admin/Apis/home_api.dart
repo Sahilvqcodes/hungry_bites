@@ -133,6 +133,77 @@ class HomePageApi {
     return response;
   }
 
+  static deleteMenuItems(context, String id) async {
+    final http.Response response = await http.delete(
+      Uri.parse('http://157.245.97.144:8000/delete-menuItem/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var responseData = jsonDecode(response.body);
+    print(response.body);
+    if (responseData["message"] == "MenuItem Delete Successfully") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Container(
+              height: 300,
+              width: 250,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/success_icon.png",
+                    scale: 3,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Item Deleted Successfully",
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 80,
+                      // margin: EdgeInsets.only(right: 30),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return response;
+  }
+
   static AddCategory(
       BuildContext context, String? categoryName, File? imagePath) async {
     var imageBytes = imagePath!.readAsBytesSync();
@@ -157,6 +228,11 @@ class HomePageApi {
   }
 
   static AddMenuItems(BuildContext context, Items items) async {
+    // print(items.profile);
+    if (items.profile == null) {
+      items.profile = "";
+    }
+    print(items.profile);
     final http.Response res = await http.post(
       Uri.parse('http://157.245.97.144:8000/menu_item'),
       headers: <String, String>{
@@ -176,6 +252,7 @@ class HomePageApi {
 
     AddItemRespone _addItemRespone =
         AddItemRespone.fromJson(jsonDecode(res.body));
+
     if (_addItemRespone.message == "MenuItem Added Successfully") {
       // Navigator.pushNamed(context, "active");
 
@@ -275,7 +352,7 @@ class HomePageApi {
         "phone_no": shops.mobileNo,
         "cat_id": shops.categoryId,
         "status": "active",
-        "sort_order": "5",
+        "sort_order": "0",
         "city": shops.city,
         "land_mark": shops.landMark,
         "opening_day": shops.openingDays,
@@ -284,6 +361,7 @@ class HomePageApi {
         "profile": galleryImage
       }),
     );
+    print("res.body ${res.body}");
     ShopsResponse _shopResponse = ShopsResponse.fromJson(jsonDecode(res.body));
     if (_shopResponse.message == "Product Added Succesfully") {
       // Navigator.pushNamed(context, "active");

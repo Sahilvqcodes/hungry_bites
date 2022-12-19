@@ -13,6 +13,8 @@ class AdminCategoryShopList extends StatefulWidget {
 
 class _AdminCategoryShopListState extends State<AdminCategoryShopList> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController _textController = TextEditingController();
+  AvailableShops? _availableShops;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -81,34 +83,38 @@ class _AdminCategoryShopListState extends State<AdminCategoryShopList> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       SizedBox(
-                        width: 300,
+                        width: 250,
                         height: 50,
-                        child: TextField(
+                        child: TextFormField(
                           cursorColor: Color(0xffED4322),
-                          // controller: _controller,
+                          controller: _textController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black87, width: 12.0),
                                 borderRadius: BorderRadius.circular(0.0)),
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black87, width: 1.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.black87, width: 1.0),
                               borderRadius: BorderRadius.circular(0.0),
                             ),
                             filled: true,
-                            suffixIcon: Icon(
+                            suffixIcon: const Icon(
                               Icons.search,
                               color: Color(0xffED4322),
                             ),
                             hintText: 'Search Here',
                           ),
+                          onChanged: (Value) {
+                            setState(() {});
+                          },
                         ),
                       ),
                       Container(
                         height: 50,
                         width: 50,
+                        margin: EdgeInsets.only(left: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
                           color: Colors.white,
@@ -167,244 +173,509 @@ class _AdminCategoryShopListState extends State<AdminCategoryShopList> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
-                FutureBuilder(
-                    future: HomePageApi.getShopsList(categoryId),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      AvailableShops? _availableShops = snapshot.data;
-                      // print(_availableShops!.data!.productId![0].profile);
+                _textController.text.isEmpty
+                    ? FutureBuilder(
+                        future: HomePageApi.getShopsList(categoryId),
+                        builder: (context, AsyncSnapshot snapshot) {
+                          _availableShops = snapshot.data;
+                          // print(_availableShops!.data!.productId![0].profile);
 
-                      return Container(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                          return Container(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text(
-                                      "Availble $categoryName",
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15.0),
+                                        child: Text(
+                                          "Availble $categoryName",
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              _availableShops != null
-                                  ? _availableShops.data!.productId!.length != 0
-                                      ? Column(
-                                          children: [
-                                            ...List.generate(
-                                              _availableShops
-                                                  .data!.productId!.length,
-                                              (index) => Slidable(
-                                                // key: const ValueKey(),
-                                                endActionPane: ActionPane(
-                                                  motion: ScrollMotion(),
-                                                  children: [
-                                                    SlidableAction(
-                                                      // An action can be bigger than the others.
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  _availableShops != null
+                                      ? _availableShops!
+                                                  .data!.productId!.length !=
+                                              0
+                                          ? Column(
+                                              children: [
+                                                ...List.generate(
+                                                  _availableShops!
+                                                      .data!.productId!.length,
+                                                  (index) => Slidable(
+                                                    // key: const ValueKey(),
+                                                    endActionPane: ActionPane(
+                                                      motion: ScrollMotion(),
+                                                      children: [
+                                                        SlidableAction(
+                                                          // An action can be bigger than the others.
 
-                                                      onPressed: (BuildContext
-                                                          context) {},
-                                                      backgroundColor:
-                                                          Color.fromARGB(253,
-                                                              93, 127, 196),
-                                                      foregroundColor:
-                                                          Colors.white,
-                                                      icon: Icons.edit,
-                                                      label: 'Edit',
-                                                    ),
-                                                    SlidableAction(
-                                                      onPressed:
-                                                          (context) async {
-                                                        await HomePageApi
-                                                            .deleteProducts(
-                                                                context,
-                                                                _availableShops
-                                                                    .data!
-                                                                    .productId![
-                                                                        index]
-                                                                    .sId!);
-                                                        setState(() {});
-                                                      },
-                                                      backgroundColor:
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .primary,
-                                                      foregroundColor:
-                                                          Colors.white,
-                                                      icon: Icons.delete,
-                                                      label: 'Delete',
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.pushNamed(context,
-                                                        "/shops_profile",
-                                                        arguments: [
-                                                          categoryId,
-                                                          _availableShops
-                                                              .data!
-                                                              .productId![index]
-                                                              .sId
-                                                        ]);
-                                                  },
-                                                  child: Container(
-                                                    height: 130,
-                                                    color: Colors.white,
-                                                    margin: EdgeInsets.only(
-                                                        bottom: 10,
-                                                        right: 15,
-                                                        left: 15),
-                                                    child: Row(children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 10.0),
-                                                        child: Container(
-                                                          width: 130,
-                                                          height: 110,
-                                                          child: Image.network(
-                                                            "http://157.245.97.144:8000/category/${_availableShops.data!.productId![index].profile![0]}",
-                                                            fit: BoxFit.cover,
-                                                          ),
+                                                          onPressed:
+                                                              (BuildContext
+                                                                  context) {},
+                                                          backgroundColor:
+                                                              Color.fromARGB(
+                                                                  253,
+                                                                  93,
+                                                                  127,
+                                                                  196),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.edit,
+                                                          label: 'Edit',
                                                         ),
-                                                      ),
-                                                      Container(
-                                                        height: 100,
-                                                        width: 180,
-                                                        child: Column(
-                                                          // crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          10.0,
-                                                                      bottom: 5,
-                                                                      top: 10),
-                                                                  child: Text(
-                                                                    "${_availableShops.data!.productId![index].shopName}",
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                        SlidableAction(
+                                                          onPressed:
+                                                              (context) async {
+                                                            await HomePageApi
+                                                                .deleteProducts(
+                                                                    context,
+                                                                    _availableShops!
+                                                                        .data!
+                                                                        .productId![
+                                                                            index]
+                                                                        .sId!);
+                                                            setState(() {});
+                                                          },
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.delete,
+                                                          label: 'Delete',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            "/shops_profile",
+                                                            arguments: [
+                                                              categoryId,
+                                                              _availableShops!
+                                                                  .data!
+                                                                  .productId![
+                                                                      index]
+                                                                  .sId
+                                                            ]);
+                                                      },
+                                                      child: Container(
+                                                        height: 130,
+                                                        color: Colors.white,
+                                                        margin: EdgeInsets.only(
+                                                            bottom: 10,
+                                                            right: 15,
+                                                            left: 15),
+                                                        child: Row(children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 10.0),
+                                                            child: Container(
+                                                              width: 130,
+                                                              height: 110,
+                                                              child: _availableShops!
+                                                                          .data!
+                                                                          .productId![
+                                                                              index]
+                                                                          .profile!
+                                                                          .length !=
+                                                                      0
+                                                                  ? Image
+                                                                      .network(
+                                                                      "http://157.245.97.144:8000/category/${_availableShops!.data!.productId![index].profile![0]}",
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                    )
+                                                                  : Container(),
                                                             ),
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
+                                                          ),
+                                                          Container(
+                                                            height: 100,
+                                                            width: 180,
+                                                            child: Column(
+                                                              // crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                const Icon(
-                                                                  Icons
-                                                                      .location_on,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          139,
-                                                                          138,
-                                                                          138),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              10.0,
+                                                                          bottom:
+                                                                              5,
+                                                                          top:
+                                                                              10),
+                                                                      child:
+                                                                          Text(
+                                                                        "${_availableShops!.data!.productId![index].shopName}",
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          color:
+                                                                              Colors.black,
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    "${_availableShops.data!.productId![index].address},${_availableShops.data!.productId![index].city}",
-                                                                    style:
-                                                                        const TextStyle(
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    const Icon(
+                                                                      Icons
+                                                                          .location_on,
                                                                       color: Color.fromARGB(
                                                                           255,
                                                                           139,
                                                                           138,
                                                                           138),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
                                                                     ),
-                                                                  ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Text(
+                                                                        "${_availableShops!.data!.productId![index].address},${_availableShops!.data!.productId![index].city}",
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          color: Color.fromARGB(
+                                                                              255,
+                                                                              139,
+                                                                              138,
+                                                                              138),
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w400,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
+                                                                // Row(
+                                                                //   mainAxisAlignment:
+                                                                //       MainAxisAlignment
+                                                                //           .end,
+                                                                //   children: const [
+                                                                //     Padding(
+                                                                //       padding:
+                                                                //           EdgeInsets
+                                                                //               .only(
+                                                                //         right: 0.0,
+                                                                //       ),
+                                                                //       child: Text(
+                                                                //         "Edit",
+                                                                //         style:
+                                                                //             TextStyle(
+                                                                //           color: Color.fromARGB(
+                                                                //               255,
+                                                                //               220,
+                                                                //               28,
+                                                                //               28),
+                                                                //           fontSize:
+                                                                //               18,
+                                                                //           fontWeight:
+                                                                //               FontWeight
+                                                                //                   .w500,
+                                                                //         ),
+                                                                //       ),
+                                                                //     ),
+                                                                //   ],
+                                                                // ),
                                                               ],
                                                             ),
-                                                            // Row(
-                                                            //   mainAxisAlignment:
-                                                            //       MainAxisAlignment
-                                                            //           .end,
-                                                            //   children: const [
-                                                            //     Padding(
-                                                            //       padding:
-                                                            //           EdgeInsets
-                                                            //               .only(
-                                                            //         right: 0.0,
-                                                            //       ),
-                                                            //       child: Text(
-                                                            //         "Edit",
-                                                            //         style:
-                                                            //             TextStyle(
-                                                            //           color: Color.fromARGB(
-                                                            //               255,
-                                                            //               220,
-                                                            //               28,
-                                                            //               28),
-                                                            //           fontSize:
-                                                            //               18,
-                                                            //           fontWeight:
-                                                            //               FontWeight
-                                                            //                   .w500,
-                                                            //         ),
-                                                            //       ),
-                                                            //     ),
-                                                            //   ],
-                                                            // ),
-                                                          ],
+                                                          )
+                                                        ]),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container(
+                                              child: Center(
+                                                child: Text(
+                                                  "No Any ${categoryName} Available!",
+                                                  style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontFamily: "Poppins"),
+                                                ),
+                                              ),
+                                            )
+                                      : Center(
+                                          child: CircularProgressIndicator())
+                                ]),
+                          );
+                        })
+                    : FutureBuilder(
+                        // future: HomePageApi.getShopsList(categoryId,),
+                        builder: (context, AsyncSnapshot snapshot) {
+                        // _availableShops = snapshot.data;
+                        // print(_availableShops!.data!.productId![0].profile);
+                        List<ProductId> _listProduct =
+                            _availableShops!.data!.productId!
+                                .where(
+                                  (element) => element.shopName!
+                                      .toLowerCase()
+                                      .startsWith(
+                                          _textController.text.toLowerCase()),
+                                )
+                                .toList();
+                        print("_listProduct $_listProduct");
+
+                        return Container(
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 15.0),
+                                      child: Text(
+                                        "Search List of $categoryName",
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                _listProduct != null
+                                    ? _listProduct.length != 0
+                                        ? Column(
+                                            children: [
+                                              ...List.generate(
+                                                _listProduct.length,
+                                                (index) => Slidable(
+                                                  // key: const ValueKey(),
+                                                  endActionPane: ActionPane(
+                                                    motion: ScrollMotion(),
+                                                    children: [
+                                                      SlidableAction(
+                                                        // An action can be bigger than the others.
+
+                                                        onPressed: (BuildContext
+                                                            context) {},
+                                                        backgroundColor:
+                                                            Color.fromARGB(253,
+                                                                93, 127, 196),
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        icon: Icons.edit,
+                                                        label: 'Edit',
+                                                      ),
+                                                      SlidableAction(
+                                                        onPressed:
+                                                            (context) async {
+                                                          await HomePageApi
+                                                              .deleteProducts(
+                                                                  context,
+                                                                  _listProduct[
+                                                                          index]
+                                                                      .sId!);
+                                                          setState(() {});
+                                                        },
+                                                        backgroundColor:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .primary,
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        icon: Icons.delete,
+                                                        label: 'Delete',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pushNamed(
+                                                          context,
+                                                          "/shops_profile",
+                                                          arguments: [
+                                                            _listProduct[index]
+                                                                .sId
+                                                          ]);
+                                                    },
+                                                    child: Container(
+                                                      height: 130,
+                                                      color: Colors.white,
+                                                      margin: EdgeInsets.only(
+                                                          bottom: 10,
+                                                          right: 15,
+                                                          left: 15),
+                                                      child: Row(children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10.0),
+                                                          child: Container(
+                                                            width: 130,
+                                                            height: 110,
+                                                            child:
+                                                                Image.network(
+                                                              "http://157.245.97.144:8000/category/${_listProduct[index].profile![0]}",
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      )
-                                                    ]),
+                                                        Container(
+                                                          height: 100,
+                                                          width: 180,
+                                                          child: Column(
+                                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            10.0,
+                                                                        bottom:
+                                                                            5,
+                                                                        top:
+                                                                            10),
+                                                                    child: Text(
+                                                                      "${_listProduct[index].shopName}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  const Icon(
+                                                                    Icons
+                                                                        .location_on,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      "${_listProduct[index].address},${_listProduct[index].city}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              // Row(
+                                                              //   mainAxisAlignment:
+                                                              //       MainAxisAlignment
+                                                              //           .end,
+                                                              //   children: const [
+                                                              //     Padding(
+                                                              //       padding:
+                                                              //           EdgeInsets
+                                                              //               .only(
+                                                              //         right: 0.0,
+                                                              //       ),
+                                                              //       child: Text(
+                                                              //         "Edit",
+                                                              //         style:
+                                                              //             TextStyle(
+                                                              //           color: Color.fromARGB(
+                                                              //               255,
+                                                              //               220,
+                                                              //               28,
+                                                              //               28),
+                                                              //           fontSize:
+                                                              //               18,
+                                                              //           fontWeight:
+                                                              //               FontWeight
+                                                              //                   .w500,
+                                                              //         ),
+                                                              //       ),
+                                                              //     ),
+                                                              //   ],
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ]),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
+                                            ],
+                                          )
+                                        : Container(
+                                            child: const Center(
+                                              child: Text(
+                                                "Searching Data Not Available!",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily: "Poppins"),
+                                              ),
                                             ),
-                                          ],
-                                        )
-                                      : Container(
-                                          child: Center(
-                                            child: Text(
-                                              "No Any ${categoryName} Available!",
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Poppins"),
-                                            ),
-                                          ),
-                                        )
-                                  : Center(child: CircularProgressIndicator())
-                            ]),
-                      );
-                    })
+                                          )
+                                    : Center(child: CircularProgressIndicator())
+                              ]),
+                        );
+                      })
               ],
             ),
           ),

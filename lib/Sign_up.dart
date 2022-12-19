@@ -13,6 +13,16 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final textFieldFocusNode = FocusNode();
+  bool _obscured = true;
+  void _toggleObscured() {
+    setState(() {
+      _obscured = !_obscured;
+      if (textFieldFocusNode.hasPrimaryFocus) return;
+      textFieldFocusNode.canRequestFocus = false;
+    });
+  }
+
   bool? isCheck = false;
   final _key = GlobalKey<FormState>();
   User user = User();
@@ -41,27 +51,27 @@ class _SignUpState extends State<SignUp> {
       body: Form(
         key: _key,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding:  EdgeInsets.all(10.0),
           child: ListView(
             children: [
               Image.asset(
                 "assets/images/Rectangle45.png",
-                height: 150,
-                width: 150,
+                // height: 150,
+                // width: 150,
               ),
               Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.all(10.0),
+                 padding: EdgeInsets.all(10),
+                //margin: EdgeInsets.all(10.0),
                 color: Colors.white,
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 50,
+                      height: 10,
                     ),
                     SizedBox(
                       // height: 42,
                       child: TextFormField(
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(200)),
@@ -71,7 +81,7 @@ class _SignUpState extends State<SignUp> {
                             filled: true,
                             fillColor: Color(0xffEFEFEF),
                             prefixIcon: Icon(
-                              Icons.email_outlined,
+                              Icons.person_outline,
                               color: Color(0xffED4322),
                             ),
                             hintText: 'Name'),
@@ -86,7 +96,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     SizedBox(
                       // height: 42,
@@ -101,7 +111,7 @@ class _SignUpState extends State<SignUp> {
                             filled: true,
                             fillColor: Color(0xffEFEFEF),
                             prefixIcon: Icon(
-                              Icons.email_outlined,
+                              Icons.person_outline,
                               color: Color(0xffED4322),
                             ),
                             hintText: 'Username'),
@@ -116,7 +126,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     SizedBox(
                       // height: 42,
@@ -146,34 +156,51 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
-                    SizedBox(
-                      // height: 42,
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(200)),
-                              borderSide: BorderSide.none,
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscured,
+                      focusNode: textFieldFocusNode,
+                      decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior.never, //Hides label on focus or if filled
+                          labelText: "Password",
+                          filled: true,
+                          isDense: true,
+                          border: OutlineInputBorder(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(200)),
+                            borderSide: BorderSide.none,
+                          ),
+                          hintStyle: TextStyle(color: Color(0xffAEACBA)),
+
+
+                          fillColor: Color(0xffEFEFEF),
+                          prefixIcon: Icon(
+                            Icons.lock_outline,
+                            color: Color(0xffED4322),
+                          ),
+                          suffixIcon: Padding(
+                            padding:  EdgeInsets.fromLTRB(0, 0, 4, 0),
+                            child: GestureDetector(
+                              onTap: _toggleObscured,
+                              child: Icon(
+                                _obscured
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                                size: 24,
+                              ),
                             ),
-                            hintStyle: TextStyle(color: Color(0xffAEACBA)),
-                            filled: true,
-                            fillColor: Color(0xffEFEFEF),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: Color(0xffED4322),
-                            ),
-                            hintText: 'Password'),
-                        onChanged: (value) {
-                          user.password = value;
-                        },
-                        validator: (String? value) {
-                          return (value!.isEmpty || value.length < 6)
-                              ? 'Password Must between 6-12 letters'
-                              : null;
-                        },
-                      ),
+                          ),
+                          hintText: 'Password'),
+                      onChanged: (value) {
+                        user.password = value;
+                      },
+                      validator: (String? value) {
+                        return (value!.isEmpty || value.length < 6)
+                            ? 'Password Must between 6-12 letters'
+                            : null;
+                      },
                     ),
                     SizedBox(
                       height: 10,
@@ -231,11 +258,11 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 20),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: RichText(

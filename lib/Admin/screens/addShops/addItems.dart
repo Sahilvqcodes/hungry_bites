@@ -11,6 +11,7 @@ import 'package:multiselect/multiselect.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/add_shops_model.dart';
+import '../../models/available_items.dart';
 
 class AddItems extends StatefulWidget {
   AddItems({super.key});
@@ -31,6 +32,7 @@ class _AddItemsState extends State<AddItems> {
   final _key = GlobalKey<FormState>();
   String? imageName;
   String? baseimage;
+  String? apiImages;
   Future pickImage() async {
     try {
       image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -51,7 +53,7 @@ class _AddItemsState extends State<AddItems> {
   }
 
   String dollar = "\$";
-
+  MenuItems? menuItems;
   Items items = Items();
   void clear() {
     _iteDetailsController.clear();
@@ -62,12 +64,27 @@ class _AddItemsState extends State<AddItems> {
     setState(() {
       imagePath = null;
     });
+    menuItems = null;
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List passData = ModalRoute.of(context)!.settings.arguments as List;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+    List passData = arguments["passData"];
+    if (arguments["menuData"] != null) {
+      MenuItems? menuItems = arguments["menuData"];
+      _iteNameController.text = menuItems!.itemName!;
+      _iteDetailsController.text = menuItems.itemDetails!;
+      _itePriceController.text = menuItems.price!;
+      _iteDiscountController.text = menuItems.discount!;
+      items.itemName = menuItems!.itemName!;
+      items.itemDetails = menuItems.itemDetails!;
+      items.price = menuItems.price!;
+      items.discount = menuItems.discount!;
+    }
+
     items.categoryId = passData[0];
     items.productId = passData[1];
     return Scaffold(
@@ -344,17 +361,20 @@ class _AddItemsState extends State<AddItems> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
+                    InkWell(
                       onTap: () async {
                         // Navigator.pushNamed(context, "/add_category_shops",
                         //     arguments: shops);
-                        if (_key.currentState!.validate()) {
-                          var successData =
-                              await HomePageApi.AddMenuItems(context, items);
-                          if (successData == "done") {
-                            clear();
-                          }
+                        // if (_key.currentState!.validate()) {
+                        print("bxsjbvh");
+                        var successData =
+                            await HomePageApi.AddMenuItems(context, items);
+                        if (successData == "done") {
+                          clear();
                         }
+                        // } else {
+                        //   print("adnshjbgc");
+                        // }
                       },
                       child: Container(
                         height: 40,

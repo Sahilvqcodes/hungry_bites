@@ -31,7 +31,7 @@ class ItemsData {
   String? openingTime;
   String? closingTime;
   List<String>? profile;
-  List<MenuItem>? menuItem;
+  List<MenuItems>? menuItem;
   int? iV;
 
   ItemsData(
@@ -68,9 +68,9 @@ class ItemsData {
     closingTime = json['closing_time'];
     profile = json['profile'].cast<String>();
     if (json['menu_item'] != null) {
-      menuItem = <MenuItem>[];
+      menuItem = <MenuItems>[];
       json['menu_item'].forEach((v) {
-        menuItem!.add(new MenuItem.fromJson(v));
+        menuItem!.add(new MenuItems.fromJson(v));
       });
     }
     iV = json['__v'];
@@ -100,7 +100,7 @@ class ItemsData {
   }
 }
 
-class MenuItem {
+class MenuItems {
   String? sId;
   String? itemName;
   String? itemDetails;
@@ -111,7 +111,7 @@ class MenuItem {
   String? catId;
   int? iV;
 
-  MenuItem(
+  MenuItems(
       {this.sId,
       this.itemName,
       this.itemDetails,
@@ -122,7 +122,7 @@ class MenuItem {
       this.catId,
       this.iV});
 
-  MenuItem.fromJson(Map<String, dynamic> json) {
+  MenuItems.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     itemName = json['item_name'];
     itemDetails = json['item_details'];

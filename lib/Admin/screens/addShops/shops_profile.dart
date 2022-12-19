@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hunger_bites/Admin/Apis/home_api.dart';
 import 'package:hunger_bites/Admin/screens/addShops/addItems.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -14,6 +15,8 @@ class ShopsProfile extends StatefulWidget {
 }
 
 class _ShopsProfileState extends State<ShopsProfile> {
+  TextEditingController _controller = TextEditingController();
+  AvailableItems? _availableItems;
   // void _showAddItemsDialog() async {
   //   await showDialog(
   //     context: context,
@@ -57,7 +60,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
       body: FutureBuilder(
           future: HomePageApi.getMenuItemsList(passData[1]),
           builder: (context, AsyncSnapshot snapshot) {
-            AvailableItems? _availableItems = snapshot.data;
+            _availableItems = snapshot.data;
             return Container(
               child: SingleChildScrollView(
                 child: Column(
@@ -133,7 +136,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                       size: 25,
                                     ),
                                     Text(
-                                      "${_availableItems.data!.address},${_availableItems.data!.city}",
+                                      "${_availableItems!.data!.address},${_availableItems!.data!.city}",
                                       style: const TextStyle(
                                         fontFamily: "Poppins",
                                         fontSize: 16,
@@ -212,9 +215,9 @@ class _ShopsProfileState extends State<ShopsProfile> {
                           SizedBox(
                             width: 300,
                             height: 50,
-                            child: TextField(
+                            child: TextFormField(
                               cursorColor: Color(0xffED4322),
-                              // controller: _controller,
+                              controller: _controller,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -233,6 +236,9 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                 ),
                                 hintText: 'Search Here',
                               ),
+                              onChanged: ((value) {
+                                setState(() {});
+                              }),
                             ),
                           ),
                           Container(
@@ -272,7 +278,10 @@ class _ShopsProfileState extends State<ShopsProfile> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(context, "/add_items",
-                                  arguments: passData);
+                                  arguments: {
+                                    'passData': passData,
+                                    'menuData': null
+                                  });
                             },
                             child: Container(
                               height: 40,
@@ -306,7 +315,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
                           const Padding(
                             padding: EdgeInsets.only(left: 15.0),
                             child: Text(
-                              "Added Items",
+                              "Available Items",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 18,
@@ -317,147 +326,425 @@ class _ShopsProfileState extends State<ShopsProfile> {
                           const SizedBox(
                             height: 10,
                           ),
-                          _availableItems != null
-                              ? _availableItems!.data!.menuItem!.length != 0
-                                  ? Column(
-                                      children: [
-                                        ...List.generate(
-                                          _availableItems!
-                                              .data!.menuItem!.length,
-                                          (index) => Container(
-                                            height: 130,
-                                            color: Colors.white,
-                                            margin: const EdgeInsets.only(
-                                                bottom: 10,
-                                                right: 15,
-                                                left: 15),
-                                            child: Row(children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 10.0),
-                                                child: Container(
-                                                  width: 130,
-                                                  // height: 110,
-                                                  child: Image.network(
-                                                    "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}",
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 100,
-                                                width: 180,
-                                                child: Column(
-                                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                          _controller.text.isEmpty
+                              ? FutureBuilder(
+                                  // stream: null,
+                                  builder: (context, snapshot) {
+                                  return _availableItems != null
+                                      ? _availableItems!
+                                                  .data!.menuItem!.length !=
+                                              0
+                                          ? Column(
+                                              children: [
+                                                ...List.generate(
+                                                  _availableItems!
+                                                      .data!.menuItem!.length,
+                                                  (index) => Slidable(
+                                                    // key: const ValueKey(),
+                                                    endActionPane: ActionPane(
+                                                      motion: ScrollMotion(),
                                                       children: [
+                                                        SlidableAction(
+                                                          onPressed:
+                                                              (BuildContext
+                                                                  context) {
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                "/add_items",
+                                                                arguments: {
+                                                                  'passData':
+                                                                      passData,
+                                                                  'menuData':
+                                                                      _availableItems!
+                                                                          .data!
+                                                                          .menuItem![index]
+                                                                });
+                                                          },
+                                                          backgroundColor:
+                                                              Color.fromARGB(
+                                                                  253,
+                                                                  93,
+                                                                  127,
+                                                                  196),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.edit,
+                                                          label: 'Edit',
+                                                        ),
+                                                        SlidableAction(
+                                                          onPressed:
+                                                              (context) async {
+                                                            await HomePageApi
+                                                                .deleteMenuItems(
+                                                                    context,
+                                                                    _availableItems!
+                                                                        .data!
+                                                                        .menuItem![
+                                                                            index]
+                                                                        .sId!);
+                                                            setState(() {});
+                                                          },
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.delete,
+                                                          label: 'Delete',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Container(
+                                                      height: 130,
+                                                      color: Colors.white,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10,
+                                                              right: 15,
+                                                              left: 15),
+                                                      child: Row(children: [
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 10.0,
-                                                                  bottom: 5,
-                                                                  top: 10),
-                                                          child: Text(
-                                                            "${_availableItems!.data!.menuItem![index].itemName!}",
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
+                                                                  left: 10.0),
+                                                          child: Container(
+                                                            width: 130,
+                                                            // height: 110,
+                                                            child:
+                                                                Image.network(
+                                                              "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}",
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
+                                                        Container(
+                                                          height: 100,
+                                                          width: 180,
+                                                          child: Column(
+                                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            10.0,
+                                                                        bottom:
+                                                                            5,
+                                                                        top:
+                                                                            10),
+                                                                    child: Text(
+                                                                      "${_availableItems!.data!.menuItem![index].itemName!}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  const Icon(
+                                                                    Icons
+                                                                        .location_on,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      "${_availableItems!.data!.address},${_availableItems!.data!.city!}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              // Row(
+                                                              //   mainAxisAlignment:
+                                                              //       MainAxisAlignment
+                                                              //           .end,
+                                                              //   children: const [
+                                                              //     Padding(
+                                                              //       padding:
+                                                              //           EdgeInsets
+                                                              //               .only(
+                                                              //         right:
+                                                              //             0.0,
+                                                              //       ),
+                                                              //       child: Text(
+                                                              //         "Edit",
+                                                              //         style:
+                                                              //             TextStyle(
+                                                              //           color: Color.fromARGB(
+                                                              //               255,
+                                                              //               220,
+                                                              //               28,
+                                                              //               28),
+                                                              //           fontSize:
+                                                              //               18,
+                                                              //           fontWeight:
+                                                              //               FontWeight.w500,
+                                                              //         ),
+                                                              //       ),
+                                                              //     ),
+                                                              //   ],
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ]),
                                                     ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : const Center(
+                                              child: Text(
+                                                "No Any Item Is Available!",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Poppins",
+                                                ),
+                                              ),
+                                            )
+                                      : const Center(
+                                          child: SingleChildScrollView(),
+                                        );
+                                })
+                              : FutureBuilder(
+                                  // stream: null,
+                                  builder: (context, snapshot) {
+                                  List<MenuItems> _menuItem = _availableItems!
+                                      .data!.menuItem!
+                                      .where((element) => element.itemName!
+                                          .startsWith(_controller.text))
+                                      .toList();
+                                  return _menuItem != null
+                                      ? _menuItem.length != 0
+                                          ? Column(
+                                              children: [
+                                                ...List.generate(
+                                                  _menuItem.length,
+                                                  (index) => Slidable(
+                                                    // key: const ValueKey(),
+                                                    endActionPane: ActionPane(
+                                                      motion: ScrollMotion(),
                                                       children: [
-                                                        const Icon(
-                                                          Icons.location_on,
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              139,
-                                                              138,
-                                                              138),
+                                                        SlidableAction(
+                                                          // An action can be bigger than the others.
+
+                                                          onPressed:
+                                                              (BuildContext
+                                                                  context) {},
+                                                          backgroundColor:
+                                                              Color.fromARGB(
+                                                                  253,
+                                                                  93,
+                                                                  127,
+                                                                  196),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.edit,
+                                                          label: 'Edit',
                                                         ),
-                                                        Expanded(
-                                                          child: Text(
-                                                            "${_availableItems!.data!.address},${_availableItems!.data!.city!}",
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      139,
-                                                                      138,
-                                                                      138),
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                            ),
-                                                          ),
+                                                        SlidableAction(
+                                                          onPressed:
+                                                              (context) async {
+                                                            await HomePageApi
+                                                                .deleteMenuItems(
+                                                                    context,
+                                                                    _menuItem[
+                                                                            index]
+                                                                        .sId!);
+                                                            setState(() {});
+                                                          },
+                                                          backgroundColor:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons.delete,
+                                                          label: 'Delete',
                                                         ),
                                                       ],
                                                     ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: const [
+                                                    child: Container(
+                                                      height: 130,
+                                                      color: Colors.white,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10,
+                                                              right: 15,
+                                                              left: 15),
+                                                      child: Row(children: [
                                                         Padding(
                                                           padding:
-                                                              EdgeInsets.only(
-                                                            right: 0.0,
-                                                          ),
-                                                          child: Text(
-                                                            "Edit",
-                                                            style: TextStyle(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      220,
-                                                                      28,
-                                                                      28),
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10.0),
+                                                          child: Container(
+                                                            width: 130,
+                                                            // height: 110,
+                                                            child:
+                                                                Image.network(
+                                                              "http://157.245.97.144:8000/category/${_menuItem[index].profile!}",
+                                                              fit: BoxFit.cover,
                                                             ),
                                                           ),
                                                         ),
-                                                      ],
+                                                        Container(
+                                                          height: 100,
+                                                          width: 180,
+                                                          child: Column(
+                                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            10.0,
+                                                                        bottom:
+                                                                            5,
+                                                                        top:
+                                                                            10),
+                                                                    child: Text(
+                                                                      "${_menuItem[index].itemName!}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  const Icon(
+                                                                    Icons
+                                                                        .location_on,
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      "${_availableItems!.data!.address},${_availableItems!.data!.city!}",
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Color.fromARGB(
+                                                                            255,
+                                                                            139,
+                                                                            138,
+                                                                            138),
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              // Row(
+                                                              //   mainAxisAlignment:
+                                                              //       MainAxisAlignment
+                                                              //           .end,
+                                                              //   children: const [
+                                                              //     Padding(
+                                                              //       padding:
+                                                              //           EdgeInsets
+                                                              //               .only(
+                                                              //         right: 0.0,
+                                                              //       ),
+                                                              //       child: Text(
+                                                              //         "Edit",
+                                                              //         style:
+                                                              //             TextStyle(
+                                                              //           color: Color.fromARGB(
+                                                              //               255,
+                                                              //               220,
+                                                              //               28,
+                                                              //               28),
+                                                              //           fontSize:
+                                                              //               18,
+                                                              //           fontWeight:
+                                                              //               FontWeight
+                                                              //                   .w500,
+                                                              //         ),
+                                                              //       ),
+                                                              //     ),
+                                                              //   ],
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ]),
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              )
-                                            ]),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : const Center(
-                                      child: Text(
-                                        "No Any Item Is Available!",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Poppins",
-                                        ),
-                                      ),
-                                    )
-                              : const Center(
-                                  child: SingleChildScrollView(),
-                                )
+                                              ],
+                                            )
+                                          : const Center(
+                                              child: Text(
+                                                "No Any Item Is Available!",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Poppins",
+                                                ),
+                                              ),
+                                            )
+                                      : const Center(
+                                          child: SingleChildScrollView(),
+                                        );
+                                })
                         ],
                       ),
                     )

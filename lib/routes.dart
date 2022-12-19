@@ -12,7 +12,11 @@ import 'package:hunger_bites/User/screens/splash_screen.dart';
 
 import 'Sign_up.dart';
 import 'User/screens/details_screen.dart';
+import 'User/screens/home/address_page.dart';
 import 'User/screens/home/view/home_page.dart';
+import 'User/screens/home/view/orders.dart';
+import 'User/screens/home/view/payment_options.dart';
+import 'User/screens/search_bar.dart';
 import 'User/screens/super_market.dart';
 
 class Routes {
@@ -30,6 +34,10 @@ class Routes {
   static const String details_page = '/details_page';
   static const String super_market = '/super_market';
   static const String forgot_password = '/forgot_password';
+  static const String search_bar = '/search_bar';
+  static const String address_page = '/address_page ';
+  static const String payment_options = '/payment_options';
+  static const String orders = '/orders';
 
   static Map<String, WidgetBuilder> routes = {
     '/splash': (context) => SplashScreen(),
@@ -45,6 +53,10 @@ class Routes {
     '/add_items': (context) => AddItems(),
     '/details_page': (context) => DetailsScreen(),
     '/super_market': (context) => SuperMarket(),
-    '/forgot_password': (context) => ForgotPassword()
+    '/forgot_password': (context) => ForgotPassword(),
+    '/search_bar': (context) => SearchBar(),
+    '/address_page ': (context) => AddressPage(),
+    '/payment_options': (context) => PaymentOption(),
+    '/orders': (context) => Orders(),
   };
 }

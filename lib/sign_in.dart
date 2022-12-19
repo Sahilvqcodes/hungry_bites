@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
 
 import 'User/Apis/allApi.dart';
+import 'forgot_password.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -23,6 +24,25 @@ class User {
 }
 
 class _SignInState extends State<SignIn> {
+  final textFieldFocusNode = FocusNode();
+  bool _obscured = true;
+
+  String? _password;
+  void _toggleObscured() {
+    setState(() {
+      _obscured = !_obscured;
+      if (textFieldFocusNode.hasPrimaryFocus)
+        return; // If focus is on text field, dont unfocus
+      textFieldFocusNode.canRequestFocus =
+          false; // Prevents focus if tap on eye
+    });
+  }
+
+  // void _toggle() {
+  //   setState(() {
+  //     _obscureText = !_obscureText;
+  //   });
+  // }
   bool? check = false;
   User user = User();
   final _key = GlobalKey<FormState>();
@@ -78,10 +98,10 @@ class _SignInState extends State<SignIn> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     SizedBox(
                       child: TextFormField(
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(200)),
@@ -106,31 +126,48 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                     const SizedBox(height: 22),
-                    SizedBox(
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(200)),
-                              borderSide: BorderSide.none,
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscured,
+                      focusNode: textFieldFocusNode,
+                      decoration: InputDecoration(
+                          floatingLabelBehavior: FloatingLabelBehavior
+                              .never, //Hides label on focus or if filled
+                          labelText: "Password",
+                          filled: true,
+                          isDense: true,
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(200)),
+                            borderSide: BorderSide.none,
+                          ),
+                          hintStyle: TextStyle(color: Color(0xffAEACBA)),
+                          fillColor: Color(0xffEFEFEF),
+                          prefixIcon: Icon(
+                            Icons.lock_outline,
+                            color: Color(0xffED4322),
+                          ),
+                          suffixIcon: Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
+                            child: GestureDetector(
+                              onTap: _toggleObscured,
+                              child: Icon(
+                                _obscured
+                                    ? Icons.visibility_off_rounded
+                                    : Icons.visibility_rounded,
+                                size: 24,
+                              ),
                             ),
-                            hintStyle: TextStyle(color: Color(0xffAEACBA)),
-                            filled: true,
-                            fillColor: Color(0xffEFEFEF),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: Color(0xffED4322),
-                            ),
-                            hintText: 'Password'),
-                        onChanged: (value) {
-                          user.password = value;
-                        },
-                        validator: (String? value) {
-                          return (value!.isEmpty || value.length < 6)
-                              ? 'Password Must between 6-12 letters'
-                              : null;
-                        },
-                      ),
+                          ),
+                          hintText: 'Password'),
+                      onChanged: (value) {
+                        user.password = value;
+                      },
+                      validator: (String? value) {
+                        return (value!.isEmpty || value.length < 6)
+                            ? 'Password Must between 6-12 letters'
+                            : null;
+                      },
                     ),
                     SizedBox(
                       height: 10,
@@ -160,7 +197,9 @@ class _SignInState extends State<SignIn> {
 
                         //SizedBox(width: 20),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/forgot_password');
+                            },
                             child: const Text(
                               "Forget password?",
                               style: TextStyle(
@@ -206,7 +245,7 @@ class _SignInState extends State<SignIn> {
                   ],
                 ),
               ),
-              SizedBox(height: 220),
+              SizedBox(height: 100),
               Center(
                 child: RichText(
                   text: TextSpan(

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:hunger_bites/Admin/models/add_items_model.dart';
 import 'package:hunger_bites/User/screens/all_items.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
 import 'package:hunger_bites/User/screens/drawer.dart';
@@ -9,6 +11,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../model/category_list.dart';
+import '../hot_offers.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,7 +21,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController controller = TextEditingController();
+  List<String> list = <String>['One', 'Two', 'Three', 'Four'];
+
+  bool? _check = false;
+  bool? _checked = false;
   int _current = 0;
+  String? dropdownvalue = 'items';
+
+  var items = [
+    'Restaurant',
+    'Supermarket',
+  ];
   List category = [
     {'image': 'assets/images/Vector.png'},
     {'image': 'assets/images/Vector1.png'},
@@ -67,6 +81,11 @@ class _HomePageState extends State<HomePage> {
       'image': 'assets/images/Rectangle17.png'
     },
   ];
+  List<Color> categoryColor = [
+    Color(0xFFFFAE8DD),
+    Color(0xFFFF7F1DE),
+    Color(0xFFFFCEAEA)
+  ];
 
   final TextEditingController _controller = TextEditingController();
 
@@ -93,311 +112,398 @@ class _HomePageState extends State<HomePage> {
     {'image': 'assets/images/Vector1.png'},
   ];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  CategoryList? _categoryList;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        drawer: UserDrawer(),
-        appBar: AppBar(
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.favorite_border_outlined,
-                size: 25,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ), //IconButton
-            IconButton(
-              icon: Icon(Icons.notification_add_outlined),
-              color: Colors.black,
-              onPressed: () {},
-            ),
-          ],
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: Icon(
-              Icons.sort,
-              size: 35,
+      key: _scaffoldKey,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      drawer: UserDrawer(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.favorite_border_outlined,
+              size: 25,
               color: Colors.black,
             ),
-            onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
-            },
+            onPressed: () {},
+          ), //IconButton
+          IconButton(
+            icon: Icon(Icons.notification_add_outlined),
+            color: Colors.black,
+            onPressed: () {},
           ),
-        ), //AppBar
+        ],
+        // backgroundColor: Colors.white,/
+        leading: IconButton(
+          icon: const Icon(
+            Icons.sort,
+            size: 35,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            _scaffoldKey.currentState!.openDrawer();
+          },
+        ),
+      ), //AppBar
 
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                "Provide You",
-                style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 30,
-                    fontFamily: 'Poppins'),
-              ),
-              Row(
-                children: [
-                  Text(
-                    "Fresh",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 30,
-                        fontFamily: 'Poppins',
-                        color: Color(0xffED4322)),
-                  ),
-                  SizedBox(width: 12.0),
-                  Text(
-                    "and best",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
-                        fontSize: 30),
-                  ),
-                  SizedBox(width: 12.0),
-                  Text(
-                    "Food",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 30,
-                        fontFamily: 'Poppins',
-                        color: Color(0xffED4322)),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 1.3,
-                    height: 50,
-                    child: TextField(
-                      cursorColor: Color(0xffED4322),
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black87, width: 12.0),
-                            borderRadius: BorderRadius.circular(0.0)),
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black87, width: 1.0),
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
+      body: Padding(
+        padding: EdgeInsets.only(left: 10, right: 10, bottom: 5.0, top: 5.0),
+        child: SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // RichText(
+            //   text: const TextSpan(
+            //       text: "Provide You",
+            //       style: TextStyle(
+            //           fontWeight: FontWeight.w700,
+            //           fontSize: 30,
+            //           color: Color(0xff03060F),
+            //           fontFamily: 'Poppins'),
+            //       children: <TextSpan>[
+            //         TextSpan(
+            //           text: "\nFresh",
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w700,
+            //               fontSize: 30,
+            //               fontFamily: 'Poppins',
+            //               color: Color(0xffED4322)),
+            //         ),
+            //         TextSpan(
+            //           text: " and best",
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w700,
+            //               color: Color(0xff03060F),
+            //               fontFamily: 'Poppins',
+            //               fontSize: 30),
+            //         ),
+            //         TextSpan(
+            //           text: " Food",
+            //           style: TextStyle(
+            //               fontWeight: FontWeight.w700,
+            //               fontSize: 30,
+            //               fontFamily: 'Poppins',
+            //               color: Color(0xffED4322)),
+            //         )
+            //       ]),
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 1.34,
+                  height: 50,
+                  child: TextField(
+                    cursorColor: Color(0xffED4322),
+                    controller: controller,
+                    //textAlign: TextAlign.center,
+                    decoration: const InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior
+                            .never, //Hides label on focus or if filled
+
                         filled: true,
+                        isDense: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(0)),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintStyle: TextStyle(color: Color(0xffAEACBA)),
+                        fillColor: Colors.white,
                         suffixIcon: Icon(
                           Icons.search,
                           color: Color(0xffED4322),
+                          size: 30,
                         ),
-                        hintText: 'Search Here',
-                      ),
-                    ),
+                        hintText: 'Search here'),
                   ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
-                    ),
+                ),
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Color(0xffED4322),
+                  ),
+                  child: Center(
                     child: IconButton(
                         onPressed: () {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.filter_list,
-                          size: 40,
-                          color: Color(0xffED4322),
+                          size: 35,
+                          color: Colors.white,
                         )),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text(
                     "Category",
                     style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/payment_options');
+                  },
+                  child: const Text(
+                    "See All",
+                    style: TextStyle(
+                        fontSize: 16,
                         fontFamily: 'Poppins',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800),
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffAEACBA)),
                   ),
-                  TextButton(
-                    onPressed: () {
-                     // Navigator.pushNamed(context, '/forgot_password');
-                    },
-                    child: Text(
-                      "See All",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xffAEACBA)),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              FutureBuilder(
-                  future: getCategoryList(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    CategoryList? _categoryList = snapshot.data;
-                    if (snapshot.data == null) {
-                      return Container();
-                    }
-                    print(_categoryList!.data?.length);
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ...List.generate(
-                            _categoryList.data?.length ?? 0,
-                            (index) => InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, '/category_shop_list',
-                                    arguments: restaurantImage);
-                              },
-                              child: Container(
-                                child: CategoryItems(
-                                  data: _categoryList.data?[index].profile,
-                                  categoryName: _categoryList.data![index].name,
-                                ),
-                              ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            FutureBuilder(
+                future: getCategoryList(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  _categoryList = snapshot.data;
+                  if (snapshot.data == null) {
+                    return Container();
+                  }
+                  print(_categoryList!.data?.length);
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        ...List.generate(
+                          _categoryList!.data?.length ?? 0,
+                          (index) => InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/category_shop_list',
+                                arguments: [
+                                  _categoryList!.data![index].name,
+                                  _categoryList!.data![index].sId
+                                ],
+                              );
+                            },
+                            child: CategoryItems(
+                              data: _categoryList!.data?[index].profile,
+                              categoryName: _categoryList!.data![index].name,
+                              categoryColor: categoryColor[index],
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  }),
-              SizedBox(
-                height: 10,
-              ),
-              Stack(
-                children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        viewportFraction: 1,
-                        autoPlayInterval: Duration(seconds: 5),
-                        //enlargeCenterPage: false,
-                        onPageChanged: (i, r) {
-                          setState(() {
-                            _current = i;
-                          });
-                        }),
-                    items: [1, 2, 3, 4, 5]
-                        .map(
-                          (e) => Container(
-                            margin: EdgeInsets.all(5.0),
-                            height: 250,
-                            width: MediaQuery.of(context).size.width,
-                            child: Image.asset(
-                              'assets/images/Rectangle17.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  Positioned(
-                    left: 20,
-                    top: 140,
-                    child: Container(
-
-
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                      child: AnimatedSmoothIndicator(
-                        activeIndex: _current,
-                        count: 5,
-                        effect: ExpandingDotsEffect(
-                            activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
-                            dotColor: Colors.white,
-                            dotWidth: 4,
-                            dotHeight: 8),
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
+                  );
+                }),
+            const SizedBox(
+              height: 10,
+            ),
+            // CarouselSlider(
+            //   options: CarouselOptions(
+            //       autoPlay: true,
+            //       viewportFraction: 1,
+            //       autoPlayInterval: Duration(seconds: 5),
+            //       //enlargeCenterPage: false,
+            //       onPageChanged: (i, r) {
+            //         setState(() {
+            //           _current = i;
+            //         });
+            //       }),
+            //   items: [1, 2, 3, 4, 5]
+            //       .map(
+            //         (e) => Container(
+            //           margin: EdgeInsets.all(5.0),
+            //           height: 250,
+            //           width: MediaQuery.of(context).size.width,
+            //           child: Image.asset(
+            //             'assets/images/Rectangle17.png',
+            //             fit: BoxFit.contain,
+            //           ),
+            //         ),
+            //       )
+            //       .toList(),
+            // ),
+            // Center(
+            //   child: AnimatedSmoothIndicator(
+            //     activeIndex: _current,
+            //     count: 5,
+            //     effect: ExpandingDotsEffect(
+            //         activeDotColor: Color.fromRGBO(0, 0, 0, 0.9),
+            //         dotColor: Colors.grey,
+            //         dotWidth: 4,
+            //         dotHeight: 8),
+            //   ),
+            // ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text(
                     "Popular Item",
                     style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w500,
                       fontFamily: 'Poppins',
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/super_market');
-                    },
-                    child: Text(
-                      "See All",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Poppins',
-                          color: Color(0xffAEACBA)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/super_market');
+                  },
+                  child: const Text(
+                    "See All",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        color: Color(0xffAEACBA)),
+                  ),
+                )
+              ],
+            ),
+            SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                      populatItem.length,
+                      (index) => Popular(
+                            popularItems: populatItem[index]['image'],
+                          )),
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    "Hot Offers",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Poppins',
                     ),
-                  )
-                ],
-              ),
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                        populatItem.length,
-                        (index) => Popular(
-                              popularItems: populatItem[index]['image'],
-                            )),
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/super_market');
+                  },
+                  child: const Text(
+                    "See All",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        color: Color(0xffAEACBA)),
+                  ),
+                )
+              ],
+            ),
+
+            // CarouselSlider(
+            //   options: CarouselOptions(
+            //     // height: 400,
+
+            //     // aspectRatio: 16 / 9,
+            //     // viewportFraction: 0.8,
+            //     initialPage: 0,
+            //     enableInfiniteScroll: true,
+            //     reverse: false,
+            //     autoPlay: true,
+            //     autoPlayInterval: Duration(seconds: 3),
+            //     autoPlayAnimationDuration: Duration(milliseconds: 800),
+            //     autoPlayCurve: Curves.fastOutSlowIn,
+            //     enlargeCenterPage: true,
+            //     // enlargeFactor: 0.3,
+            //     // onPageChanged: callbackFunction,
+            //     scrollDirection: Axis.horizontal,
+            //   ),
+            //   items: populatItem
+            //       .map(
+            //         (e) => Container(
+            //           child: Popular(
+            //             popularItems: e["image"],
+            //           ),
+            //         ),
+            //       )
+            //       .toList(),
+            // ),
+            SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                      populatItem.length,
+                      (index) => HotOffers(
+                            popularItems: populatItem[index]['image'],
+                          )),
+                )),
+            const SizedBox(
+              height: 25,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Text(
                 "Convenience, Grocery",
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w500,
                   fontFamily: 'Poppins',
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                        grocery.length,
-                        (index) => GroceryItems(
-                              allGrocery: grocery[index]['image'],
-                            )),
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              Card(
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                      grocery.length,
+                      (index) => GroceryItems(
+                            allGrocery: grocery[index]['image'],
+                          )),
+                )),
+            const SizedBox(
+              height: 20,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  "/category_shop_list",
+                  arguments: [
+                    _categoryList!.data![0].name,
+                    _categoryList!.data![0].sId
+                  ],
+                );
+              },
+              child: Card(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -408,22 +514,29 @@ class _HomePageState extends State<HomePage> {
                           'assets/images/Rectangle30.png',
                           fit: BoxFit.cover,
                         )),
-                    SizedBox(height: 10),
-                    Padding(
+                    const SizedBox(height: 10),
+                    const Padding(
                       padding: EdgeInsets.only(left: 10.0),
                       child: Text(
                         "Fantastic food and\n where to find them!",
                         style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 26,
-                            color: Color(0xffE88B00)),
+                          fontFamily: 'Poppins',
+                          fontSize: 26,
+                          color: Color(0xffE88B00),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, "/category_shop_list",
-                            arguments: restaurantImage);
+                        Navigator.pushNamed(
+                          context,
+                          "/category_shop_list",
+                          arguments: [
+                            _categoryList!.data![0].name,
+                            _categoryList!.data![0].sId
+                          ],
+                        );
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 10),
@@ -431,23 +544,29 @@ class _HomePageState extends State<HomePage> {
                         height: 45,
                         width: 300,
                         decoration: BoxDecoration(
+                            color: Color(0xffE88B00),
                             border: Border.all(color: Color(0xffAEACBA)),
                             borderRadius: BorderRadius.circular(10)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               "Explore more",
-                              style: TextStyle(fontFamily: 'Poppins'),
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Color(0xFFFE1E1E1),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
                             ),
                             CircleAvatar(
                               radius: 18,
-                              backgroundColor: Colors.red,
+                              backgroundColor: Colors.white,
                               child: IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.arrow_forward,
                                   size: 20,
-                                  color: Colors.white,
+                                  color: Color(0xffE88B00),
                                 ),
                                 onPressed: () {},
                               ),
@@ -460,32 +579,130 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 50,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  "/category_shop_list",
+                  arguments: [
+                    _categoryList!.data![1].name,
+                    _categoryList!.data![1].sId
+                  ],
+                );
+              },
+              child: Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        height: 200,
+                        // width: 300,
+                        child: Image.asset(
+                          'assets/images/Rectangle30.png',
+                          fit: BoxFit.cover,
+                        )),
+                    const SizedBox(height: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child: Text(
+                        "Natural and Organic\n Homemade Foods",
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 26,
+                          color: Color(0xff29B306),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          "/category_shop_list",
+                          arguments: [
+                            _categoryList!.data![1].name,
+                            _categoryList!.data![1].sId
+                          ],
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10),
+                        padding: EdgeInsets.only(left: 10.0, right: 5),
+                        height: 45,
+                        width: 300,
+                        decoration: BoxDecoration(
+                            color: Color(0xff29B306),
+                            border: Border.all(color: Color(0xffAEACBA)),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Explore more",
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Color(0xFFFE1E1E1),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.arrow_forward,
+                                  size: 20,
+                                  color: Color(0xff29B306),
+                                ),
+                                onPressed: () {},
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  Text(
-                    "Live",
-                    style: TextStyle(
-                        fontSize: 49,
-                        fontFamily: 'Poppins',
-                        color: Color(0xffAEAEAE)),
-                  ),
-                  Text(
-                    "It up!",
-                    style: TextStyle(
-                        fontSize: 49,
-                        fontFamily: 'Poppins',
-                        color: Color(0xffAEAEAE)),
-                  )
-                ],
-              ),
-              Container(
-                height: 200,
-              )
-            ]),
-          ),
-        ));
+            ),
+
+            // Column(
+            //   children: [
+            //     Text(
+            //       "Live",
+            //       style: TextStyle(
+            //           fontSize: 49,
+            //           fontFamily: 'Poppins',
+            //           color: Color(0xffAEAEAE)),
+            //     ),
+            //     Text(
+            //       "It up!",
+            //       style: TextStyle(
+            //           fontSize: 49,
+            //           fontFamily: 'Poppins',
+            //           color: Color(0xffAEAEAE)),
+            //     )
+            //   ],
+            // ),
+            Container(
+              height: 100,
+            )
+          ]),
+        ),
+      ),
+    );
   }
+}
+
+class ListItem {
+  int value;
+  String name;
+
+  ListItem(this.value, this.name);
 }

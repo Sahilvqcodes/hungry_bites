@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -495,6 +496,7 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                                 // Navigator.pushNamed(context, "/shops_profile");
                                 HomePageApi.AddShops(
                                     context, shops, imageFileList!);
+                                // print(imageFileList);
                                 // print(shops.address);
                                 // print(shops.city);
                                 // print(shops.closingTime);
