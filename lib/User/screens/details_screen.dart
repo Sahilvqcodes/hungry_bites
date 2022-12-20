@@ -102,7 +102,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   items: _availableItems!.data!.profile!
                                       .map(
                                         (e) => Container(
-                                          margin: EdgeInsets.all(5.0),
+                                          // margin: EdgeInsets.all(5.0),
                                           height: 250,
                                           width:
                                               MediaQuery.of(context).size.width,
@@ -238,7 +238,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   //             border: Border.all(color: Colors.black54)),
                   //         child: Row(
                   //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //           children: [
+                  //           children: const [
                   //             Text(
                   //               "Search here",
                   //               style: TextStyle(color: Colors.black54),
@@ -283,26 +283,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: const [
-                            CircleAvatar(
+                          children: [
+                            const CircleAvatar(
                               radius: 20,
                               backgroundColor: Color(0xffED4322),
                               child: Icon(Icons.shopping_cart_outlined),
                             ),
-                            Text("In Your Cart",
+                            const Text("In Your Cart",
                                 style: TextStyle(
                                   fontFamily: "Poppins",
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 )),
-                            SizedBox(
+                            const SizedBox(
                               width: 100,
                             ),
                             CircleAvatar(
                               radius: 20,
                               backgroundColor: Color(0xffAEACBA),
                               child: Text(
-                                "4",
+                                "$_counter",
                                 style: TextStyle(color: Colors.white),
                               ),
                             )
@@ -340,8 +340,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(
-                                            context, '/details_page');
+                                        // Navigator.pushNamed(
+                                        //     context, '/details_page');
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(0.0),
@@ -447,12 +447,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                             trimExpandedText:
                                                                 ' Less',
                                                             lessStyle: TextStyle(
-                                                                fontSize: 14,
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold),
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Poppins',
+                                                                fontSize: 15,
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
                                                             moreStyle: TextStyle(
-                                                                fontSize: 14,
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .black,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold),
@@ -507,19 +520,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                           height: 150,
                                                           width: 140,
                                                           decoration:
-                                                              const BoxDecoration(
+                                                              BoxDecoration(
                                                                   // color:
                                                                   //     Colors.red,
                                                                   borderRadius:
-                                                                      BorderRadius
+                                                                      const BorderRadius
                                                                           .all(
                                                                     Radius
                                                                         .circular(
                                                                             30),
                                                                   ),
                                                                   image: DecorationImage(
-                                                                      image: AssetImage(
-                                                                          "assets/images/Rectangle35.png"),
+                                                                      image: NetworkImage(
+                                                                          "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}"),
                                                                       fit: BoxFit
                                                                           .cover)),
                                                           // child: Image.asset(
@@ -557,8 +570,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                       //       color: Colors.red,
                                                       //     ))
                                                       Positioned(
-                                                        right: 25.0,
-                                                        left: 25.0,
+                                                        right: 30.0,
+                                                        left: 30.0,
 
                                                         //top: 90,
                                                         bottom: 0,
@@ -571,32 +584,42 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                                   MainAxisAlignment
                                                                       .center,
                                                               children: [
-                                                                IconButton(
-                                                                    onPressed:
-                                                                        _decrementCounter,
-                                                                    icon:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .remove,
-                                                                      color: Color(
-                                                                          0xffED4322),
-                                                                    )),
-                                                                Text(
-                                                                    '$_counter',
-                                                                    style:
-                                                                        const TextStyle(
-                                                                      color: Color(
-                                                                          0xffED4322),
-                                                                    )),
-                                                                IconButton(
-                                                                    onPressed:
-                                                                        _incrementCounter,
-                                                                    icon:
-                                                                        const Icon(
-                                                                      Icons.add,
-                                                                      color: Color(
-                                                                          0xffED4322),
-                                                                    )),
+                                                                GestureDetector(
+                                                                  onTap:
+                                                                      _decrementCounter,
+                                                                  child:
+                                                                      const Icon(
+                                                                    Icons
+                                                                        .remove,
+                                                                    color: Color(
+                                                                        0xffED4322),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          10.0,
+                                                                      right:
+                                                                          10),
+                                                                  child: Text(
+                                                                      '$_counter',
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        color: Color(
+                                                                            0xffED4322),
+                                                                      )),
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap:
+                                                                      _incrementCounter,
+                                                                  child:
+                                                                      const Icon(
+                                                                    Icons.add,
+                                                                    color: Color(
+                                                                        0xffED4322),
+                                                                  ),
+                                                                ),
                                                               ],
                                                             ),
                                                           ),
@@ -672,8 +695,13 @@ class CustomSearch extends SearchDelegate {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(
+          Icons.clear,
+          color: Colors.black,
+        ),
       ),
     ];
   }
@@ -684,293 +712,215 @@ class CustomSearch extends SearchDelegate {
       onPressed: () {
         close(context, null);
       },
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(
+        Icons.arrow_back_ios_new,
+        color: Colors.black,
+      ),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // print(value);
-    return _availableItems == null || _availableItems!.data == null
+    List<MenuItems>? searchMenuItems;
+    searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
+      return element.itemName!.toLowerCase().contains(
+            query.toLowerCase(),
+          );
+    }).toList();
+    return searchMenuItems == null
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "Recommended",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        fontFamily: "Poppins"),
-                  ),
-                ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: _availableItems!.data!.menuItem!.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/details_page');
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+        : searchMenuItems.length != 0
+            ? Container(
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        "Recommended",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            fontFamily: "Poppins"),
+                      ),
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: searchMenuItems.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/details_page');
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                color: Colors.white,
+                                child: Column(
                                   children: [
-                                    Expanded(
-                                      flex: 10,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            //SizedBox(height: 50),
-                                            Text(
-                                              _availableItems!
-                                                      .data!
-                                                      .menuItem![index]
-                                                      .itemName ??
-                                                  "",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 15,
-                                                  fontFamily: "Poppins"),
-                                            ),
-                                            SizedBox(height: 2.0),
-                                            Text(
-                                              "\$ ${_availableItems!.data!.menuItem![index].price ?? ""}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 18,
-                                                  fontFamily: "Poppins",
-                                                  color: Color(0xffED4322)),
-                                            ),
-                                            Row(
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 10,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
-                                              children: [
-                                                RatingBar.builder(
-                                                  initialRating: 3,
-                                                  minRating: 1,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: true,
-                                                  itemCount: 5,
-                                                  itemSize: 15,
-                                                  //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                  itemBuilder: (context, _) =>
-                                                      const Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  onRatingUpdate: (rating) {
-                                                    print(rating);
-                                                  },
+                                              children: <Widget>[
+                                                //SizedBox(height: 50),
+                                                Text(
+                                                  searchMenuItems![index]
+                                                          .itemName ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontSize: 15,
+                                                      fontFamily: "Poppins"),
                                                 ),
-                                                Text("(3.9)")
+                                                SizedBox(height: 2.0),
+                                                Text(
+                                                  "\$ ${searchMenuItems![index].price ?? ""}",
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontSize: 18,
+                                                      fontFamily: "Poppins",
+                                                      color: Color(0xffED4322)),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    RatingBar.builder(
+                                                      initialRating: 3,
+                                                      minRating: 1,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: true,
+                                                      itemCount: 5,
+                                                      itemSize: 15,
+                                                      //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                      itemBuilder:
+                                                          (context, _) =>
+                                                              const Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                      ),
+                                                      onRatingUpdate: (rating) {
+                                                        print(rating);
+                                                      },
+                                                    ),
+                                                    Text("(3.9)")
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+
+                                                const ReadMoreText(
+                                                  "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                  " city of Belfast, Northern Ireland. We want to help people discover"
+                                                  " the magic of tea by sourcing great "
+                                                  "loose leaf tea and brewing delicious kombucha and"
+                                                  " other innovative, healthy tea drinks.",
+                                                  trimLines: 2,
+                                                  // colorClickableText: Colors.pink,
+                                                  trimMode: TrimMode.Line,
+                                                  trimCollapsedText: ' more',
+                                                  trimExpandedText: ' Less',
+                                                  lessStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  moreStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+
+                                                SizedBox(height: 5.0),
                                               ],
                                             ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-
-                                            const ReadMoreText(
-                                              "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
-                                              " city of Belfast, Northern Ireland. We want to help people discover"
-                                              " the magic of tea by sourcing great "
-                                              "loose leaf tea and brewing delicious kombucha and"
-                                              " other innovative, healthy tea drinks.",
-                                              trimLines: 2,
-                                              // colorClickableText: Colors.pink,
-                                              trimMode: TrimMode.Line,
-                                              trimCollapsedText: ' more',
-                                              trimExpandedText: ' Less',
-                                              lessStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                              moreStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-
-                                            SizedBox(height: 5.0),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    // Padding(
-                                    //   padding:
-                                    //       const EdgeInsets.all(
-                                    //           15.0),
-                                    //   child: Container(
-                                    //     height: 140,
-                                    //     width: 130,
-                                    //     decoration:
-                                    //         const BoxDecoration(
-                                    //             // color:
-                                    //             //     Colors.red,
-                                    //             borderRadius:
-                                    //                 BorderRadius
-                                    //                     .all(
-                                    //               Radius
-                                    //                   .circular(
-                                    //                       30),
-                                    //             ),
-                                    //             image: DecorationImage(
-                                    //                 image: AssetImage(
-                                    //                     "assets/images/Rectangle35.png"),
-                                    //                 fit: BoxFit
-                                    //                     .cover)),
-                                    //     // child: Image.asset(
-                                    //     //   'assets/images/Rectangle35.png',
-                                    //     //   height: 130,
-                                    //     //   width: 130,
-                                    //     //   fit: BoxFit.cover,
-                                    //     // ),
-                                    //   ),
-                                    // ),
-                                    // Spacer(
-                                    //   flex: 1,
-                                    // ),
-                                    Stack(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Container(
-                                            height: 150,
-                                            width: 140,
-                                            decoration: const BoxDecoration(
-                                                // color:
-                                                //     Colors.red,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
-                                                image: DecorationImage(
-                                                    image: AssetImage(
-                                                        "assets/images/Rectangle35.png"),
-                                                    fit: BoxFit.cover)),
-                                            // child: Image.asset(
-                                            //   'assets/images/Rectangle35.png',
-                                            //   height: 130,
-                                            //   width: 130,
-                                            //   fit: BoxFit.cover,
-                                            // ),
                                           ),
                                         ),
-                                        // Container(
-                                        //   // color: Colors.red,
-                                        //   height: 150,
-                                        //   width: 150,
-                                        // ),
-                                        // Container(
-                                        //   decoration: BoxDecoration(
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(
-                                        //               20.0)),
-                                        //   child: Image.asset(
-                                        //     'assets/images/Rectangle35.png',
-                                        //     height: 130,
-                                        //     width: 130,
-                                        //     fit: BoxFit.cover,
-                                        //   ),
-                                        // ),
-                                        // Positioned(
-                                        //     bottom: 0,
-                                        //     right: 60,
-                                        //     // left: ,
-                                        //     child: Container(
-                                        //       height: 20,
-                                        //       width: ,
-                                        //       color: Colors.red,
-                                        //     ))
-                                        // Positioned(
-                                        //   right: 25.0,
-                                        //   left: 25.0,
-
-                                        //   //top: 90,
-                                        //   bottom: 0,
-                                        //   child: Container(
-                                        //     height: 50,
-                                        //     // width: 120,
-                                        //     child: Card(
-                                        //       child: Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           IconButton(
-                                        //               onPressed:
-                                        //                   _decrementCounter,
-                                        //               icon: const Icon(
-                                        //                 Icons.remove,
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //           Text('$_counter',
-                                        //               style: const TextStyle(
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //           IconButton(
-                                        //               onPressed:
-                                        //                   _incrementCounter,
-                                        //               icon: const Icon(
-                                        //                 Icons.add,
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //         ],
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
+                                        Stack(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              child: Container(
+                                                height: 150,
+                                                width: 140,
+                                                decoration: const BoxDecoration(
+                                                    // color:
+                                                    //     Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(30),
+                                                    ),
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            "assets/images/Rectangle35.png"),
+                                                        fit: BoxFit.cover)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      // width: size.width * 0.9,
+                                      child: const Divider(
+                                        height: 1,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    )
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  // width: size.width * 0.9,
-                                  child: const Divider(
-                                    height: 1,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                )
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    }),
-              ],
-            ),
-          );
+                          );
+                        }),
+                  ],
+                ),
+              )
+            : Container(
+                child: const Center(
+                    child: Text(
+                  "Data Not Found!",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )),
+              );
   }
 
   @override
   Widget buildResults(BuildContext context) {
     List<MenuItems>? searchMenuItems;
     searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
-      return element.itemName!.toLowerCase().contains(query.toLowerCase());
+      return element.itemName!.toLowerCase().contains(
+            query.toLowerCase(),
+          );
     }).toList();
-    print(searchMenuItems);
     return searchMenuItems == null
         ? const Center(
             child: CircularProgressIndicator(),
@@ -1089,40 +1039,6 @@ class CustomSearch extends SearchDelegate {
                                         ),
                                       ),
                                     ),
-                                    // Padding(
-                                    //   padding:
-                                    //       const EdgeInsets.all(
-                                    //           15.0),
-                                    //   child: Container(
-                                    //     height: 140,
-                                    //     width: 130,
-                                    //     decoration:
-                                    //         const BoxDecoration(
-                                    //             // color:
-                                    //             //     Colors.red,
-                                    //             borderRadius:
-                                    //                 BorderRadius
-                                    //                     .all(
-                                    //               Radius
-                                    //                   .circular(
-                                    //                       30),
-                                    //             ),
-                                    //             image: DecorationImage(
-                                    //                 image: AssetImage(
-                                    //                     "assets/images/Rectangle35.png"),
-                                    //                 fit: BoxFit
-                                    //                     .cover)),
-                                    //     // child: Image.asset(
-                                    //     //   'assets/images/Rectangle35.png',
-                                    //     //   height: 130,
-                                    //     //   width: 130,
-                                    //     //   fit: BoxFit.cover,
-                                    //     // ),
-                                    //   ),
-                                    // ),
-                                    // Spacer(
-                                    //   flex: 1,
-                                    // ),
                                     Stack(
                                       children: [
                                         Padding(
@@ -1140,80 +1056,8 @@ class CustomSearch extends SearchDelegate {
                                                     image: AssetImage(
                                                         "assets/images/Rectangle35.png"),
                                                     fit: BoxFit.cover)),
-                                            // child: Image.asset(
-                                            //   'assets/images/Rectangle35.png',
-                                            //   height: 130,
-                                            //   width: 130,
-                                            //   fit: BoxFit.cover,
-                                            // ),
                                           ),
                                         ),
-                                        // Container(
-                                        //   // color: Colors.red,
-                                        //   height: 150,
-                                        //   width: 150,
-                                        // ),
-                                        // Container(
-                                        //   decoration: BoxDecoration(
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(
-                                        //               20.0)),
-                                        //   child: Image.asset(
-                                        //     'assets/images/Rectangle35.png',
-                                        //     height: 130,
-                                        //     width: 130,
-                                        //     fit: BoxFit.cover,
-                                        //   ),
-                                        // ),
-                                        // Positioned(
-                                        //     bottom: 0,
-                                        //     right: 60,
-                                        //     // left: ,
-                                        //     child: Container(
-                                        //       height: 20,
-                                        //       width: ,
-                                        //       color: Colors.red,
-                                        //     ))
-                                        // Positioned(
-                                        //   right: 25.0,
-                                        //   left: 25.0,
-
-                                        //   //top: 90,
-                                        //   bottom: 0,
-                                        //   child: Container(
-                                        //     height: 50,
-                                        //     // width: 120,
-                                        //     child: Card(
-                                        //       child: Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           IconButton(
-                                        //               onPressed:
-                                        //                   _decrementCounter,
-                                        //               icon: const Icon(
-                                        //                 Icons.remove,
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //           Text('$_counter',
-                                        //               style: const TextStyle(
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //           IconButton(
-                                        //               onPressed:
-                                        //                   _incrementCounter,
-                                        //               icon: const Icon(
-                                        //                 Icons.add,
-                                        //                 color:
-                                        //                     Color(0xffED4322),
-                                        //               )),
-                                        //         ],
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
                                       ],
                                     ),
                                   ],

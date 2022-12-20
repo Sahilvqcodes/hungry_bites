@@ -24,9 +24,9 @@ class _SearchBarState extends State<SearchBar> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -39,18 +39,14 @@ class _SearchBarState extends State<SearchBar> {
             "assets/images/Rectangle45.png",
           ),
         ),
-
-
       ),
       floatingActionButton: GestureDetector(
-        onTap: (){
+        onTap: () {
           Navigator.pushNamed(context, '/address_page ');
         },
         child: Container(
           height: 42.0,
-         width: MediaQuery.of(context).size.width*0.9,
-
-
+          width: MediaQuery.of(context).size.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
             gradient: const LinearGradient(
@@ -63,14 +59,14 @@ class _SearchBarState extends State<SearchBar> {
             ),
           ),
           child: Padding(
-            padding:  EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '4 item ',
                   style: TextStyle(
-                    fontSize:10.0,
+                    fontSize: 10.0,
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
                   ),
@@ -78,7 +74,7 @@ class _SearchBarState extends State<SearchBar> {
                 Text(
                   'View Cart ',
                   style: TextStyle(
-                    fontSize:10.0,
+                    fontSize: 10.0,
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
                   ),
@@ -88,11 +84,8 @@ class _SearchBarState extends State<SearchBar> {
           ),
         ),
       ),
-
-
-
-      body:    Padding(
-        padding:  EdgeInsets.all(12.0),
+      body: Padding(
+        padding: EdgeInsets.all(12.0),
         child: ListView(
           children: [
             Row(
@@ -103,16 +96,16 @@ class _SearchBarState extends State<SearchBar> {
                   height: 50,
                   child: TextField(
                     cursorColor: Color(0xffED4322),
-                   // controller: _controller,
+                    // controller: _controller,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                           borderSide:
-                          BorderSide(color: Colors.black87, width: 12.0),
+                              BorderSide(color: Colors.black87, width: 12.0),
                           borderRadius: BorderRadius.circular(0.0)),
                       fillColor: Colors.white,
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.black87, width: 1.0),
+                            BorderSide(color: Colors.black87, width: 1.0),
                         borderRadius: BorderRadius.circular(0.0),
                       ),
                       filled: true,
@@ -142,174 +135,174 @@ class _SearchBarState extends State<SearchBar> {
               ],
             ),
             ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              // physics: NeverScrollableScrollPhysics(),
-              itemCount: 15,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/details_page');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        //SizedBox(height: 50),
-                                        Text(
-                                          "Shahi Paneer",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 15,
-                                              fontFamily: "Poppins"),
-                                        ),
-                                        SizedBox(height: 2.0),
-                                        Text(
-                                          "\$14",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 18,
-                                              fontFamily: "Poppins",
-                                              color: Color(0xffED4322)),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          children: [
-                                            RatingBar.builder(
-                                              initialRating: 3,
-                                              minRating: 1,
-                                              direction: Axis.horizontal,
-                                              allowHalfRating: true,
-                                              itemCount: 5,
-                                              itemSize: 15,
-                                              //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                              itemBuilder: (context, _) =>
-                                                  Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                              onRatingUpdate: (rating) {
-                                                print(rating);
-                                              },
-                                            ),
-                                            Text("(3.9)")
-                                          ],
-                                        ),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                // physics: NeverScrollableScrollPhysics(),
+                itemCount: 15,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/details_page');
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 10,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          //SizedBox(height: 50),
+                                          Text(
+                                            "Shahi Paneer",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 15,
+                                                fontFamily: "Poppins"),
+                                          ),
+                                          SizedBox(height: 2.0),
+                                          Text(
+                                            "\$14",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                fontSize: 18,
+                                                fontFamily: "Poppins",
+                                                color: Color(0xffED4322)),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              RatingBar.builder(
+                                                initialRating: 3,
+                                                minRating: 1,
+                                                direction: Axis.horizontal,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemSize: 15,
+                                                //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                onRatingUpdate: (rating) {
+                                                  print(rating);
+                                                },
+                                              ),
+                                              Text("(3.9)")
+                                            ],
+                                          ),
 
-                                        //     ReadMoreText(
-                                        //       "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
-                                        //               " city of Belfast, Northern Ireland. We want to help people discover"
-                                        //               " the magic of tea by sourcing great "
-                                        //               "loose leaf tea and brewing delicious kombucha and"
-                                        //               " other innovative, healthy tea drinks.",
-                                        //   trimLines:2,
-                                        //  // colorClickableText: Colors.pink,
-                                        //  trimMode: TrimMode.Line,
-                                        //   trimCollapsedText: 'more',
-                                        //   trimExpandedText: '',
-                                        //   //moreStyle: TextStyle(fontSize:5, fontWeight: FontWeight.bold),
-                                        // ),
+                                          //     ReadMoreText(
+                                          //       "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                          //               " city of Belfast, Northern Ireland. We want to help people discover"
+                                          //               " the magic of tea by sourcing great "
+                                          //               "loose leaf tea and brewing delicious kombucha and"
+                                          //               " other innovative, healthy tea drinks.",
+                                          //   trimLines:2,
+                                          //  // colorClickableText: Colors.pink,
+                                          //  trimMode: TrimMode.Line,
+                                          //   trimCollapsedText: 'more',
+                                          //   trimExpandedText: '',
+                                          //   //moreStyle: TextStyle(fontSize:5, fontWeight: FontWeight.bold),
+                                          // ),
 
-                                        SizedBox(height: 5.0),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                Stack(children: [
-                                  Container(
-                                    // color: Colors.red,
-                                    height: 150,
-                                    width: 150,
-                                  ),
-                                  Positioned(
-                                    top: 5.0,
-                                    right: 10,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(20.0)
-                                        /*  borderRadius: BorderRadius.all(
-                                                    Radius.circular(20.0))*/
-                                      ),
-                                      child: Image.asset(
-                                        'assets/images/Rectangle35.png',
-                                        height: 130,
-                                        width: 130,
-                                        fit: BoxFit.cover,
+                                          SizedBox(height: 5.0),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  Positioned(
-                                    right: 15.0,
-                                    left: 15.0,
-                                    //top: 90,
-                                    bottom: 0,
-                                    child: Card(
-                                      elevation: 10,
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  Stack(children: [
+                                    Container(
+                                      // color: Colors.red,
+                                      height: 150,
+                                      width: 150,
+                                    ),
+                                    Positioned(
+                                      top: 5.0,
+                                      right: 10,
                                       child: Container(
-                                        height: 40,
-                                        width: 120,
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          color: Colors.white,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: [
-                                            IconButton(
-                                                onPressed: _decrementCounter,
-                                                icon: Icon(
-                                                  Icons.remove,
-                                                  color: Color(0xffED4322),
-                                                )),
-                                            Text('$_counter',
-                                                style: TextStyle(
-                                                  color: Color(0xffED4322),
-                                                )),
-                                            IconButton(
-                                                onPressed: _incrementCounter,
-                                                icon: Icon(
-                                                  Icons.add,
-                                                  color: Color(0xffED4322),
-                                                )),
-                                          ],
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)
+                                            /*  borderRadius: BorderRadius.all(
+                                                    Radius.circular(20.0))*/
+                                            ),
+                                        child: Image.asset(
+                                          'assets/images/Rectangle35.png',
+                                          height: 130,
+                                          width: 130,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                  )
+                                    Positioned(
+                                      right: 15.0,
+                                      left: 15.0,
+                                      //top: 90,
+                                      bottom: 0,
+                                      child: Card(
+                                        elevation: 10,
+                                        child: Container(
+                                          height: 40,
+                                          width: 120,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                  onPressed: _decrementCounter,
+                                                  icon: Icon(
+                                                    Icons.remove,
+                                                    color: Color(0xffED4322),
+                                                  )),
+                                              Text('$_counter',
+                                                  style: TextStyle(
+                                                    color: Color(0xffED4322),
+                                                  )),
+                                              IconButton(
+                                                  onPressed: _incrementCounter,
+                                                  icon: Icon(
+                                                    Icons.add,
+                                                    color: Color(0xffED4322),
+                                                  )),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
                                 ]),
-                              ]),
-                          SizedBox(
-                            height: 20,
-                          )
-                        ],
+                            SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }),
-        ],
+                  );
+                }),
+          ],
         ),
       ),
     );

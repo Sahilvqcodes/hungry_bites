@@ -31,6 +31,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
       drawer: AdminDrawer(),
       body: SafeArea(
         child: FutureBuilder(

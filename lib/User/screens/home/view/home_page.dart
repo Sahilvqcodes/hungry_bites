@@ -33,34 +33,55 @@ class _HomePageState extends State<HomePage> {
     'Restaurant',
     'Supermarket',
   ];
-  List category = [
-    {'image': 'assets/images/Vector.png'},
-    {'image': 'assets/images/Vector1.png'},
-    {'image': 'assets/images/Vector1.png'},
-    {'image': 'assets/images/Vector1.png'},
-  ];
+
   List populatItem = [
-    {'image': 'assets/images/Rectangle18.png'},
-    {'image': 'assets/images/Rectangle18.png'},
-    {'image': 'assets/images/Rectangle18.png'},
-    {'image': 'assets/images/Rectangle18.png'},
+    {'image': 'assets/image/img.png', 'name': 'Garam Dharam'},
+    {'image': 'assets/image/img1.png', 'name': 'Haveli'},
+    {'image': 'assets/image/img2.png', 'name': 'G.N Dairy'},
+    {'image': 'assets/image/img.png', 'name': 'KFC'},
+  ];
+  List Offers = [
+    {
+      'image': 'assets/image/offers1.png',
+      'name': 'The Biryani Life',
+      'offer': '10',
+    },
+    {
+      'image': 'assets/image/offers2.png',
+      'name': 'Katani Dhaba',
+      'offer': '40',
+    },
+    {
+      'image': 'assets/image/offers3.png',
+      'name': 'Captains Pizza',
+      'offer': '20',
+    },
+    {
+      'image': 'assets/image/offers1.png',
+      'name': "Domino's Pizza",
+      'offer': '30',
+    },
   ];
   List grocery = [
     {
-      'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle30.png'
+      'name': 'Vishal Mega Mart',
+      'image': 'assets/image/banners.png',
+      'address': '3B2, Phase 5,Mohali,Punajb'
     },
     {
-      'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle30.png'
+      'name': 'Big Bazaar',
+      'image': 'assets/images/Rectangle35.png',
+      'address': 'sector 22,Chandigarh'
     },
     {
-      'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle30.png'
+      'name': 'D Mart',
+      'image': 'assets/images/Rectangle30.png',
+      'address': 'Near Mandi,Mohali,Punajb'
     },
     {
-      'name': 'Enjoy your favourite treats',
-      'image': 'assets/images/Rectangle30.png'
+      'name': 'Relience Super Mart',
+      'image': 'assets/images/Rectangle30.png',
+      'address': 'sector 74,phase 8b,Mohali,Punajb'
     },
   ];
   List offerImages = [
@@ -194,7 +215,7 @@ class _HomePageState extends State<HomePage> {
               height: 20,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 1.34,
@@ -204,23 +225,24 @@ class _HomePageState extends State<HomePage> {
                     controller: controller,
                     //textAlign: TextAlign.center,
                     decoration: const InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior
-                            .never, //Hides label on focus or if filled
+                      floatingLabelBehavior: FloatingLabelBehavior
+                          .never, //Hides label on focus or if filled
 
-                        filled: true,
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(0)),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintStyle: TextStyle(color: Color(0xffAEACBA)),
-                        fillColor: Colors.white,
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: Color(0xffED4322),
-                          size: 30,
-                        ),
-                        hintText: 'Search here'),
+                      filled: true,
+                      isDense: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0)),
+                        borderSide: BorderSide.none,
+                      ),
+                      hintStyle: TextStyle(color: Color(0xffAEACBA)),
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: Color(0xffED4322),
+                        size: 30,
+                      ),
+                      hintText: 'Search for restaurant, item or more',
+                    ),
                   ),
                 ),
                 Container(
@@ -371,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/super_market');
+                    // Navigator.pushNamed(context, '/super_market');
                   },
                   child: const Text(
                     "See All",
@@ -390,7 +412,7 @@ class _HomePageState extends State<HomePage> {
                   children: List.generate(
                       populatItem.length,
                       (index) => Popular(
-                            popularItems: populatItem[index]['image'],
+                            popularItems: populatItem[index],
                           )),
                 )),
             const SizedBox(
@@ -412,7 +434,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/super_market');
+                    // Navigator.pushNamed(context, '/super_market');
                   },
                   child: const Text(
                     "See All",
@@ -460,7 +482,7 @@ class _HomePageState extends State<HomePage> {
                   children: List.generate(
                       populatItem.length,
                       (index) => HotOffers(
-                            popularItems: populatItem[index]['image'],
+                            Items: Offers[index],
                           )),
                 )),
             const SizedBox(
@@ -486,7 +508,7 @@ class _HomePageState extends State<HomePage> {
                   children: List.generate(
                       grocery.length,
                       (index) => GroceryItems(
-                            allGrocery: grocery[index]['image'],
+                            allGrocery: grocery[index],
                           )),
                 )),
             const SizedBox(
@@ -602,7 +624,7 @@ class _HomePageState extends State<HomePage> {
                         height: 200,
                         // width: 300,
                         child: Image.asset(
-                          'assets/images/Rectangle30.png',
+                          'assets/images/banner1.png',
                           fit: BoxFit.cover,
                         )),
                     const SizedBox(height: 10),

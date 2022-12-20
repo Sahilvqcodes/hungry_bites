@@ -49,16 +49,13 @@ class _AddCategoryState extends State<AddCategory> {
       content: Form(
         key: _key,
         child: Container(
-          height: 330,
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.all(10.0),
+          height: 210,
+          // padding: EdgeInsets.all(10),
+          margin: EdgeInsets.only(left: 10.0, right: 10),
           color: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 50,
-              ),
               SizedBox(
                 // height: 42,
                 child: TextFormField(
@@ -87,7 +84,7 @@ class _AddCategoryState extends State<AddCategory> {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 10,
               ),
               Row(
                 children: [
@@ -103,40 +100,43 @@ class _AddCategoryState extends State<AddCategory> {
                       : Text("Upload Image")
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               GestureDetector(
                 onTap: () {
                   HomePageApi.AddCategory(context, categoryName, imagePath);
                 },
-                child: Container(
-                  height: 50.0,
-                  width: 300,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xffED4322),
-                        Color(0xffFA6931),
-                      ],
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 30.0, right: 30),
+                  child: Container(
+                    height: 50.0,
+                    width: 300,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xffED4322),
+                          Color(0xffFA6931),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Add',
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                    child: const Center(
+                      child: Text(
+                        'Add',
+                        style: TextStyle(
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
             ],
           ),
         ),

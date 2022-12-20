@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HotOffers extends StatelessWidget {
-  final popularItems;
-  const HotOffers({super.key, this.popularItems});
+  final Items;
+  const HotOffers({super.key, this.Items});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +16,15 @@ class HotOffers extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                    // height: 100,
-                    // width: 300,
+                    height: 100,
+                    width: 130,
                     child: Image.asset(
-                  popularItems,
-                  fit: BoxFit.cover,
-                )),
+                      Items['image'],
+                      fit: BoxFit.cover,
+                    )),
                 const SizedBox(height: 10),
-                const Text(
-                  "Burger Point",
+                Text(
+                  Items['name'],
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -33,7 +33,7 @@ class HotOffers extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  "Up To 80% 0ff",
+                  "Up To ${Items['offer']}% 0ff",
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

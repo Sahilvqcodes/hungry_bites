@@ -31,7 +31,7 @@ class CategoryItems extends StatelessWidget {
           children: [
             Container(
               // color: Colors.white,
-              // height: 60,
+              height: 60,
               padding:
                   const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
               child: Image.network(
@@ -67,6 +67,7 @@ class Popular extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("popularItems $popularItems");
     return Stack(
       children: [
         Card(
@@ -77,17 +78,17 @@ class Popular extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                    // height: 100,
-                    // width: 300,
+                    height: 100,
+                    width: 130,
                     child: Image.asset(
-                  popularItems,
-                  fit: BoxFit.cover,
-                )),
+                      popularItems['image'],
+                      fit: BoxFit.cover,
+                    )),
                 const SizedBox(height: 10),
-                const Text(
-                  "Burger Point",
+                Text(
+                  popularItems["name"],
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     fontFamily: 'Poppins',
                   ),
@@ -146,51 +147,71 @@ class GroceryItems extends StatelessWidget {
     return Stack(
       children: [
         Card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  // height:150,
-                  //   width: 350,
-                  child: Image.asset(
-                allGrocery,
-                fit: BoxFit.fitWidth,
-              )),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
+          elevation: 5,
+          child: Container(
+            // height: 190,
+            width: 350,
+            child: Column(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
                   children: [
-                    const Text(
-                      "Gerrard Square (Toronto) Store , 1000\nGerrard st E , Toronto,ON M4AM",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 50,
-                    ),
-                    Row(
-                      children: const [
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFFFFD705),
-                        ),
-                        Text(
-                          "(4.2)",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
+                    SizedBox(
+                        height: 190,
+                        width: 350,
+                        child: Image.asset(
+                          allGrocery['image'],
+                          fit: BoxFit.cover,
+                        )),
                   ],
                 ),
-              ),
-              SizedBox(height: 20),
-            ],
+                SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0, left: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            allGrocery['name'],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          Text(
+                            allGrocery['address'],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFFFFD705),
+                          ),
+                          Text(
+                            "(4.2)",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         Positioned(

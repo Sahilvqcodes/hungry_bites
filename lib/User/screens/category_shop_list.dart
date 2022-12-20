@@ -13,7 +13,7 @@ class CategoryShopList extends StatefulWidget {
 
 class _CategoryShopListState extends State<CategoryShopList> {
   final TextEditingController controller = TextEditingController();
-
+  AvailableShops? _availableShops;
   // List restaurantImage = [
   //   {'image': 'assets/images/Vector.png'},
   //   {'image': 'assets/images/Vector1.png'},
@@ -31,27 +31,28 @@ class _CategoryShopListState extends State<CategoryShopList> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
+          centerTitle: true,
           iconTheme: IconThemeData(color: Colors.black),
-          title: Center(
-              child: Text(
+          title: Text(
             "${categoryName}",
             style: const TextStyle(color: Colors.black),
-          )),
+          ),
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios),
+            icon: const Icon(Icons.arrow_back_ios),
           )),
       body: FutureBuilder(
           future: UserApis.getUsersProductList(categoryId),
           builder: (context, AsyncSnapshot snapshot) {
-            AvailableShops? _availableShops = snapshot.data;
+            _availableShops = snapshot.data;
             return Container(
               height: size.height,
-              padding: EdgeInsets.all(8.0),
-              margin: EdgeInsets.only(top: 25),
+              // padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.only(top: 25),
               child: ListView(
+                physics: NeverScrollableScrollPhysics(),
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -60,26 +61,29 @@ class _CategoryShopListState extends State<CategoryShopList> {
                         width: MediaQuery.of(context).size.width / 1.3,
                         height: 50,
                         child: TextField(
-                          cursorColor: Color(0xffED4322),
+                          cursorColor: const Color(0xffED4322),
                           controller: controller,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                     color: Colors.black87, width: 12.0),
                                 borderRadius: BorderRadius.circular(0.0)),
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black87, width: 1.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.black87, width: 1.0),
                               borderRadius: BorderRadius.circular(0.0),
                             ),
                             filled: true,
-                            suffixIcon: Icon(
+                            suffixIcon: const Icon(
                               Icons.search,
                               color: Color(0xffED4322),
                             ),
                             hintText: 'Search Here',
                           ),
+                          onChanged: (value) {
+                            setState(() {});
+                          },
                         ),
                       ),
                       Container(
@@ -102,156 +106,445 @@ class _CategoryShopListState extends State<CategoryShopList> {
                   const SizedBox(
                     height: 25,
                   ),
-                  _availableShops == null || _availableShops!.data == null
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : SizedBox(
-                          height: size.height - 150,
-                          child: ListView.builder(
-                              itemCount:
-                                  _availableShops.data!.productId!.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, '/details_page',
-                                        arguments: _availableShops
-                                            .data!.productId![index].sId);
-                                    // arguments: restaurantImage);
-                                  },
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Container(
-                                      height: 150,
-                                      padding: EdgeInsets.all(0),
-                                      child: Row(children: [
-                                        Expanded(
-                                          flex: 8,
-                                          child: Container(
-                                            decoration: BoxDecoration(),
-                                            child: _availableShops
-                                                        .data!
-                                                        .productId![index]
-                                                        .profile!
-                                                        .length !=
-                                                    0
-                                                ? Image.network(
-                                                    'http://157.245.97.144:8000/category/${_availableShops.data!.productId![index].profile![0]}',
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Container(),
-                                          ),
-                                        ),
-                                        const Spacer(
-                                          flex: 1,
-                                        ),
-                                        Expanded(
-                                          flex: 10,
-                                          child: Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 5),
+                  controller.text.isEmpty
+                      ? _availableShops == null || _availableShops!.data == null
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Container(
+                              // height: size.height - 200,
+                              color: Colors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Text(
+                                      "Recommended",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18,
+                                          fontFamily: "Poppins"),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: size.height - 260,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: _availableShops!
+                                            .data!.productId!.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                  context, '/details_page',
+                                                  arguments: _availableShops!
+                                                      .data!
+                                                      .productId![index]
+                                                      .sId);
+                                              // arguments: restaurantImage);
+                                            },
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text(
-                                                  _availableShops
-                                                          .data!
-                                                          .productId![index]
-                                                          .shopName ??
-                                                      "",
-                                                  style: const TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      color: Color(0xff000000),
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                const SizedBox(height: 2.0),
-                                                Row(
-                                                  children: const [
-                                                    CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.green,
-                                                      radius: 10,
-                                                      child: Icon(
-                                                        Icons.star,
-                                                        size: 18,
-                                                        color: Colors.white,
+                                              children: [
+                                                Container(
+                                                  height: 150,
+                                                  padding: EdgeInsets.all(10),
+                                                  child: Row(children: [
+                                                    Expanded(
+                                                      flex: 8,
+                                                      child: Container(
+                                                        height: 150,
+                                                        width: 140,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                          image:
+                                                              DecorationImage(
+                                                                  image:
+                                                                      NetworkImage(
+                                                                    'http://157.245.97.144:8000/category/${_availableShops!.data!.productId![index].profile![0]}',
+                                                                  ),
+                                                                  fit: BoxFit
+                                                                      .cover),
+                                                        ),
+                                                        // child: _availableShops!
+                                                        //             .data!
+                                                        //             .productId![index]
+                                                        //             .profile!
+                                                        //             .length !=
+                                                        //         0
+                                                        //     ? Image.network(
+                                                        //         'http://157.245.97.144:8000/category/${_availableShops!.data!.productId![index].profile![0]}',
+                                                        //         fit: BoxFit.fitHeight,
+                                                        //       )
+                                                        //     : Container(),
                                                       ),
                                                     ),
-                                                    SizedBox(width: 5.0),
-                                                    Text("3.8",
-                                                        style: TextStyle(
-                                                          fontFamily: "Poppins",
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                        )),
-                                                    SizedBox(width: 5.0),
-                                                    Text("(100+)",
-                                                        style: TextStyle(
-                                                          fontFamily: "Poppins",
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                        )),
-                                                    SizedBox(width: 2.0),
-                                                    // Text(".22 mins",
-                                                    //     style: TextStyle(
-                                                    //       fontFamily: "Poppins",
-                                                    //       fontWeight:
-                                                    //           FontWeight.w700,
-                                                    //     ))
-                                                  ],
+                                                    const Spacer(
+                                                      flex: 1,
+                                                    ),
+                                                    Expanded(
+                                                      flex: 10,
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              _availableShops!
+                                                                      .data!
+                                                                      .productId![
+                                                                          index]
+                                                                      .shopName ??
+                                                                  "",
+                                                              style: const TextStyle(
+                                                                  fontFamily:
+                                                                      "Poppins",
+                                                                  color: Color(
+                                                                      0xff000000),
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 2.0),
+                                                            Row(
+                                                              children: const [
+                                                                CircleAvatar(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .green,
+                                                                  radius: 10,
+                                                                  child: Icon(
+                                                                    Icons.star,
+                                                                    size: 18,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 5.0),
+                                                                Text("3.8",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          "Poppins",
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    )),
+                                                                SizedBox(
+                                                                    width: 5.0),
+                                                                Text("(100+)",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          "Poppins",
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    )),
+                                                                SizedBox(
+                                                                    width: 2.0),
+                                                                // Text(".22 mins",
+                                                                //     style: TextStyle(
+                                                                //       fontFamily: "Poppins",
+                                                                //       fontWeight:
+                                                                //           FontWeight.w700,
+                                                                //     ))
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                                height: 2.0),
+                                                            RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  const WidgetSpan(
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .location_on_outlined,
+                                                                        size:
+                                                                            15),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: _availableShops!
+                                                                        .data!
+                                                                        .productId![
+                                                                            index]
+                                                                        .address,
+                                                                    style: const TextStyle(
+                                                                        fontFamily:
+                                                                            "Poppins",
+                                                                        color: Color(
+                                                                            0xff818181),
+                                                                        fontSize:
+                                                                            14),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              _availableShops!
+                                                                      .data!
+                                                                      .productId![
+                                                                          index]
+                                                                      .city ??
+                                                                  "",
+                                                              style: const TextStyle(
+                                                                  fontFamily:
+                                                                      "Poppins",
+                                                                  color: Color(
+                                                                      0xff818181),
+                                                                  fontSize: 14),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ]),
                                                 ),
-                                                SizedBox(height: 2.0),
-                                                RichText(
-                                                  text: TextSpan(
-                                                    children: [
-                                                      const WidgetSpan(
-                                                        child: Icon(
-                                                            Icons
-                                                                .location_on_outlined,
-                                                            size: 15),
-                                                      ),
-                                                      TextSpan(
-                                                        text: _availableShops
-                                                            .data!
-                                                            .productId![index]
-                                                            .address,
-                                                        style: const TextStyle(
-                                                            fontFamily:
-                                                                "Poppins",
-                                                            color: Color(
-                                                                0xff818181),
-                                                            fontSize: 14),
-                                                      ),
-                                                    ],
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Container(
+                                                  width: size.width * 0.9,
+                                                  child: const Divider(
+                                                    height: 1,
+                                                    color: Colors.black,
                                                   ),
                                                 ),
-                                                Text(
-                                                  _availableShops
-                                                          .data!
-                                                          .productId![index]
-                                                          .city ??
-                                                      "",
-                                                  style: const TextStyle(
-                                                      fontFamily: "Poppins",
-                                                      color: Color(0xff818181),
-                                                      fontSize: 14),
+                                                const SizedBox(
+                                                  height: 20,
                                                 )
                                               ],
                                             ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
+                                          );
+                                        }),
                                   ),
+                                ],
+                              ),
+                            )
+                      : FutureBuilder(
+                          // stream: null,
+                          builder: (context, AsyncSnapshot snapshot) {
+                          List<ProductId> _productId;
+                          _productId = _availableShops!.data!.productId!
+                              .where((element) => element.shopName!
+                                  .toLowerCase()
+                                  .startsWith(controller.text.toLowerCase()))
+                              .toList();
+                          return _productId.length != 0
+                              ? SizedBox(
+                                  height: size.height - 200,
+                                  child: ListView.builder(
+                                      itemCount: _productId.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                context, '/details_page',
+                                                arguments:
+                                                    _productId[index].sId);
+                                            // arguments: restaurantImage);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 150,
+                                                padding: EdgeInsets.all(10),
+                                                child: Row(children: [
+                                                  Expanded(
+                                                    flex: 8,
+                                                    child: Container(
+                                                      height: 150,
+                                                      width: 140,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                          Radius.circular(30),
+                                                        ),
+                                                        image: DecorationImage(
+                                                            image: NetworkImage(
+                                                              'http://157.245.97.144:8000/category/${_productId[index].profile![0]}',
+                                                            ),
+                                                            fit: BoxFit.cover),
+                                                      ),
+                                                      // child: _availableShops!
+                                                      //             .data!
+                                                      //             .productId![index]
+                                                      //             .profile!
+                                                      //             .length !=
+                                                      //         0
+                                                      //     ? Image.network(
+                                                      //         'http://157.245.97.144:8000/category/${_availableShops!.data!.productId![index].profile![0]}',
+                                                      //         fit: BoxFit.fitHeight,
+                                                      //       )
+                                                      //     : Container(),
+                                                    ),
+                                                  ),
+                                                  const Spacer(
+                                                    flex: 1,
+                                                  ),
+                                                  Expanded(
+                                                    flex: 10,
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 5),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            _productId[index]
+                                                                    .shopName ??
+                                                                "",
+                                                            style: const TextStyle(
+                                                                fontFamily:
+                                                                    "Poppins",
+                                                                color: Color(
+                                                                    0xff000000),
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 2.0),
+                                                          Row(
+                                                            children: const [
+                                                              CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .green,
+                                                                radius: 10,
+                                                                child: Icon(
+                                                                  Icons.star,
+                                                                  size: 18,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 5.0),
+                                                              Text("3.8",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        "Poppins",
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                  )),
+                                                              SizedBox(
+                                                                  width: 5.0),
+                                                              Text("(100+)",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        "Poppins",
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                  )),
+                                                              SizedBox(
+                                                                  width: 2.0),
+                                                              // Text(".22 mins",
+                                                              //     style: TextStyle(
+                                                              //       fontFamily: "Poppins",
+                                                              //       fontWeight:
+                                                              //           FontWeight.w700,
+                                                              //     ))
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 2.0),
+                                                          RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                const WidgetSpan(
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .location_on_outlined,
+                                                                      size: 15),
+                                                                ),
+                                                                TextSpan(
+                                                                  text: _productId[
+                                                                          index]
+                                                                      .address,
+                                                                  style: const TextStyle(
+                                                                      fontFamily:
+                                                                          "Poppins",
+                                                                      color: Color(
+                                                                          0xff818181),
+                                                                      fontSize:
+                                                                          14),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            _productId[index]
+                                                                    .city ??
+                                                                "",
+                                                            style: const TextStyle(
+                                                                fontFamily:
+                                                                    "Poppins",
+                                                                color: Color(
+                                                                    0xff818181),
+                                                                fontSize: 14),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ]),
+                                              ),
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              Container(
+                                                width: size.width * 0.9,
+                                                child: const Divider(
+                                                  height: 1,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                height: 20,
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                )
+                              : Container(
+                                  child: const Center(
+                                      child: Text(
+                                    "Data Not Found!",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Poppins"),
+                                  )),
                                 );
-                              }),
-                        ),
+                        }),
                 ],
               ),
             );

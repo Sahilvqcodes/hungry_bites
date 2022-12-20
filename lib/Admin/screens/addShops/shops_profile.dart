@@ -409,15 +409,26 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                                               const EdgeInsets
                                                                       .only(
                                                                   left: 10.0),
-                                                          child: Container(
-                                                            width: 130,
-                                                            // height: 110,
-                                                            child:
-                                                                Image.network(
-                                                              "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}",
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
+                                                          child: _availableItems!
+                                                                      .data!
+                                                                      .menuItem![
+                                                                          index]
+                                                                      .profile !=
+                                                                  null
+                                                              ? Container(
+                                                                  width: 130,
+                                                                  height: 110,
+                                                                  child: Image
+                                                                      .network(
+                                                                    "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}",
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                )
+                                                              : Container(
+                                                                  width: 130,
+                                                                  height: 110,
+                                                                ),
                                                         ),
                                                         Container(
                                                           height: 100,

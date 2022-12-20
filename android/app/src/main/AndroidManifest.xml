@@ -2,7 +2,7 @@
     package="com.example.hunger_bites">
    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="hunger_bites"
+        android:label="Hungery Bites"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher"
