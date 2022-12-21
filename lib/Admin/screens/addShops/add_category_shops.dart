@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +9,10 @@ import 'package:hunger_bites/Admin/Apis/home_api.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:intl/intl.dart';
-
+import 'package:path_provider/path_provider.dart';
 import '../../models/add_shops_model.dart';
+import '../../models/available_shops.dart';
+import 'package:http/http.dart' as http;
 
 class AddCategoryShops extends StatefulWidget {
   AddCategoryShops({super.key});
@@ -21,7 +24,9 @@ class AddCategoryShops extends StatefulWidget {
 class _AddCategoryShopsState extends State<AddCategoryShops> {
   TextEditingController openingtimeinput = TextEditingController();
   TextEditingController closingTimeinput = TextEditingController();
+  TextEditingController ownerNameController = TextEditingController();
   final _key = GlobalKey<FormState>();
+
   List<String> allDays = [
     "Sunday",
     "Monday",
@@ -46,24 +51,17 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
   String? imageName;
   List<XFile>? imageFileList = [];
   List<String> galleryImage = [];
+  List<File>? picFileList = [];
 
   Future pickImage(Shops shops) async {
     try {
       List<XFile>? selectedImages = await ImagePicker().pickMultiImage();
       if (selectedImages!.isNotEmpty) {
-        imageFileList!.addAll(selectedImages);
-        // shops.galleries = galleryImage;
-        // print("shops.galleries ${shops.galleries}");
+        selectedImages.forEach((element) {
+          picFileList!.add(File(element.path));
+        });
       }
-      // imageFileList!.forEach((e) {
-      //   File imagePath = File(e.path);
-      //   shops.galleries!.add(e.name);
-      // });
-      // imagePath = File(image.path);
-      // print("imagePath $image");
-      // imageName = image.name;
 
-      // print(":- $imageName");
       setState(() {
         // uploadimage = imagePath;
       });
@@ -72,11 +70,69 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
     }
   }
 
+  ProductId? _productId;
+  var arguments;
+
+  Shops shops = Shops();
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      Duration.zero,
+      () {
+        setState(() {
+          arguments = (ModalRoute.of(context)?.settings.arguments ??
+              <String, dynamic>{}) as Map;
+          shops = arguments["shops"];
+          if (arguments["shopsData"] != null) {
+            _productId = arguments["shopsData"];
+            // shops.shopName = _productId!.shopName ?? "";
+            // shops.mobileNo = _productId!.phoneNo ?? "";
+            // shops.address = _productId!.address ?? "";
+            // shops.city = _productId!.city ?? "";
+            // shops.landMark = _productId!.landMark ?? "";
+            openingtimeinput.text = _productId!.openingTime ?? "";
+            closingTimeinput.text = _productId!.closingTime ?? "";
+            ownerNameController.text = _productId!.name ?? "";
+            shops.galleries = _productId!.profile;
+            shops.closingTime = _productId!.closingTime;
+            shops.openingTime = _productId!.openingTime;
+            shops.openingDays = _productId!.openingDay;
+            shops.ownerName = _productId!.name;
+            urlToFile(_productId!.profile!);
+          }
+        });
+      },
+    );
+  }
+
+  urlToFile(List<String> imageUrl) async {
+    var rng = new Random();
+
+    Directory tempDir = await getTemporaryDirectory();
+
+    String tempPath = tempDir.path;
+
+    File file = File('$tempPath' + (rng.nextInt(100)).toString() + '.png');
+
+    imageUrl.forEach((element) async {
+      print("foreach");
+      http.Response response = await http
+          .get(Uri.parse("http://157.245.97.144:8000/category/${element}"));
+      File convertFile = await file.writeAsBytes(response.bodyBytes);
+      print(convertFile);
+
+      picFileList!.add(convertFile);
+      print(picFileList);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    Shops shops = ModalRoute.of(context)!.settings.arguments as Shops;
-    print(shops.category);
+    // Shops shops = ModalRoute.of(context)!.settings.arguments as Shops;
+    // print(shops.category);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -94,41 +150,6 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Container(
-                //   height: 100,
-                //   color: Colors.white,
-                //   padding: EdgeInsets.only(bottom: 10),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     crossAxisAlignment: CrossAxisAlignment.end,
-                //     children: [
-                //       Padding(
-                //         padding: const EdgeInsets.only(left: 10),
-                //         child: IconButton(
-                //             onPressed: () {
-                //               Navigator.pop(context);
-                //             },
-                //             icon: const Icon(
-                //               Icons.arrow_back,
-                //               color: Colors.black,
-                //               size: 30,
-                //             )),
-                //       ),
-                //       // const Text(
-                //       //   "Categories Name",
-                //       //   textAlign: TextAlign.center,
-                //       //   style: TextStyle(
-                //       //       fontSize: 18.0,
-                //       //       fontWeight: FontWeight.w600,
-                //       //       letterSpacing: 1.01,
-                //       //       fontFamily: 'Poppins'),
-                //       // ),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 30,
-                // ),
                 Container(
                   color: Colors.white,
                   margin: EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -351,6 +372,7 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
                                 // obscureText: true,
+                                controller: ownerNameController,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -379,7 +401,7 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                               fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                       ),
-                      if (imageFileList!.length != 0)
+                      if (picFileList!.length != 0)
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: MediaQuery.removeViewPadding(
@@ -393,17 +415,21 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                               physics: new NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               children: [
-                                ...List.generate(
-                                  imageFileList!.length,
-                                  (index) => Container(
+                                ...List.generate(picFileList!.length, (index) {
+                                  print(picFileList![index]);
+                                  return Container(
                                     child: Stack(
                                       children: [
                                         Image.file(
-                                          File(imageFileList![index].path),
+                                          picFileList![index],
                                           fit: BoxFit.cover,
                                           width: 120,
                                           height: 100,
                                         ),
+                                        //          Image.network(
+                                        //   'http://157.245.97.144:8000/category/${items.profile}',
+                                        //   fit: BoxFit.cover,
+                                        // ),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
@@ -413,8 +439,8 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                                                 // Navigator.pushNamed(context, "/add_category_shops",
                                                 //     arguments: shops);
                                                 setState(() {
-                                                  imageFileList!.remove(
-                                                      imageFileList![index]);
+                                                  picFileList!.remove(
+                                                      picFileList![index]);
                                                 });
                                               },
                                               child: Container(
@@ -441,8 +467,8 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
+                                  );
+                                }),
                               ],
                             ),
                           ),
@@ -494,8 +520,14 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
                             onTap: () {
                               if (_key.currentState!.validate()) {
                                 // Navigator.pushNamed(context, "/shops_profile");
-                                HomePageApi.AddShops(
-                                    context, shops, imageFileList!);
+                                if (arguments["shopsData"] == null) {
+                                  HomePageApi.AddShops(
+                                      context, shops, picFileList!);
+                                } else {
+                                  HomePageApi.UpdateShop(
+                                      context, shops, picFileList!);
+                                  // print("picFileList $picFileList");
+                                }
                                 // print(imageFileList);
                                 // print(shops.address);
                                 // print(shops.city);

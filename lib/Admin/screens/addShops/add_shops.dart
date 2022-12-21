@@ -6,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:intl/intl.dart';
 
+import '../../../User/model/category_list.dart';
 import '../../models/add_shops_model.dart';
+import '../../models/available_shops.dart';
 
 class AddShops extends StatefulWidget {
   AddShops({super.key});
@@ -16,8 +18,13 @@ class AddShops extends StatefulWidget {
 }
 
 class _AddShopsState extends State<AddShops> {
-  TextEditingController openingtimeinput = TextEditingController();
-  TextEditingController closingTimeinput = TextEditingController();
+  TextEditingController shopsNameController = TextEditingController();
+  TextEditingController mobileNoController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController landMarkController = TextEditingController();
   final _key = GlobalKey<FormState>();
   List<String> allDays = [
     "All Days",
@@ -54,15 +61,53 @@ class _AddShopsState extends State<AddShops> {
     }
   }
 
+  ProductId? _productId;
+  var arguments;
+  List? passData;
   Shops shops = Shops();
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(
+      Duration.zero,
+      () {
+        setState(() {
+          arguments = (ModalRoute.of(context)?.settings.arguments ??
+              <String, dynamic>{}) as Map;
+          passData = arguments["passData"];
+          if (arguments["shopsData"] != null) {
+            _productId = arguments["shopsData"];
+            shopsNameController.text = _productId!.shopName ?? "";
+            mobileNoController.text = _productId!.phoneNo ?? "";
+            addressController.text = _productId!.address ?? "";
+            cityController.text = _productId!.city ?? "";
+            landMarkController.text = _productId!.landMark ?? "";
+
+            shops.shopName = _productId!.shopName ?? "";
+            shops.mobileNo = _productId!.phoneNo ?? "";
+            shops.address = _productId!.address ?? "";
+            shops.city = _productId!.city ?? "";
+            shops.landMark = _productId!.landMark ?? "";
+            shops.productId = _productId!.sId;
+            // shops.galleries = _productId!.profile;
+            // shops.closingTime = _productId!.closingTime;
+            // shops.openingTime = _productId!.openingTime;
+            // shops.openingDays = _productId!.openingDay;
+            // shops.ownerName = _productId!.name;
+          }
+        });
+
+        shops.category = passData![0];
+        shops.categoryId = passData![1];
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List passData = ModalRoute.of(context)!.settings.arguments as List;
-    String categoryName = passData[0];
     // String categoryId = passData[1];
-    shops.category = categoryName;
-    shops.categoryId = passData[1];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -80,44 +125,9 @@ class _AddShopsState extends State<AddShops> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Container(
-                //   height: 100,
-                //   color: Colors.white,
-                //   padding: EdgeInsets.only(bottom: 10),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     crossAxisAlignment: CrossAxisAlignment.end,
-                //     children: [
-                //       Padding(
-                //         padding: const EdgeInsets.only(left: 10),
-                //         child: IconButton(
-                //             onPressed: () {
-                //               Navigator.pop(context);
-                //             },
-                //             icon: const Icon(
-                //               Icons.arrow_back,
-                //               color: Colors.black,
-                //               size: 30,
-                //             )),
-                //       ),
-                // const Text(
-                //   "Categories Name",
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //       fontSize: 18.0,
-                //       fontWeight: FontWeight.w600,
-                //       letterSpacing: 1.01,
-                //       fontFamily: 'Poppins'),
-                // ),
-                //     ],
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 30,
-                // ),
                 Container(
                   color: Colors.white,
-                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -126,8 +136,8 @@ class _AddShopsState extends State<AddShops> {
                       ),
                       Center(
                           child: Text(
-                        "Add ${categoryName}",
-                        style: TextStyle(
+                        "Add ${shops.category}",
+                        style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w500),
                       )),
                       const SizedBox(
@@ -138,10 +148,10 @@ class _AddShopsState extends State<AddShops> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 10.0),
+                              padding: const EdgeInsets.only(left: 10.0),
                               child: Text(
-                                "${categoryName} Name",
-                                style: TextStyle(
+                                "${shops.category} Name",
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
@@ -152,11 +162,11 @@ class _AddShopsState extends State<AddShops> {
                               padding:
                                   const EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                // obscureText: true,
+                                controller: shopsNameController,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
-                                    hintText: " ${categoryName} Name"),
+                                    hintText: " ${shops.category} Name"),
                                 onChanged: (value) {
                                   shops.shopName = value;
                                 },
@@ -191,10 +201,9 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                // obscureText: true,
+                                controller: mobileNoController,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    // labelText: 'Password',
                                     hintText: "Mobile No."),
                                 onChanged: (value) {
                                   shops.mobileNo = value;
@@ -212,82 +221,87 @@ class _AddShopsState extends State<AddShops> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Email",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
+                      if (arguments["shopsData"] == null)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Email",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                // obscureText: true,
-                                decoration: const InputDecoration(
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0, right: 20),
+                                child: TextFormField(
+                                  controller: emailController,
+                                  decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "xyz@gmail.com"),
-                                onChanged: (value) {
-                                  shops.email = value;
-                                },
-                                validator: (String? value) {
-                                  return (value!.isEmpty ||
-                                          !value.contains("@"))
-                                      ? 'Please enter Email'
-                                      : null;
-                                },
-                              ),
-                            )
-                          ],
+                                    hintText: "xyz@gmail.com",
+                                  ),
+                                  onChanged: (value) {
+                                    shops.email = value;
+                                  },
+                                  validator: (String? value) {
+                                    return (value!.isEmpty ||
+                                            !value.contains("@"))
+                                        ? 'Please enter Email'
+                                        : null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Password",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
+                      if (arguments["shopsData"] == null)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Password",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "Password"),
-                                onChanged: (value) {
-                                  shops.password = value;
-                                },
-                                validator: (String? value) {
-                                  return (value!.isEmpty || value.length < 6)
-                                      ? 'Please Password between 6-12 digits'
-                                      : null;
-                                },
+                              const SizedBox(
+                                height: 15,
                               ),
-                            )
-                          ],
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0, right: 20),
+                                child: TextFormField(
+                                  obscureText: true,
+                                  controller: passwordController,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      // labelText: 'Password',
+                                      hintText: "Password"),
+                                  onChanged: (value) {
+                                    shops.password = value;
+                                  },
+                                  validator: (String? value) {
+                                    return (value!.isEmpty || value.length < 6)
+                                        ? 'Please Password between 6-12 digits'
+                                        : null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -309,7 +323,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                // obscureText: true,
+                                controller: addressController,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -348,7 +362,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                // obscureText: true,
+                                controller: cityController,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -388,7 +402,7 @@ class _AddShopsState extends State<AddShops> {
                             Padding(
                               padding: EdgeInsets.only(left: 20.0, right: 20),
                               child: TextFormField(
-                                // obscureText: true,
+                                controller: landMarkController,
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
@@ -419,7 +433,12 @@ class _AddShopsState extends State<AddShops> {
                       onTap: () {
                         if (_key.currentState!.validate()) {
                           Navigator.pushNamed(context, "/add_category_shops",
-                              arguments: shops);
+                              arguments: {
+                                "shops": shops,
+                                "shopsData": arguments["shopsData"] == null
+                                    ? null
+                                    : arguments["shopsData"]
+                              });
                         }
                       },
                       child: Container(

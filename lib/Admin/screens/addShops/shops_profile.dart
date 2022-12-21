@@ -1,11 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hunger_bites/Admin/Apis/home_api.dart';
 import 'package:hunger_bites/Admin/screens/addShops/addItems.dart';
+import 'package:readmore/readmore.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../models/available_items.dart';
+
+AvailableItems? _availableItems;
+List? passData;
 
 class ShopsProfile extends StatefulWidget {
   const ShopsProfile({super.key});
@@ -16,7 +21,7 @@ class ShopsProfile extends StatefulWidget {
 
 class _ShopsProfileState extends State<ShopsProfile> {
   TextEditingController _controller = TextEditingController();
-  AvailableItems? _availableItems;
+
   // void _showAddItemsDialog() async {
   //   await showDialog(
   //     context: context,
@@ -45,7 +50,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List passData = ModalRoute.of(context)!.settings.arguments as List;
+    passData = ModalRoute.of(context)!.settings.arguments as List;
 
     return Scaffold(
       appBar: AppBar(
@@ -56,48 +61,62 @@ class _ShopsProfileState extends State<ShopsProfile> {
           "assets/images/logo.png",
           scale: 10,
         ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearch());
+              },
+              icon: Icon(
+                Icons.search,
+                size: 30,
+              ))
+        ],
       ),
       body: FutureBuilder(
-          future: HomePageApi.getMenuItemsList(passData[1]),
+          future: HomePageApi.getMenuItemsList(passData![1]),
           builder: (context, AsyncSnapshot snapshot) {
             _availableItems = snapshot.data;
-            return Container(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      color: Colors.white,
-                      margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                      width: size.height - 40,
-                      child: _availableItems != null
-                          ? Column(
+
+            return Padding(
+              padding: EdgeInsets.all(0.0),
+              child: ListView(
+                shrinkWrap: true,
+                //scrollDirection: Axis.vertical,
+                children: [
+                  _availableItems != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(
+                            color: Colors.white,
+                            child: Column(
                               children: [
                                 CarouselSlider(
                                   options: CarouselOptions(
                                       // autoPlay: true,
                                       viewportFraction: 1,
-                                      autoPlayInterval: _availableItems!
-                                                  .data!.profile!.length !=
-                                              1
-                                          ? Duration(seconds: 5)
-                                          : Duration(seconds: 0),
+                                      // autoPlayInterval: Duration(seconds: 5),
                                       //enlargeCenterPage: false,
                                       onPageChanged: (i, r) {
                                         setState(() {
-                                          print(i);
                                           current = i;
                                         });
                                       }),
                                   items: _availableItems!.data!.profile!
                                       .map(
                                         (e) => Container(
-                                          margin: EdgeInsets.all(5.0),
+                                          // margin: EdgeInsets.all(5.0),
                                           height: 250,
                                           width:
                                               MediaQuery.of(context).size.width,
                                           child: Image.network(
                                             "http://157.245.97.144:8000/category/${e}",
-                                            fit: BoxFit.contain,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
                                       )
@@ -105,7 +124,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                 ),
                                 Center(
                                   child: Container(
-                                    margin: const EdgeInsets.symmetric(
+                                    margin: EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 2.0),
                                     child: AnimatedSmoothIndicator(
                                       activeIndex: current,
@@ -120,7 +139,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                   ),
                                 ),
                                 Text(
-                                  "${_availableItems!.data!.name}",
+                                  _availableItems!.data!.shopName!,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                       fontFamily: "Poppins",
@@ -131,12 +150,12 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(
-                                      Icons.location_on,
+                                      Icons.location_on_outlined,
                                       color: Color(0xff818181),
-                                      size: 25,
+                                      size: 16,
                                     ),
                                     Text(
-                                      "${_availableItems!.data!.address},${_availableItems!.data!.city}",
+                                      "${_availableItems!.data!.address!},${_availableItems!.data!.city!}",
                                       style: const TextStyle(
                                         fontFamily: "Poppins",
                                         fontSize: 16,
@@ -155,615 +174,920 @@ class _ShopsProfileState extends State<ShopsProfile> {
                                       fontWeight: FontWeight.w500,
                                       color: Color(0xffED4322)),
                                 ),
-                                SizedBox(height: 20),
+                                SizedBox(height: 10),
                               ],
-                            )
-                          : const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                    ),
-                    // Container(
-                    //   color: Colors.white,
-                    //   margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                    //   width: size.height - 40,
-                    //   child: Column(
-                    //     children: [
-                    //       Image.asset(
-                    //         "${_availableItems.data.menuItem.}",
-                    //         fit: BoxFit.cover,
-                    //         width: size.height - 40,
-                    //       ),
-                    //       const SizedBox(
-                    //         height: 10,
-                    //       ),
-                    //       const Text(
-                    //         "Major Tom",
-                    //         style: TextStyle(
-                    //             fontSize: 18, fontWeight: FontWeight.w600),
-                    //       ),
-                    //       const SizedBox(
-                    //         height: 10,
-                    //       ),
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: const [
-                    //           Icon(
-                    //             Icons.location_on,
-                    //             color: Color.fromARGB(255, 139, 138, 138),
-                    //           ),
-                    //           Text(
-                    //             "mohali,Punjab",
-                    //             style: TextStyle(
-                    //               color: Color.fromARGB(255, 139, 138, 138),
-                    //               fontSize: 15,
-                    //               fontWeight: FontWeight.w500,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       const SizedBox(
-                    //         height: 10,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20, top: 40),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: 300,
-                            height: 50,
-                            child: TextFormField(
-                              cursorColor: Color(0xffED4322),
-                              controller: _controller,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.black87, width: 12.0),
-                                    borderRadius: BorderRadius.circular(0.0)),
-                                fillColor: Colors.white,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.black87, width: 1.0),
-                                  borderRadius: BorderRadius.circular(0.0),
-                                ),
-                                filled: true,
-                                suffixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xffED4322),
-                                ),
-                                hintText: 'Search Here',
-                              ),
-                              onChanged: ((value) {
-                                setState(() {});
-                              }),
                             ),
                           ),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                              color: Colors.white,
-                            ),
-                            child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.filter_list,
-                                  size: 35,
-                                  color: Color(0xffED4322),
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.only(top: 20, right: 15, left: 15),
-                      color: Colors.white,
-                      padding: EdgeInsets.only(left: 20, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "ADD NEW ITEM",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, "/add_items",
-                                  arguments: {
-                                    'passData': passData,
-                                    'menuData': null
-                                  });
-                            },
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              margin: EdgeInsets.only(right: 10),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(50),
-                                ),
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.add,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 15.0),
-                            child: Text(
-                              "Available Items",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          _controller.text.isEmpty
-                              ? FutureBuilder(
-                                  // stream: null,
-                                  builder: (context, snapshot) {
-                                  return _availableItems != null
-                                      ? _availableItems!
-                                                  .data!.menuItem!.length !=
-                                              0
-                                          ? Column(
-                                              children: [
-                                                ...List.generate(
-                                                  _availableItems!
-                                                      .data!.menuItem!.length,
-                                                  (index) => Slidable(
-                                                    // key: const ValueKey(),
-                                                    endActionPane: ActionPane(
-                                                      motion: ScrollMotion(),
-                                                      children: [
-                                                        SlidableAction(
-                                                          onPressed:
-                                                              (BuildContext
-                                                                  context) {
-                                                            Navigator.pushNamed(
-                                                                context,
-                                                                "/add_items",
-                                                                arguments: {
-                                                                  'passData':
-                                                                      passData,
-                                                                  'menuData':
-                                                                      _availableItems!
-                                                                          .data!
-                                                                          .menuItem![index]
-                                                                });
-                                                          },
-                                                          backgroundColor:
-                                                              Color.fromARGB(
-                                                                  253,
-                                                                  93,
-                                                                  127,
-                                                                  196),
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          icon: Icons.edit,
-                                                          label: 'Edit',
-                                                        ),
-                                                        SlidableAction(
-                                                          onPressed:
-                                                              (context) async {
-                                                            await HomePageApi
-                                                                .deleteMenuItems(
-                                                                    context,
-                                                                    _availableItems!
-                                                                        .data!
-                                                                        .menuItem![
-                                                                            index]
-                                                                        .sId!);
-                                                            setState(() {});
-                                                          },
-                                                          backgroundColor:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary,
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          icon: Icons.delete,
-                                                          label: 'Delete',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Container(
-                                                      height: 130,
-                                                      color: Colors.white,
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10,
-                                                              right: 15,
-                                                              left: 15),
-                                                      child: Row(children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10.0),
-                                                          child: _availableItems!
-                                                                      .data!
-                                                                      .menuItem![
-                                                                          index]
-                                                                      .profile !=
-                                                                  null
-                                                              ? Container(
-                                                                  width: 130,
-                                                                  height: 110,
-                                                                  child: Image
-                                                                      .network(
-                                                                    "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}",
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  ),
-                                                                )
-                                                              : Container(
-                                                                  width: 130,
-                                                                  height: 110,
-                                                                ),
-                                                        ),
-                                                        Container(
-                                                          height: 100,
-                                                          width: 180,
-                                                          child: Column(
-                                                            // crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            10.0,
-                                                                        bottom:
-                                                                            5,
-                                                                        top:
-                                                                            10),
-                                                                    child: Text(
-                                                                      "${_availableItems!.data!.menuItem![index].itemName!}",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                    Icons
-                                                                        .location_on,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            139,
-                                                                            138,
-                                                                            138),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      "${_availableItems!.data!.address},${_availableItems!.data!.city!}",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Color.fromARGB(
-                                                                            255,
-                                                                            139,
-                                                                            138,
-                                                                            138),
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              // Row(
-                                                              //   mainAxisAlignment:
-                                                              //       MainAxisAlignment
-                                                              //           .end,
-                                                              //   children: const [
-                                                              //     Padding(
-                                                              //       padding:
-                                                              //           EdgeInsets
-                                                              //               .only(
-                                                              //         right:
-                                                              //             0.0,
-                                                              //       ),
-                                                              //       child: Text(
-                                                              //         "Edit",
-                                                              //         style:
-                                                              //             TextStyle(
-                                                              //           color: Color.fromARGB(
-                                                              //               255,
-                                                              //               220,
-                                                              //               28,
-                                                              //               28),
-                                                              //           fontSize:
-                                                              //               18,
-                                                              //           fontWeight:
-                                                              //               FontWeight.w500,
-                                                              //         ),
-                                                              //       ),
-                                                              //     ),
-                                                              //   ],
-                                                              // ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ]),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : const Center(
-                                              child: Text(
-                                                "No Any Item Is Available!",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Poppins",
-                                                ),
-                                              ),
-                                            )
-                                      : const Center(
-                                          child: SingleChildScrollView(),
-                                        );
-                                })
-                              : FutureBuilder(
-                                  // stream: null,
-                                  builder: (context, snapshot) {
-                                  List<MenuItems> _menuItem = _availableItems!
-                                      .data!.menuItem!
-                                      .where((element) => element.itemName!
-                                          .startsWith(_controller.text))
-                                      .toList();
-                                  return _menuItem != null
-                                      ? _menuItem.length != 0
-                                          ? Column(
-                                              children: [
-                                                ...List.generate(
-                                                  _menuItem.length,
-                                                  (index) => Slidable(
-                                                    // key: const ValueKey(),
-                                                    endActionPane: ActionPane(
-                                                      motion: ScrollMotion(),
-                                                      children: [
-                                                        SlidableAction(
-                                                          // An action can be bigger than the others.
+                        )
+                      : Container(),
+                  const SizedBox(
+                    height: 10,
+                  ),
 
-                                                          onPressed:
-                                                              (BuildContext
-                                                                  context) {},
-                                                          backgroundColor:
-                                                              Color.fromARGB(
-                                                                  253,
-                                                                  93,
-                                                                  127,
-                                                                  196),
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          icon: Icons.edit,
-                                                          label: 'Edit',
-                                                        ),
-                                                        SlidableAction(
-                                                          onPressed:
-                                                              (context) async {
-                                                            await HomePageApi
-                                                                .deleteMenuItems(
-                                                                    context,
-                                                                    _menuItem[
-                                                                            index]
-                                                                        .sId!);
-                                                            setState(() {});
-                                                          },
-                                                          backgroundColor:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .primary,
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          icon: Icons.delete,
-                                                          label: 'Delete',
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Container(
-                                                      height: 130,
-                                                      color: Colors.white,
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10,
-                                                              right: 15,
-                                                              left: 15),
-                                                      child: Row(children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10.0),
-                                                          child: Container(
-                                                            width: 130,
-                                                            // height: 110,
-                                                            child:
-                                                                Image.network(
-                                                              "http://157.245.97.144:8000/category/${_menuItem[index].profile!}",
-                                                              fit: BoxFit.cover,
+                  Container(
+                    height: 50,
+                    margin: EdgeInsets.only(top: 5, right: 15, left: 15),
+                    color: Colors.white,
+                    padding: EdgeInsets.only(left: 20, right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Add New Items",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, "/add_items",
+                                arguments: {
+                                  "passData": passData,
+                                  "menuData": null
+                                });
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(50),
+                              ),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.add,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  //...List.generate(10, (index) => YourCart()),
+                  _availableItems == null || _availableItems!.data == null
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Container(
+                          color: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Text(
+                                  "Availble Items",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      fontFamily: "Poppins"),
+                                ),
+                              ),
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount:
+                                      _availableItems!.data!.menuItem!.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Slidable(
+                                          // key: const ValueKey(),
+                                          endActionPane: ActionPane(
+                                            motion: ScrollMotion(),
+                                            extentRatio: 0.6,
+                                            children: [
+                                              SlidableAction(
+                                                // An action can be bigger than the others.
+
+                                                onPressed:
+                                                    (BuildContext context) {
+                                                  Navigator.pushNamed(context,
+                                                      "/add_items", arguments: {
+                                                    "passData": passData,
+                                                    "menuData": _availableItems!
+                                                        .data!.menuItem![index]
+                                                  });
+                                                },
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        253, 93, 127, 196),
+                                                foregroundColor: Colors.white,
+                                                icon: Icons.edit,
+                                                label: 'Edit',
+                                              ),
+                                              SlidableAction(
+                                                onPressed: (context) async {
+                                                  await HomePageApi
+                                                      .deleteMenuItems(
+                                                          context,
+                                                          _availableItems!
+                                                              .data!
+                                                              .menuItem![index]
+                                                              .sId!);
+                                                  setState(() {});
+                                                },
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                foregroundColor: Colors.white,
+                                                icon: Icons.delete,
+                                                label: 'Delete',
+                                              ),
+                                            ],
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              // Navigator.pushNamed(
+                                              //     context, '/details_page');
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(0.0),
+                                              child: Container(
+                                                color: Colors.white,
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 10,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20.0,
+                                                                    right: 20),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: <
+                                                                  Widget>[
+                                                                //SizedBox(height: 50),
+                                                                Text(
+                                                                  _availableItems!
+                                                                          .data!
+                                                                          .menuItem![
+                                                                              index]
+                                                                          .itemName ??
+                                                                      "",
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontFamily:
+                                                                          "Poppins"),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height:
+                                                                        2.0),
+                                                                Text(
+                                                                  "\$ ${_availableItems!.data!.menuItem![index].price ?? ""}",
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w800,
+                                                                      fontSize:
+                                                                          18,
+                                                                      fontFamily:
+                                                                          "Poppins",
+                                                                      color: Color(
+                                                                          0xffED4322)),
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    RatingBar
+                                                                        .builder(
+                                                                      initialRating:
+                                                                          3,
+                                                                      minRating:
+                                                                          1,
+                                                                      direction:
+                                                                          Axis.horizontal,
+                                                                      allowHalfRating:
+                                                                          true,
+                                                                      itemCount:
+                                                                          5,
+                                                                      itemSize:
+                                                                          15,
+                                                                      //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                                      itemBuilder:
+                                                                          (context, _) =>
+                                                                              const Icon(
+                                                                        Icons
+                                                                            .star,
+                                                                        color: Colors
+                                                                            .amber,
+                                                                      ),
+                                                                      onRatingUpdate:
+                                                                          (rating) {
+                                                                        print(
+                                                                            rating);
+                                                                      },
+                                                                    ),
+                                                                    Text(
+                                                                        "(3.9)")
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+
+                                                                const ReadMoreText(
+                                                                  "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                                  " city of Belfast, Northern Ireland. We want to help people discover"
+                                                                  " the magic of tea by sourcing great "
+                                                                  "loose leaf tea and brewing delicious kombucha and"
+                                                                  " other innovative, healthy tea drinks.",
+                                                                  trimLines: 2,
+                                                                  // colorClickableText: Colors.pink,
+                                                                  trimMode:
+                                                                      TrimMode
+                                                                          .Line,
+                                                                  trimCollapsedText:
+                                                                      ' more',
+                                                                  trimExpandedText:
+                                                                      ' Less',
+                                                                  lessStyle: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'Poppins',
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
+                                                                  moreStyle: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+
+                                                                const SizedBox(
+                                                                    height:
+                                                                        5.0),
+                                                              ],
                                                             ),
                                                           ),
                                                         ),
-                                                        Container(
-                                                          height: 100,
-                                                          width: 180,
-                                                          child: Column(
-                                                            // crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            10.0,
-                                                                        bottom:
-                                                                            5,
-                                                                        top:
-                                                                            10),
-                                                                    child: Text(
-                                                                      "${_menuItem[index].itemName!}",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontSize:
-                                                                            16,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                      ),
-                                                                    ),
+                                                        Stack(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          15.0,
+                                                                      right:
+                                                                          15),
+                                                              child: Container(
+                                                                height: 150,
+                                                                width: 140,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  // color:
+                                                                  //     Colors.red,
+                                                                  borderRadius:
+                                                                      const BorderRadius
+                                                                          .all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            30),
                                                                   ),
-                                                                ],
+                                                                  image: DecorationImage(
+                                                                      image: NetworkImage(
+                                                                          "http://157.245.97.144:8000/category/${_availableItems!.data!.menuItem![index].profile!}"),
+                                                                      fit: BoxFit
+                                                                          .cover),
+                                                                ),
+                                                                // child: Image.asset(
+                                                                //   'assets/images/Rectangle35.png',
+                                                                //   height: 130,
+                                                                //   width: 130,
+                                                                //   fit: BoxFit.cover,
+                                                                // ),
                                                               ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  const Icon(
-                                                                    Icons
-                                                                        .location_on,
-                                                                    color: Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            139,
-                                                                            138,
-                                                                            138),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      "${_availableItems!.data!.address},${_availableItems!.data!.city!}",
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Color.fromARGB(
-                                                                            255,
-                                                                            139,
-                                                                            138,
-                                                                            138),
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              // Row(
-                                                              //   mainAxisAlignment:
-                                                              //       MainAxisAlignment
-                                                              //           .end,
-                                                              //   children: const [
-                                                              //     Padding(
-                                                              //       padding:
-                                                              //           EdgeInsets
-                                                              //               .only(
-                                                              //         right: 0.0,
-                                                              //       ),
-                                                              //       child: Text(
-                                                              //         "Edit",
-                                                              //         style:
-                                                              //             TextStyle(
-                                                              //           color: Color.fromARGB(
-                                                              //               255,
-                                                              //               220,
-                                                              //               28,
-                                                              //               28),
-                                                              //           fontSize:
-                                                              //               18,
-                                                              //           fontWeight:
-                                                              //               FontWeight
-                                                              //                   .w500,
-                                                              //         ),
-                                                              //       ),
-                                                              //     ),
-                                                              //   ],
-                                                              // ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ]),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : const Center(
-                                              child: Text(
-                                                "No Any Item Is Available!",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Poppins",
+
+                                                    // const SizedBox(
+                                                    //   height: 20,
+                                                    // )
+                                                  ],
                                                 ),
                                               ),
-                                            )
-                                      : const Center(
-                                          child: SingleChildScrollView(),
-                                        );
-                                })
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Container(
+                                          width: size.width * 0.9,
+                                          child: const Divider(
+                                            height: 1,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                            ],
+                          ),
+                        ),
+                ],
               ),
             );
           }),
     );
+  }
+}
+
+class CustomSearch extends SearchDelegate {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(
+          Icons.clear,
+          color: Colors.black,
+        ),
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: const Icon(
+        Icons.arrow_back_ios_new,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<MenuItems>? searchMenuItems;
+    searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
+      return element.itemName!.toLowerCase().contains(
+            query.toLowerCase(),
+          );
+    }).toList();
+    return searchMenuItems == null
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : searchMenuItems.length != 0
+            ? Container(
+                color: Colors.white,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          "Available Items",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              fontFamily: "Poppins"),
+                        ),
+                      ),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: searchMenuItems.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Slidable(
+                                  // key: const ValueKey(),
+                                  endActionPane: ActionPane(
+                                    motion: ScrollMotion(),
+                                    extentRatio: 0.6,
+                                    children: [
+                                      SlidableAction(
+                                        // An action can be bigger than the others.
+
+                                        onPressed: (BuildContext context) {
+                                          Navigator.pushNamed(
+                                              context, "/add_items",
+                                              arguments: {
+                                                "passData": passData,
+                                                "menuData": _availableItems!
+                                                    .data!.menuItem![index]
+                                              });
+                                        },
+                                        backgroundColor: const Color.fromARGB(
+                                            253, 93, 127, 196),
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.edit,
+                                        label: 'Edit',
+                                      ),
+                                      SlidableAction(
+                                        onPressed: (context) async {
+                                          await HomePageApi.deleteMenuItems(
+                                              context,
+                                              _availableItems!
+                                                  .data!.menuItem![index].sId!);
+                                          // setState(() {});
+                                        },
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.delete,
+                                        label: 'Delete',
+                                      ),
+                                    ],
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, '/details_page');
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  flex: 10,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20.0,
+                                                            right: 20),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        //SizedBox(height: 50),
+                                                        Text(
+                                                          searchMenuItems![
+                                                                      index]
+                                                                  .itemName ??
+                                                              "",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 15,
+                                                              fontFamily:
+                                                                  "Poppins"),
+                                                        ),
+                                                        SizedBox(height: 2.0),
+                                                        Text(
+                                                          "\$ ${searchMenuItems![index].price ?? ""}",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 18,
+                                                              fontFamily:
+                                                                  "Poppins",
+                                                              color: Color(
+                                                                  0xffED4322)),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            RatingBar.builder(
+                                                              initialRating: 3,
+                                                              minRating: 1,
+                                                              direction: Axis
+                                                                  .horizontal,
+                                                              allowHalfRating:
+                                                                  true,
+                                                              itemCount: 5,
+                                                              itemSize: 15,
+                                                              //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                              itemBuilder:
+                                                                  (context,
+                                                                          _) =>
+                                                                      const Icon(
+                                                                Icons.star,
+                                                                color: Colors
+                                                                    .amber,
+                                                              ),
+                                                              onRatingUpdate:
+                                                                  (rating) {
+                                                                print(rating);
+                                                              },
+                                                            ),
+                                                            Text("(3.9)")
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+
+                                                        const ReadMoreText(
+                                                          "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                          " city of Belfast, Northern Ireland. We want to help people discover"
+                                                          " the magic of tea by sourcing great "
+                                                          "loose leaf tea and brewing delicious kombucha and"
+                                                          " other innovative, healthy tea drinks.",
+                                                          trimLines: 2,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              ' more',
+                                                          trimExpandedText:
+                                                              ' Less',
+                                                          lessStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          moreStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+
+                                                        SizedBox(height: 5.0),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Stack(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15.0,
+                                                              right: 15),
+                                                      child: Container(
+                                                        height: 150,
+                                                        width: 140,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          // color:
+                                                          //     Colors.red,
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "http://157.245.97.144:8000/category/${searchMenuItems[index].profile!}"),
+                                                              fit:
+                                                                  BoxFit.cover),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  // width: size.width * 0.9,
+                                  child: const Divider(
+                                    height: 1,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
+                              ],
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+              )
+            : Container(
+                child: const Center(
+                    child: Text(
+                  "Data Not Found!",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )),
+              );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<MenuItems>? searchMenuItems;
+    searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
+      return element.itemName!.toLowerCase().contains(
+            query.toLowerCase(),
+          );
+    }).toList();
+    return searchMenuItems == null
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      "Recommended",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontFamily: "Poppins"),
+                    ),
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: searchMenuItems.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Slidable(
+                              // key: const ValueKey(),
+                              endActionPane: ActionPane(
+                                motion: ScrollMotion(),
+                                extentRatio: 0.6,
+                                children: [
+                                  SlidableAction(
+                                    // An action can be bigger than the others.
+
+                                    onPressed: (BuildContext context) {
+                                      Navigator.pushNamed(context, "/add_items",
+                                          arguments: {
+                                            "passData": passData,
+                                            "menuData": _availableItems!
+                                                .data!.menuItem![index]
+                                          });
+                                    },
+                                    backgroundColor:
+                                        const Color.fromARGB(253, 93, 127, 196),
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.edit,
+                                    label: 'Edit',
+                                  ),
+                                  SlidableAction(
+                                    onPressed: (context) async {
+                                      await HomePageApi.deleteMenuItems(
+                                          context,
+                                          _availableItems!
+                                              .data!.menuItem![index].sId!);
+                                      // setState(() {});
+                                    },
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: 'Delete',
+                                  ),
+                                ],
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/details_page');
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              flex: 10,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0, right: 20),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    //SizedBox(height: 50),
+                                                    Text(
+                                                      searchMenuItems![index]
+                                                              .itemName ??
+                                                          "",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          fontSize: 15,
+                                                          fontFamily:
+                                                              "Poppins"),
+                                                    ),
+                                                    SizedBox(height: 2.0),
+                                                    Text(
+                                                      "\$ ${searchMenuItems![index].price ?? ""}",
+                                                      style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          fontSize: 18,
+                                                          fontFamily: "Poppins",
+                                                          color: Color(
+                                                              0xffED4322)),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        RatingBar.builder(
+                                                          initialRating: 3,
+                                                          minRating: 1,
+                                                          direction:
+                                                              Axis.horizontal,
+                                                          allowHalfRating: true,
+                                                          itemCount: 5,
+                                                          itemSize: 15,
+                                                          //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                          itemBuilder:
+                                                              (context, _) =>
+                                                                  const Icon(
+                                                            Icons.star,
+                                                            color: Colors.amber,
+                                                          ),
+                                                          onRatingUpdate:
+                                                              (rating) {
+                                                            print(rating);
+                                                          },
+                                                        ),
+                                                        Text("(3.9)")
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+
+                                                    const ReadMoreText(
+                                                      "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                      " city of Belfast, Northern Ireland. We want to help people discover"
+                                                      " the magic of tea by sourcing great "
+                                                      "loose leaf tea and brewing delicious kombucha and"
+                                                      " other innovative, healthy tea drinks.",
+                                                      trimLines: 2,
+                                                      // colorClickableText: Colors.pink,
+                                                      trimMode: TrimMode.Line,
+                                                      trimCollapsedText:
+                                                          ' more',
+                                                      trimExpandedText: ' Less',
+                                                      lessStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      moreStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+
+                                                    SizedBox(height: 5.0),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Stack(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15.0,
+                                                          right: 15),
+                                                  child: Container(
+                                                    height: 150,
+                                                    width: 140,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            // color:
+                                                            //     Colors.red,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(
+                                                              Radius.circular(
+                                                                  30),
+                                                            ),
+                                                            image: DecorationImage(
+                                                                image: AssetImage(
+                                                                    "assets/images/Rectangle35.png"),
+                                                                fit: BoxFit
+                                                                    .cover)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              // width: size.width * 0.9,
+                              child: const Divider(
+                                height: 1,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        );
+                      }),
+                ],
+              ),
+            ),
+          );
   }
 }

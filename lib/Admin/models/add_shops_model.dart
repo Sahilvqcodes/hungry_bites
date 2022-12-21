@@ -13,6 +13,7 @@ class Shops {
   String? closingTime;
   String? ownerName;
   List<String>? galleries;
+  String? productId;
   Shops({
     this.address,
     this.city,
@@ -28,5 +29,6 @@ class Shops {
     this.category,
     this.ownerName,
     this.categoryId,
+    this.productId,
   });
 }

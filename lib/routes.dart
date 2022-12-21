@@ -4,8 +4,9 @@ import 'package:hunger_bites/Admin/screens/addShops/add_category_shops.dart';
 import 'package:hunger_bites/Admin/screens/addShops/add_shops.dart';
 import 'package:hunger_bites/Admin/screens/addShops/shops_profile.dart';
 import 'package:hunger_bites/Admin/screens/admin_home.dart';
-import 'package:hunger_bites/Admin/screens/category_Shops_list.dart';
+import 'package:hunger_bites/Admin/screens/admin_category_Shops_list.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
+import 'package:hunger_bites/User/screens/user_notification.dart';
 import 'package:hunger_bites/forgot_password.dart';
 import 'package:hunger_bites/sign_in.dart';
 import 'package:hunger_bites/User/screens/splash_screen.dart';
@@ -38,6 +39,7 @@ class Routes {
   static const String address_page = '/address_page ';
   static const String payment_options = '/payment_options';
   static const String orders = '/orders';
+  static const String userNotification = '/user_notification';
 
   static Map<String, WidgetBuilder> routes = {
     '/splash': (context) => SplashScreen(),
@@ -58,5 +60,6 @@ class Routes {
     '/address_page ': (context) => AddressPage(),
     '/payment_options': (context) => PaymentOption(),
     '/orders': (context) => Orders(),
+    '/user_notification': (context) => UserNotifications(),
   };
 }

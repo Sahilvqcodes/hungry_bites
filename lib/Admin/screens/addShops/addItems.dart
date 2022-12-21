@@ -55,6 +55,8 @@ class _AddItemsState extends State<AddItems> {
   String dollar = "\$";
   MenuItems? menuItems;
   Items items = Items();
+  String? imageP;
+  var arguments;
   void clear() {
     _iteDetailsController.clear();
     _iteDiscountController.clear();
@@ -68,25 +70,47 @@ class _AddItemsState extends State<AddItems> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  void initState() {
+    super.initState();
+
+    // future that allows us to access context. function is called inside the future
+    // otherwise it would be skipped and args would return null
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        arguments = (ModalRoute.of(context)?.settings.arguments ??
+            <String, dynamic>{}) as Map;
+        List passData = arguments["passData"];
+        if (arguments["menuData"] != null) {
+          menuItems = arguments["menuData"];
+          _iteNameController.text = menuItems!.itemName!;
+          _iteDetailsController.text = menuItems!.itemDetails!;
+          _itePriceController.text = menuItems!.price!;
+          _iteDiscountController.text = menuItems!.discount!;
+          items.itemName = menuItems!.itemName!;
+          items.itemDetails = menuItems!.itemDetails!;
+          items.price = menuItems!.price!;
+          items.discount = menuItems!.discount!;
+          items.itemId = menuItems!.sId;
+          items.profile = menuItems!.profile;
+        }
+        // print(imageP);
+        items.categoryId = passData[0];
+        items.productId = passData[1];
+      });
+      print(arguments);
+    });
+  }
+
+  test() async {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
-    List passData = arguments["passData"];
-    if (arguments["menuData"] != null) {
-      MenuItems? menuItems = arguments["menuData"];
-      _iteNameController.text = menuItems!.itemName!;
-      _iteDetailsController.text = menuItems.itemDetails!;
-      _itePriceController.text = menuItems.price!;
-      _iteDiscountController.text = menuItems.discount!;
-      items.itemName = menuItems!.itemName!;
-      items.itemDetails = menuItems.itemDetails!;
-      items.price = menuItems.price!;
-      items.discount = menuItems.discount!;
-    }
+    print("arguments $arguments");
+  }
 
-    items.categoryId = passData[0];
-    items.productId = passData[1];
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -126,7 +150,7 @@ class _AddItemsState extends State<AddItems> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.only(left: 10.0),
                               child: Text(
                                 "Item Name:",
@@ -143,7 +167,7 @@ class _AddItemsState extends State<AddItems> {
                               child: TextFormField(
                                 // obscureText: true,
                                 controller: _iteNameController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     // labelText: 'Password',
                                     hintText: "Item Name"),
@@ -305,7 +329,7 @@ class _AddItemsState extends State<AddItems> {
                       if (imagePath != null)
                         Center(
                           child: Container(
-                            width: 100,
+                            width: 200,
                             child: Stack(
                               children: [
                                 Image.file(
@@ -321,7 +345,7 @@ class _AddItemsState extends State<AddItems> {
                                         //     arguments: shops);
                                         setState(() {
                                           imagePath = null;
-                                          items.profile = "";
+                                          items.profile = null;
                                         });
                                       },
                                       child: Container(
@@ -349,6 +373,62 @@ class _AddItemsState extends State<AddItems> {
                             ),
                           ),
                         ),
+                      if (arguments["menuData"] != null &&
+                          items.profile != null &&
+                          imagePath == null)
+                        Center(
+                          child: Container(
+                            width: 200,
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  'http://157.245.97.144:8000/category/${items.profile}',
+                                  fit: BoxFit.cover,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        // Navigator.pushNamed(context, "/add_category_shops",
+                                        //     arguments: shops);
+                                        setState(() {
+                                          imagePath = null;
+                                          items.profile = null;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 30,
+                                        width: 30,
+                                        // margin: EdgeInsets.only(right: 30),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 30,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      // Container(
+                      //   height: 200,
+                      //   child: Image.network(
+                      //     'http://157.245.97.144:8000/category/${items.profile}',
+                      //     fit: BoxFit.fitHeight,
+                      //   ),
+                      // ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -363,18 +443,21 @@ class _AddItemsState extends State<AddItems> {
                   children: [
                     InkWell(
                       onTap: () async {
-                        // Navigator.pushNamed(context, "/add_category_shops",
-                        //     arguments: shops);
-                        // if (_key.currentState!.validate()) {
-                        print("bxsjbvh");
-                        var successData =
-                            await HomePageApi.AddMenuItems(context, items);
-                        if (successData == "done") {
-                          clear();
+                        // print(items.profile);
+                        if (arguments["menuData"] == null) {
+                          var successData =
+                              await HomePageApi.AddMenuItems(context, items);
+                          if (successData == "done") {
+                            clear();
+                          }
+                        } else {
+                          var successData =
+                              await HomePageApi.UpdateMenuItems(context, items);
+                          if (successData == "Update") {
+                            // clear();
+                            setState(() {});
+                          }
                         }
-                        // } else {
-                        //   print("adnshjbgc");
-                        // }
                       },
                       child: Container(
                         height: 40,
@@ -386,10 +469,10 @@ class _AddItemsState extends State<AddItems> {
                             Radius.circular(10),
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            "Add",
-                            style: TextStyle(
+                            arguments["menuData"] == null ? "Add" : "Update",
+                            style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
                             ),

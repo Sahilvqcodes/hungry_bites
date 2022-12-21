@@ -6,6 +6,7 @@ class Items {
   String? productId;
   String? categoryId;
   String? profile;
+  String? itemId;
 
   Items({
     this.categoryId,
@@ -15,5 +16,6 @@ class Items {
     this.price,
     this.productId,
     this.profile,
+    this.itemId,
   });
 }

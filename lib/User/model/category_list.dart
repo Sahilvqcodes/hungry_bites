@@ -26,7 +26,7 @@ class Data {
   String? name;
   String? status;
   String? profile;
-  List<ProductId>? productId;
+  List<ProductIds>? productId;
   int? iV;
 
   Data(
@@ -43,9 +43,9 @@ class Data {
     status = json['status'];
     profile = json['profile'];
     if (json['product_id'] != null) {
-      productId = <ProductId>[];
+      productId = <ProductIds>[];
       json['product_id'].forEach((v) {
-        productId!.add(new ProductId.fromJson(v));
+        productId!.add(new ProductIds.fromJson(v));
       });
     }
     iV = json['__v'];
@@ -65,7 +65,7 @@ class Data {
   }
 }
 
-class ProductId {
+class ProductIds {
   String? sId;
   String? name;
   String? categoryType;
@@ -77,7 +77,7 @@ class ProductId {
   List<String>? menuItem;
   int? iV;
 
-  ProductId(
+  ProductIds(
       {this.sId,
       this.name,
       this.categoryType,
@@ -89,7 +89,7 @@ class ProductId {
       this.menuItem,
       this.iV});
 
-  ProductId.fromJson(Map<String, dynamic> json) {
+  ProductIds.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
     categoryType = json['Category_type'];

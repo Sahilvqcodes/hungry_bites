@@ -65,6 +65,7 @@ class ShopsData {
 class ProductId {
   String? sId;
   String? name;
+  String? categoryType;
   String? address;
   String? phoneNo;
   String? catId;
@@ -77,12 +78,13 @@ class ProductId {
   String? openingTime;
   String? closingTime;
   List<String>? profile;
-  List? menuItem;
+  List<String>? menuItem;
   int? iV;
 
   ProductId(
       {this.sId,
       this.name,
+      this.categoryType,
       this.address,
       this.phoneNo,
       this.catId,
@@ -101,6 +103,7 @@ class ProductId {
   ProductId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
+    categoryType = json['Category_type'];
     address = json['address'];
     phoneNo = json['phone_no'];
     catId = json['cat_id'];
@@ -114,12 +117,6 @@ class ProductId {
     closingTime = json['closing_time'];
     profile = json['profile'].cast<String>();
     menuItem = json['menu_item'].cast<String>();
-    // if (json['menu_item'] != null) {
-    //   menuItem = <Null>[];
-    //   json['menu_item'].forEach((v) {
-    //     menuItem!.add(new Null.fromJson(v));
-    //   });
-    // }
     iV = json['__v'];
   }
 
@@ -127,6 +124,7 @@ class ProductId {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
     data['name'] = this.name;
+    data['Category_type'] = this.categoryType;
     data['address'] = this.address;
     data['phone_no'] = this.phoneNo;
     data['cat_id'] = this.catId;
@@ -139,9 +137,7 @@ class ProductId {
     data['opening_time'] = this.openingTime;
     data['closing_time'] = this.closingTime;
     data['profile'] = this.profile;
-    // if (this.menuItem != null) {
     data['menu_item'] = this.menuItem;
-    // }
     data['__v'] = this.iV;
     return data;
   }

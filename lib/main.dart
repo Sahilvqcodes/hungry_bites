@@ -5,10 +5,12 @@ import 'package:hunger_bites/User/screens/home/view/home_page.dart';
 import 'package:hunger_bites/routes.dart';
 import 'package:hunger_bites/User/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 var type;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await getTemporaryDirectory();
   final SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
 

@@ -311,8 +311,101 @@ class HomePageApi {
     // print(res.body);
   }
 
+  static UpdateMenuItems(BuildContext context, Items items) async {
+    // print(items.profile);
+    if (items.profile == null) {
+      items.profile = "";
+    } else if (items.profile!.contains("hungry_bites")) {
+      http.Response response = await http.get(
+          Uri.parse("http://157.245.97.144:8000/category/${items.profile}"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          });
+      items.profile = base64Encode(response.bodyBytes);
+    }
+    print("items.profile ${items.profile}");
+    final http.Response res = await http.post(
+      Uri.parse('http://157.245.97.144:8000/update-menu_item'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "item_id": items.itemId,
+        "item_name": items.itemName,
+        "item_details": items.itemDetails,
+        "price": items.price,
+        "discount": items.discount,
+        // "product_id": items.productId,
+        // "cat_id": items.categoryId,
+        "profile": items.profile,
+      }),
+    );
+    print("AddMenuItems ${res.body}");
+
+    AddItemRespone _addItemRespone =
+        AddItemRespone.fromJson(jsonDecode(res.body));
+
+    if (_addItemRespone.message == "Menu Item has been Updated! successfully") {
+      // Navigator.pushNamed(context, "active");
+
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Item Update Successfuly",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+      return "Update";
+    } else if (_addItemRespone.message == "Please all field required") {
+      Alert(
+        context: context,
+        type: AlertType.warning,
+        title: "Please all field required",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    } else {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error Found",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+    // print(res.body);
+  }
+
   static AddShops(
-      BuildContext context, Shops shops, List<XFile> imageList) async {
+      BuildContext context, Shops shops, List<File> imageList) async {
     print(shops.ownerName);
     print(shops.shopName);
     print(shops.email);
@@ -329,8 +422,8 @@ class HomePageApi {
     List<String> galleryImage = [];
     // imageList!.addAll(selectedImages);
     imageList!.forEach((element) {
-      File imagePath = File(element.path);
-      var imageBytes = imagePath!.readAsBytesSync();
+      // File imagePath = File(element.path);
+      var imageBytes = element!.readAsBytesSync();
       String baseimage = base64Encode(imageBytes);
       galleryImage!.add(baseimage);
       print(galleryImage);
@@ -382,6 +475,99 @@ class HomePageApi {
               _shopResponse.products!.categoryType,
               _shopResponse.products!.catId
             ]),
+            width: 120,
+          )
+        ],
+      ).show();
+    } else {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "Error Found!",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+    print(res.body);
+  }
+
+  static UpdateShop(
+      BuildContext context, Shops shops, List<File> imageList) async {
+    print(shops.ownerName);
+    print(shops.shopName);
+    // print(shops.email);
+    // print(shops.password);
+    print(shops.category);
+    print(shops.address);
+    print(shops.mobileNo);
+    print(shops.productId);
+    print(shops.city);
+    print(shops.landMark);
+    print(shops.openingDays);
+    print(shops.openingTime);
+    print(shops.closingTime);
+    List<String> galleryImage = [];
+    // imageList!.addAll(selectedImages);
+    imageList!.forEach((element) {
+      // File imagePath = File(element.path);
+      var imageBytes = element!.readAsBytesSync();
+      String baseimage = base64Encode(imageBytes);
+      galleryImage!.add(baseimage);
+    });
+    print(galleryImage);
+    final http.Response res = await http.post(
+      Uri.parse('http://157.245.97.144:8000/update-product'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "name": shops.ownerName,
+        "shop_name": shops.shopName,
+        "Category_type": shops.category,
+        "address": shops.address,
+        "phone_no": shops.mobileNo,
+        "product_id": shops.productId,
+        "status": "active",
+        "sort_order": "0",
+        "city": shops.city,
+        "land_mark": shops.landMark,
+        "opening_day": shops.openingDays,
+        "opening_time": shops.openingTime,
+        "closing_time": shops.closingTime,
+        "profile": galleryImage
+      }),
+    );
+    print("res.body ${res.body}");
+    ShopsResponse _shopResponse = ShopsResponse.fromJson(jsonDecode(res.body));
+    if (_shopResponse.message == "Product has been Updated Successfully!") {
+      // Navigator.pushNamed(context, "active");
+      print("AddShops ${res.body}");
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Product Added Successfuly",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pushReplacementNamed(
+                context, "/admin_category_shop_list",
+                arguments: [
+                  shops.category,
+                  shops.categoryId,
+                ]),
             width: 120,
           )
         ],

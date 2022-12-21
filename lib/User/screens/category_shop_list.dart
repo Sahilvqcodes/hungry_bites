@@ -79,7 +79,7 @@ class _CategoryShopListState extends State<CategoryShopList> {
                               Icons.search,
                               color: Color(0xffED4322),
                             ),
-                            hintText: 'Search Here',
+                            hintText: 'Search ${categoryName}',
                           ),
                           onChanged: (value) {
                             setState(() {});
