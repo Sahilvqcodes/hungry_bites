@@ -5,22 +5,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hunger_bites/Admin/Apis/home_api.dart';
+import 'package:hunger_bites/Admin/models/available_items.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../models/add_shops_model.dart';
-import '../../models/available_shops.dart';
+
 import 'package:http/http.dart' as http;
 
-class AddCategoryShops extends StatefulWidget {
-  AddCategoryShops({super.key});
+import '../../Admin/models/add_shops_model.dart';
+
+class UpdateShopsPage2 extends StatefulWidget {
+  UpdateShopsPage2({super.key});
 
   @override
-  State<AddCategoryShops> createState() => _AddCategoryShopsState();
+  State<UpdateShopsPage2> createState() => _UpdateShopsPage2State();
 }
 
-class _AddCategoryShopsState extends State<AddCategoryShops> {
+class _UpdateShopsPage2State extends State<UpdateShopsPage2> {
   TextEditingController openingtimeinput = TextEditingController();
   TextEditingController closingTimeinput = TextEditingController();
   TextEditingController ownerNameController = TextEditingController();
@@ -69,9 +71,8 @@ class _AddCategoryShopsState extends State<AddCategoryShops> {
     }
   }
 
-  ProductId? _productId;
   var arguments;
-
+  ItemsData? _productId;
   Shops shops = Shops();
   @override
   void initState() {

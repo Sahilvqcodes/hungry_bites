@@ -101,7 +101,7 @@ class _SignInState extends State<SignIn> {
                     SizedBox(height: 20),
                     SizedBox(
                       child: TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(200)),
@@ -136,19 +136,19 @@ class _SignInState extends State<SignIn> {
                           labelText: "Password",
                           filled: true,
                           isDense: true,
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(200)),
                             borderSide: BorderSide.none,
                           ),
-                          hintStyle: TextStyle(color: Color(0xffAEACBA)),
+                          hintStyle: const TextStyle(color: Color(0xffAEACBA)),
                           fillColor: Color(0xffEFEFEF),
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.lock_outline,
                             color: Color(0xffED4322),
                           ),
                           suffixIcon: Padding(
-                            padding: EdgeInsets.fromLTRB(0, 0, 4, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
                             child: GestureDetector(
                               onTap: _toggleObscured,
                               child: Icon(
@@ -169,7 +169,7 @@ class _SignInState extends State<SignIn> {
                             : null;
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Row(
@@ -178,7 +178,7 @@ class _SignInState extends State<SignIn> {
                         Row(
                           children: [
                             Checkbox(
-                                activeColor: Color(0xffED4322),
+                                activeColor: const Color(0xffED4322),
                                 value: check,
                                 onChanged: (bool? value) {
                                   setState(() {

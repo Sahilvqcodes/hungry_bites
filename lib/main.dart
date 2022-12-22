@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hunger_bites/Admin/screens/admin_home.dart';
 import 'package:hunger_bites/Sign_up.dart';
 import 'package:hunger_bites/User/screens/home/view/home_page.dart';
 
@@ -11,10 +13,7 @@ var type;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await getTemporaryDirectory();
-  final SharedPreferences sharedPreferences =
-      await SharedPreferences.getInstance();
 
-  type = sharedPreferences.getString("type");
   runApp(MyApp());
 }
 
@@ -36,16 +35,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: type == "user"
-          ? Routes.home
-          : type == "owner"
-              ? Routes.admin_home
-              : Routes.home,
+    return GetMaterialApp(
+      initialRoute: Routes.splash,
       routes: Routes.routes,
+
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFF5F5F5),
-        // primaryColor: const Color(0xffED4322),
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color(0xffED4322),
           // secondary: const Color(0xFFFFC107),

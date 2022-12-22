@@ -1,57 +1,69 @@
 class UserDetails {
-  String? message;
   UserData? data;
+  String? message;
 
-  UserDetails({this.message, this.data});
+  UserDetails({this.data, this.message});
 
   UserDetails.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
     data = json['data'] != null ? new UserData.fromJson(json['data']) : null;
+    message = json['message'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    data['message'] = this.message;
     return data;
   }
 }
 
 class UserData {
-  String? type;
-  String? name;
-  String? username;
-  String? email;
   String? sId;
-  String? productId;
+  String? name;
+  String? email;
+  String? password;
+  String? type;
+  String? subscription;
+  String? catId;
+  String? productsId;
+  int? iV;
 
   UserData(
-      {this.type,
+      {this.sId,
       this.name,
-      this.username,
       this.email,
-      this.sId,
-      this.productId});
+      this.password,
+      this.type,
+      this.subscription,
+      this.catId,
+      this.productsId,
+      this.iV});
 
   UserData.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    name = json['name'];
-    username = json['username'];
-    email = json['email'];
     sId = json['_id'];
-    productId = json['product_id'];
+    name = json['name'];
+    email = json['email'];
+    password = json['password'];
+    type = json['type'];
+    subscription = json['subscription'];
+    catId = json['cat_id'];
+    productsId = json['products_id'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['type'] = this.type;
-    data['name'] = this.name;
-    data['username'] = this.username;
-    data['email'] = this.email;
     data['_id'] = this.sId;
-    data['product_id'] = this.productId;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['password'] = this.password;
+    data['type'] = this.type;
+    data['subscription'] = this.subscription;
+    data['cat_id'] = this.catId;
+    data['products_id'] = this.productsId;
+    data['__v'] = this.iV;
     return data;
   }
 }

@@ -338,6 +338,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   itemCount:
                                       _availableItems!.data!.menuItem!.length,
                                   itemBuilder: (context, index) {
+                                    bool isAdded = false;
                                     return GestureDetector(
                                       onTap: () {
                                         // Navigator.pushNamed(
@@ -431,7 +432,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                           const SizedBox(
                                                             height: 10,
                                                           ),
-
                                                           const ReadMoreText(
                                                             "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
                                                             " city of Belfast, Northern Ireland. We want to help people discover"
@@ -439,7 +439,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                             "loose leaf tea and brewing delicious kombucha and"
                                                             " other innovative, healthy tea drinks.",
                                                             trimLines: 2,
-                                                            // colorClickableText: Colors.pink,
                                                             trimMode:
                                                                 TrimMode.Line,
                                                             trimCollapsedText:
@@ -476,40 +475,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  // Padding(
-                                                  //   padding:
-                                                  //       const EdgeInsets.all(
-                                                  //           15.0),
-                                                  //   child: Container(
-                                                  //     height: 140,
-                                                  //     width: 130,
-                                                  //     decoration:
-                                                  //         const BoxDecoration(
-                                                  //             // color:
-                                                  //             //     Colors.red,
-                                                  //             borderRadius:
-                                                  //                 BorderRadius
-                                                  //                     .all(
-                                                  //               Radius
-                                                  //                   .circular(
-                                                  //                       30),
-                                                  //             ),
-                                                  //             image: DecorationImage(
-                                                  //                 image: AssetImage(
-                                                  //                     "assets/images/Rectangle35.png"),
-                                                  //                 fit: BoxFit
-                                                  //                     .cover)),
-                                                  //     // child: Image.asset(
-                                                  //     //   'assets/images/Rectangle35.png',
-                                                  //     //   height: 130,
-                                                  //     //   width: 130,
-                                                  //     //   fit: BoxFit.cover,
-                                                  //     // ),
-                                                  //   ),
-                                                  // ),
-                                                  // Spacer(
-                                                  //   flex: 1,
-                                                  // ),
                                                   Stack(
                                                     children: [
                                                       Padding(
@@ -569,62 +534,102 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                       //       width: ,
                                                       //       color: Colors.red,
                                                       //     ))
-                                                      Positioned(
-                                                        right: 30.0,
-                                                        left: 30.0,
+                                                      isAdded == false
+                                                          ? Positioned(
+                                                              right: 30.0,
+                                                              left: 30.0,
 
-                                                        //top: 90,
-                                                        bottom: 0,
-                                                        child: Container(
-                                                          height: 50,
-                                                          // width: 120,
-                                                          child: Card(
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap:
-                                                                      _decrementCounter,
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons
-                                                                        .remove,
-                                                                    color: Color(
-                                                                        0xffED4322),
+                                                              //top: 90,
+                                                              bottom: 0,
+                                                              child: Container(
+                                                                height: 50,
+                                                                // width: 120,
+                                                                child: Card(
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          isAdded =
+                                                                              true;
+                                                                          print(
+                                                                              isAdded);
+                                                                          setState(
+                                                                              () {});
+                                                                        },
+                                                                        child:
+                                                                            const Text(
+                                                                          "Add",
+                                                                          style: TextStyle(
+                                                                              color: Colors.green,
+                                                                              fontSize: 18,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              fontFamily: "Poppins"),
+                                                                        ),
+                                                                      )
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          10.0,
-                                                                      right:
-                                                                          10),
-                                                                  child: Text(
-                                                                      '$_counter',
-                                                                      style:
-                                                                          const TextStyle(
-                                                                        color: Color(
-                                                                            0xffED4322),
-                                                                      )),
-                                                                ),
-                                                                GestureDetector(
-                                                                  onTap:
-                                                                      _incrementCounter,
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons.add,
-                                                                    color: Color(
-                                                                        0xffED4322),
+                                                              ),
+                                                            )
+                                                          : Positioned(
+                                                              right: 30.0,
+                                                              left: 30.0,
+
+                                                              //top: 90,
+                                                              bottom: 0,
+                                                              child: Container(
+                                                                height: 50,
+                                                                // width: 120,
+                                                                child: Card(
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            _decrementCounter,
+                                                                        child:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .remove,
+                                                                          color:
+                                                                              Color(0xffED4322),
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(
+                                                                            left:
+                                                                                10.0,
+                                                                            right:
+                                                                                10),
+                                                                        child: Text(
+                                                                            '$_counter',
+                                                                            style:
+                                                                                const TextStyle(
+                                                                              color: Color(0xffED4322),
+                                                                            )),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            _incrementCounter,
+                                                                        child:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .add,
+                                                                          color:
+                                                                              Color(0xffED4322),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                              ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ),
-                                                      ),
                                                     ],
                                                   ),
                                                 ],

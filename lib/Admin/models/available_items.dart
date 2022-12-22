@@ -30,6 +30,7 @@ class ItemsData {
   List<String>? openingDay;
   String? openingTime;
   String? closingTime;
+  String? Category_type;
   List<String>? profile;
   List<MenuItems>? menuItem;
   int? iV;
@@ -50,6 +51,7 @@ class ItemsData {
       this.closingTime,
       this.profile,
       this.menuItem,
+      this.Category_type,
       this.iV});
 
   ItemsData.fromJson(Map<String, dynamic> json) {
@@ -67,6 +69,7 @@ class ItemsData {
     openingTime = json['opening_time'];
     closingTime = json['closing_time'];
     profile = json['profile'].cast<String>();
+    Category_type = json['Category_type'];
     if (json['menu_item'] != null) {
       menuItem = <MenuItems>[];
       json['menu_item'].forEach((v) {
@@ -91,6 +94,7 @@ class ItemsData {
     data['opening_day'] = this.openingDay;
     data['opening_time'] = this.openingTime;
     data['closing_time'] = this.closingTime;
+    data['Category_type'] = this.Category_type;
     data['profile'] = this.profile;
     if (this.menuItem != null) {
       data['menu_item'] = this.menuItem!.map((v) => v.toJson()).toList();

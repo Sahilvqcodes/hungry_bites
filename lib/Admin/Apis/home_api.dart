@@ -352,7 +352,7 @@ class HomePageApi {
       Alert(
         context: context,
         type: AlertType.success,
-        title: "Item Update Successfuly",
+        title: "Item Updated Successfully",
         // desc: "Flutter is more awesome with RFlutter Alert.",
         buttons: [
           DialogButton(
@@ -433,26 +433,28 @@ class HomePageApi {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, dynamic>{
-        "name": shops.ownerName,
-        "shop_name": shops.shopName,
-        "email": shops.email,
-        "password": shops.password,
-        "type": "admin",
-        "Category_type": shops.category,
-        "subscription": "free",
-        "address": shops.address,
-        "phone_no": shops.mobileNo,
-        "cat_id": shops.categoryId,
-        "status": "active",
-        "sort_order": "0",
-        "city": shops.city,
-        "land_mark": shops.landMark,
-        "opening_day": shops.openingDays,
-        "opening_time": shops.openingTime,
-        "closing_time": shops.closingTime,
-        "profile": galleryImage
-      }),
+      body: jsonEncode(
+        <String, dynamic>{
+          "name": shops.ownerName,
+          "shop_name": shops.shopName,
+          "email": shops.email,
+          "password": shops.password,
+          "type": "admin",
+          "Category_type": shops.category,
+          "subscription": "free",
+          "address": shops.address,
+          "phone_no": shops.mobileNo,
+          "cat_id": shops.categoryId,
+          "status": "active",
+          "sort_order": "0",
+          "city": shops.city,
+          "land_mark": shops.landMark,
+          "opening_day": shops.openingDays,
+          "opening_time": shops.openingTime,
+          "closing_time": shops.closingTime,
+          "profile": galleryImage
+        },
+      ),
     );
     print("res.body ${res.body}");
     ShopsResponse _shopResponse = ShopsResponse.fromJson(jsonDecode(res.body));
@@ -554,7 +556,7 @@ class HomePageApi {
       Alert(
         context: context,
         type: AlertType.success,
-        title: "Product Added Successfuly",
+        title: "Product has been Updated Successfully!",
         // desc: "Flutter is more awesome with RFlutter Alert.",
         buttons: [
           DialogButton(
@@ -562,12 +564,14 @@ class HomePageApi {
               "Done",
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            onPressed: () => Navigator.pushReplacementNamed(
-                context, "/admin_category_shop_list",
-                arguments: [
-                  shops.category,
-                  shops.categoryId,
-                ]),
+            onPressed: () {
+              // Navigator.pushReplacementNamed(
+              //     context, "/admin_category_shop_list",
+              //     arguments: [
+              //       shops.category,
+              //       shops.categoryId,
+              //     ]);
+            },
             width: 120,
           )
         ],

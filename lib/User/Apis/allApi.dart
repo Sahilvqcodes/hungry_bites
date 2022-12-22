@@ -101,10 +101,17 @@ class UserApis {
     } else if (userDetails.message == "Login Successfully " &&
         userDetails.data!.type == "owner") {
       Navigator.pushNamed(context, "/admin_home");
-      if (isChecked) {
-        _remeberMe();
-        print("SharedPreferences${_remeberMe}");
-      }
+      // if (isChecked) {
+      //   _remeberMe();
+      //   print("SharedPreferences${_remeberMe}");
+      // }
+    } else if (userDetails.message == "Login Successfully " &&
+        userDetails.data!.type == "admin") {
+      sharedPreferences.setString('catId', userDetails.data!.catId ?? "");
+      sharedPreferences.setString(
+          'productsId', userDetails.data!.productsId ?? "");
+      Navigator.pushNamed(context, "/owner_home_page",
+          arguments: [userDetails.data!.catId, userDetails.data!.productsId]);
     }
   }
 }
