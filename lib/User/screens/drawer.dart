@@ -12,6 +12,8 @@ class _UserDrawerState extends State<UserDrawer> {
   String? name;
   String? email;
   String? type;
+  String? catId;
+  String? productId;
   void initState() {
     getLocalStorage();
     super.initState();
@@ -23,6 +25,8 @@ class _UserDrawerState extends State<UserDrawer> {
       name = prefs.getString("name");
       email = prefs.getString("email");
       type = prefs.getString("type");
+      catId = prefs.getString("catId");
+      productId = prefs.getString("productsId");
     });
 
     print(email);
@@ -99,6 +103,24 @@ class _UserDrawerState extends State<UserDrawer> {
                     Navigator.pushNamed(context, "/admin_home");
                   },
                   child: const Text(
+                    'Admin Home Page',
+                    style: TextStyle(
+                        color: Color(0xFF3D3D3D),
+                        fontSize: 16,
+                        fontFamily: "Poppins",
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+                onTap: () {},
+              ),
+            if (type == "admin")
+              ListTile(
+                title: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/owner_home_page',
+                        arguments: [catId, productId]);
+                  },
+                  child: const Text(
                     'Owner Home Page',
                     style: TextStyle(
                         color: Color(0xFF3D3D3D),
@@ -165,11 +187,13 @@ class _UserDrawerState extends State<UserDrawer> {
               onTap: () {},
             ),
             ListTile(
-              title:  Row(
+              title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.logout_rounded,color: Color(0xffED4322),),
-
+                  Icon(
+                    Icons.logout_rounded,
+                    color: Color(0xffED4322),
+                  ),
                   Text(
                     'Log Out',
                     style: TextStyle(

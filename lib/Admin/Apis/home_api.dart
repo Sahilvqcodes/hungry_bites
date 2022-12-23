@@ -9,6 +9,7 @@ import 'package:hunger_bites/Admin/screens/addShops/add_shops.dart';
 import 'package:hunger_bites/Admin/screens/add_category.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../User/model/category_list.dart';
 import '../models/add_shops_model.dart';
@@ -316,6 +317,7 @@ class HomePageApi {
     if (items.profile == null) {
       items.profile = "";
     } else if (items.profile!.contains("hungry_bites")) {
+      print("items.profile ${items.profile}");
       http.Response response = await http.get(
           Uri.parse("http://157.245.97.144:8000/category/${items.profile}"),
           headers: {
@@ -504,19 +506,19 @@ class HomePageApi {
 
   static UpdateShop(
       BuildContext context, Shops shops, List<File> imageList) async {
-    print(shops.ownerName);
-    print(shops.shopName);
-    // print(shops.email);
-    // print(shops.password);
-    print(shops.category);
-    print(shops.address);
-    print(shops.mobileNo);
-    print(shops.productId);
-    print(shops.city);
-    print(shops.landMark);
-    print(shops.openingDays);
-    print(shops.openingTime);
-    print(shops.closingTime);
+    // print(shops.ownerName);
+    // print(shops.shopName);
+    // // print(shops.email);
+    // // print(shops.password);
+    // print(shops.category);
+    // print(shops.address);
+    // print(shops.mobileNo);
+    // print(shops.productId);
+    // print(shops.city);
+    // print(shops.landMark);
+    // print(shops.openingDays);
+    // print(shops.openingTime);
+    // print(shops.closingTime);
     List<String> galleryImage = [];
     // imageList!.addAll(selectedImages);
     imageList!.forEach((element) {
@@ -564,13 +566,24 @@ class HomePageApi {
               "Done",
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            onPressed: () {
-              // Navigator.pushReplacementNamed(
-              //     context, "/admin_category_shop_list",
-              //     arguments: [
-              //       shops.category,
-              //       shops.categoryId,
-              //     ]);
+            onPressed: () async {
+              final SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
+
+              String? type = sharedPreferences.getString("type");
+              String? catId = sharedPreferences.getString("catId");
+              String? productId = sharedPreferences.getString("productsId");
+              type == "owner"
+                  ? Navigator.pushReplacementNamed(
+                      context, "/admin_category_shop_list", arguments: [
+                      shops.category,
+                      shops.categoryId,
+                    ])
+                  : Navigator.pushReplacementNamed(context, "/owner_home_page",
+                      arguments: [
+                          shops.categoryId,
+                          shops.productId,
+                        ]);
             },
             width: 120,
           )

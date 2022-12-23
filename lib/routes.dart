@@ -9,6 +9,7 @@ import 'package:hunger_bites/Owner/owner_home.dart';
 import 'package:hunger_bites/Owner/updateShops/page1.dart';
 import 'package:hunger_bites/Owner/updateShops/page2.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
+import 'package:hunger_bites/User/screens/home/wishlist.dart';
 import 'package:hunger_bites/User/screens/user_notification.dart';
 import 'package:hunger_bites/forgot_password.dart';
 import 'package:hunger_bites/sign_in.dart';
@@ -46,6 +47,7 @@ class Routes {
   static const String owner_home_page = '/owner_home_page';
   static const String owner_update_shops = '/owner_update_shops';
   static const String owner_update_shops_page2 = '/owner_update_shops_page2';
+  static const String user_wishlist = '/user_wishlist';
 
   static Map<String, WidgetBuilder> routes = {
     '/splash': (context) => SplashScreen(),
@@ -70,5 +72,6 @@ class Routes {
     '/owner_home_page': (context) => OwnerShopsHome(),
     '/owner_update_shops': (context) => UpdateShops(),
     '/owner_update_shops_page2': (context) => UpdateShopsPage2(),
+    '/user_wishlist': (context) => UserWishlist(),
   };
 }

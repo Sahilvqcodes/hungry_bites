@@ -150,10 +150,12 @@ class _HomePageState extends State<HomePage> {
               size: 25,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, "/user_wishlist");
+            },
           ), //IconButton
           IconButton(
-            icon: Icon(Icons.notification_add_outlined),
+            icon: Icon(Icons.notifications),
             color: Colors.black,
             onPressed: () {
               Navigator.pushNamed(context, "/user_notification");

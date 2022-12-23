@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:hunger_bites/Admin/Apis/home_api.dart';
 import 'package:hunger_bites/Admin/models/add_items_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:multiselect/multiselect.dart';
 import 'package:intl/intl.dart';
 
@@ -36,6 +37,7 @@ class _AddItemsState extends State<AddItems> {
   Future pickImage() async {
     try {
       image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      print(image);
       if (image == null) return;
       imagePath = File(image.path);
       var imageBytes = imagePath!.readAsBytesSync();
@@ -56,6 +58,7 @@ class _AddItemsState extends State<AddItems> {
   MenuItems? menuItems;
   Items items = Items();
   String? imageP;
+  late bool _isLoaderVisible;
   var arguments;
   void clear() {
     _iteDetailsController.clear();
@@ -72,7 +75,7 @@ class _AddItemsState extends State<AddItems> {
   @override
   void initState() {
     super.initState();
-
+    _isLoaderVisible = false;
     // future that allows us to access context. function is called inside the future
     // otherwise it would be skipped and args would return null
     Future.delayed(Duration.zero, () {
@@ -121,371 +124,391 @@ class _AddItemsState extends State<AddItems> {
           scale: 10,
         ),
       ),
-      body: Form(
-        key: _key,
-        child: Container(
-          height: size.height,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  color: Colors.white,
-                  margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      body: LoaderOverlay(
+        child: Form(
+          key: _key,
+          child: Container(
+            height: size.height,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                            child: Text(
+                          "Add Item",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
+                        )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Item Name:",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20),
+                                child: TextFormField(
+                                  // obscureText: true,
+                                  controller: _iteNameController,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      // labelText: 'Password',
+                                      hintText: "Item Name"),
+                                  onChanged: (value) {
+                                    items.itemName = value;
+                                  },
+                                  validator: (String? value) {
+                                    return (value!.isEmpty || value.length < 4)
+                                        ? 'Please enter valid Name'
+                                        : null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Item Details",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0, right: 20),
+                                child: TextFormField(
+                                  // obscureText: true,
+                                  controller: _iteDetailsController,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      // labelText: 'Password',
+                                      hintText: "Item Details"),
+                                  onChanged: (value) {
+                                    items.itemDetails = value;
+                                  },
+                                  validator: (String? value) {
+                                    return (value!.isEmpty || value.length < 4)
+                                        ? 'Please enter brief Details'
+                                        : null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Price",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0, right: 20),
+                                child: TextFormField(
+                                  // obscureText: true,
+                                  controller: _itePriceController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      // labelText: 'Password',
+                                      hintText: "$dollar 25"),
+                                  onChanged: (value) {
+                                    items.price = value;
+                                  },
+                                  validator: (String? value) {
+                                    return (value!.isEmpty)
+                                        ? 'Please enter Price'
+                                        : null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  "Discount",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 20.0, right: 20),
+                                child: TextFormField(
+                                  controller: _iteDiscountController,
+                                  // obscureText: true,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      // labelText: 'Password',
+                                      hintText: "Discount"),
+                                  onChanged: (value) {
+                                    items.discount = value;
+                                  },
+                                  // validator: (String? value) {
+                                  //   return (value!.isEmpty)
+                                  //       ? 'Please enter'
+                                  //       : null;
+                                  // },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () => pickImage(),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => pickImage(),
+                                icon: const Icon(
+                                  Icons.upload_file,
+                                  color: Color.fromRGBO(40, 71, 135, 2),
+                                  size: 30,
+                                ),
+                              ),
+                              const Text(
+                                "Upload Image",
+                                style: TextStyle(fontSize: 16),
+                              )
+                            ],
+                          ),
+                        ),
+                        if (imagePath != null)
+                          Center(
+                            child: Container(
+                              width: 200,
+                              child: Stack(
+                                children: [
+                                  Image.file(
+                                    imagePath!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Navigator.pushNamed(context, "/add_category_shops",
+                                          //     arguments: shops);
+                                          setState(() {
+                                            imagePath = null;
+                                            items.profile = null;
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          // margin: EdgeInsets.only(right: 30),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.close,
+                                              size: 30,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (arguments["menuData"] != null &&
+                            items.profile != null &&
+                            items.profile!.contains("hungry_bites") &&
+                            imagePath == null)
+                          Center(
+                            child: Container(
+                              width: 200,
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    'http://157.245.97.144:8000/category/${items.profile}',
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Navigator.pushNamed(context, "/add_category_shops",
+                                          //     arguments: shops);
+                                          setState(() {
+                                            imagePath = null;
+                                            items.profile = null;
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          // margin: EdgeInsets.only(right: 30),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.close,
+                                              size: 30,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        // Container(
+                        //   height: 200,
+                        //   child: Image.network(
+                        //     'http://157.245.97.144:8000/category/${items.profile}',
+                        //     fit: BoxFit.fitHeight,
+                        //   ),
+                        // ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Center(
-                          child: Text(
-                        "Add Item",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      )),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Item Name:",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
+                      InkWell(
+                        onTap: () async {
+                          // print(items.profile);
+                          if (_key.currentState!.validate()) {
+                            context.loaderOverlay.show();
+                            setState(() {
+                              _isLoaderVisible = context.loaderOverlay.visible;
+                            });
+                            if (arguments["menuData"] == null) {
+                              var successData = await HomePageApi.AddMenuItems(
+                                  context, items);
+                              if (successData == "done") {
+                                clear();
+                              }
+                            } else {
+                              var successData =
+                                  await HomePageApi.UpdateMenuItems(
+                                      context, items);
+                              if (successData == "Update") {
+                                // clear();
+                                // setState(() {});
+                              }
+                            }
+                            if (_isLoaderVisible) {
+                              context.loaderOverlay.hide();
+                            }
+                            // setState(() {
+                            //   _isLoaderVisible = context.loaderOverlay.visible;
+                            // });
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 100,
+                          // margin: EdgeInsets.only(right: 30),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
                             ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                // obscureText: true,
-                                controller: _iteNameController,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "Item Name"),
-                                onChanged: (value) {
-                                  items.itemName = value;
-                                },
-                                validator: (String? value) {
-                                  return (value!.isEmpty || value.length < 4)
-                                      ? 'Please enter valid Name'
-                                      : null;
-                                },
+                          ),
+                          child: Center(
+                            child: Text(
+                              arguments["menuData"] == null ? "Add" : "Update",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Item Details",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                // obscureText: true,
-                                controller: _iteDetailsController,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "Item Details"),
-                                onChanged: (value) {
-                                  items.itemDetails = value;
-                                },
-                                validator: (String? value) {
-                                  return (value!.isEmpty || value.length < 4)
-                                      ? 'Please enter brief Details'
-                                      : null;
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Price",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                // obscureText: true,
-                                controller: _itePriceController,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "$dollar 25"),
-                                onChanged: (value) {
-                                  items.price = value;
-                                },
-                                validator: (String? value) {
-                                  return (value!.isEmpty)
-                                      ? 'Please enter Price'
-                                      : null;
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Discount",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0, right: 20),
-                              child: TextFormField(
-                                controller: _iteDiscountController,
-                                // obscureText: true,
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    // labelText: 'Password',
-                                    hintText: "Discount"),
-                                onChanged: (value) {
-                                  items.discount = value;
-                                },
-                                // validator: (String? value) {
-                                //   return (value!.isEmpty)
-                                //       ? 'Please enter'
-                                //       : null;
-                                // },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      GestureDetector(
-                        onTap: () => pickImage(),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => pickImage(),
-                              icon: const Icon(
-                                Icons.upload_file,
-                                color: Color.fromRGBO(40, 71, 135, 2),
-                                size: 30,
-                              ),
-                            ),
-                            const Text(
-                              "Upload Image",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                      ),
-                      if (imagePath != null)
-                        Center(
-                          child: Container(
-                            width: 200,
-                            child: Stack(
-                              children: [
-                                Image.file(
-                                  imagePath!,
-                                  fit: BoxFit.cover,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Navigator.pushNamed(context, "/add_category_shops",
-                                        //     arguments: shops);
-                                        setState(() {
-                                          imagePath = null;
-                                          items.profile = null;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        // margin: EdgeInsets.only(right: 30),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.close,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
                             ),
                           ),
                         ),
-                      if (arguments["menuData"] != null &&
-                          items.profile != null &&
-                          imagePath == null)
-                        Center(
-                          child: Container(
-                            width: 200,
-                            child: Stack(
-                              children: [
-                                Image.network(
-                                  'http://157.245.97.144:8000/category/${items.profile}',
-                                  fit: BoxFit.cover,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Navigator.pushNamed(context, "/add_category_shops",
-                                        //     arguments: shops);
-                                        setState(() {
-                                          imagePath = null;
-                                          items.profile = null;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        // margin: EdgeInsets.only(right: 30),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.close,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      // Container(
-                      //   height: 200,
-                      //   child: Image.network(
-                      //     'http://157.245.97.144:8000/category/${items.profile}',
-                      //     fit: BoxFit.fitHeight,
-                      //   ),
-                      // ),
-                      const SizedBox(
-                        height: 20,
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        // print(items.profile);
-                        if (arguments["menuData"] == null) {
-                          var successData =
-                              await HomePageApi.AddMenuItems(context, items);
-                          if (successData == "done") {
-                            clear();
-                          }
-                        } else {
-                          var successData =
-                              await HomePageApi.UpdateMenuItems(context, items);
-                          if (successData == "Update") {
-                            // clear();
-                            setState(() {});
-                          }
-                        }
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 100,
-                        // margin: EdgeInsets.only(right: 30),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            arguments["menuData"] == null ? "Add" : "Update",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
+                  const SizedBox(
+                    height: 50,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

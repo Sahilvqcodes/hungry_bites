@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "791552862180",
+    "project_id": "hungrybites-2147c",
+    "storage_bucket": "hungrybites-2147c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791552862180:android:29f62d8cad31a805bb49f1",
+        "android_client_info": {
+          "package_name": "com.hunger_bites.hunger_bites"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791552862180-d3cdsjq9tgl4hhpkqsuaeisk5utoekju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB621zoPApWAMX_xwpS2-h1vtBLhqea9lI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791552862180-d3cdsjq9tgl4hhpkqsuaeisk5utoekju.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

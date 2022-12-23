@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import 'User/Apis/allApi.dart';
 import 'forgot_password.dart';
@@ -26,7 +27,7 @@ class User {
 class _SignInState extends State<SignIn> {
   final textFieldFocusNode = FocusNode();
   bool _obscured = true;
-
+  late bool _isLoaderVisible;
   String? _password;
   void _toggleObscured() {
     setState(() {
@@ -36,6 +37,11 @@ class _SignInState extends State<SignIn> {
       textFieldFocusNode.canRequestFocus =
           false; // Prevents focus if tap on eye
     });
+  }
+
+  void initState() {
+    _isLoaderVisible = false;
+    super.initState();
   }
 
   // void _toggle() {
@@ -68,204 +74,219 @@ class _SignInState extends State<SignIn> {
                 fontWeight: FontWeight.w600,
                 color: Colors.black87)),
       ),
-      body: Form(
-        key: _key,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: ListView(
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              const Text(
-                "Welcome Back!",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 27,
-                    color: Color(0xffED4322)),
-              ),
-              const Text("Sign In to Continue ",
+      body: LoaderOverlay(
+        child: Form(
+          key: _key,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                const Text(
+                  "Welcome Back!",
                   style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black87)),
-              const SizedBox(
-                height: 80,
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.all(10),
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    SizedBox(
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 27,
+                      color: Color(0xffED4322)),
+                ),
+                const Text("Sign In to Continue ",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black87)),
+                const SizedBox(
+                  height: 80,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      SizedBox(
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(200)),
+                                borderSide: BorderSide.none,
+                              ),
+                              hintStyle: TextStyle(color: Color(0xffAEACBA)),
+                              filled: true,
+                              fillColor: Color(0xffEFEFEF),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: Color(0xffED4322),
+                              ),
+                              hintText: 'Email'),
+                          onChanged: (value) {
+                            user.email = value;
+                          },
+                          validator: (String? value) {
+                            return (value!.isEmpty || !value.contains("@"))
+                                ? 'Please enter valid email'
+                                : null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 22),
+                      TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: _obscured,
+                        focusNode: textFieldFocusNode,
+                        decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, //Hides label on focus or if filled
+                            labelText: "Password",
+                            filled: true,
+                            isDense: true,
+                            border: const OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(200)),
                               borderSide: BorderSide.none,
                             ),
-                            hintStyle: TextStyle(color: Color(0xffAEACBA)),
-                            filled: true,
+                            hintStyle:
+                                const TextStyle(color: Color(0xffAEACBA)),
                             fillColor: Color(0xffEFEFEF),
-                            prefixIcon: Icon(
-                              Icons.email_outlined,
+                            prefixIcon: const Icon(
+                              Icons.lock_outline,
                               color: Color(0xffED4322),
                             ),
-                            hintText: 'Email'),
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                              child: GestureDetector(
+                                onTap: _toggleObscured,
+                                child: Icon(
+                                  _obscured
+                                      ? Icons.visibility_off_rounded
+                                      : Icons.visibility_rounded,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                            hintText: 'Password'),
                         onChanged: (value) {
-                          user.email = value;
+                          user.password = value;
                         },
                         validator: (String? value) {
-                          return (value!.isEmpty || !value.contains("@"))
-                              ? 'Please enter valid email'
+                          return (value!.isEmpty || value.length < 6)
+                              ? 'Password Must between 6-12 letters'
                               : null;
                         },
                       ),
-                    ),
-                    const SizedBox(height: 22),
-                    TextFormField(
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: _obscured,
-                      focusNode: textFieldFocusNode,
-                      decoration: InputDecoration(
-                          floatingLabelBehavior: FloatingLabelBehavior
-                              .never, //Hides label on focus or if filled
-                          labelText: "Password",
-                          filled: true,
-                          isDense: true,
-                          border: const OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(200)),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintStyle: const TextStyle(color: Color(0xffAEACBA)),
-                          fillColor: Color(0xffEFEFEF),
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            color: Color(0xffED4322),
-                          ),
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-                            child: GestureDetector(
-                              onTap: _toggleObscured,
-                              child: Icon(
-                                _obscured
-                                    ? Icons.visibility_off_rounded
-                                    : Icons.visibility_rounded,
-                                size: 24,
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                  activeColor: const Color(0xffED4322),
+                                  value: check,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      check = value;
+                                    });
+                                  }),
+                              const Text(
+                                "Remember Me",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    color: Color(0xff03060F)),
                               ),
-                            ),
+                            ],
                           ),
-                          hintText: 'Password'),
-                      onChanged: (value) {
-                        user.password = value;
-                      },
-                      validator: (String? value) {
-                        return (value!.isEmpty || value.length < 6)
-                            ? 'Password Must between 6-12 letters'
-                            : null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                                activeColor: const Color(0xffED4322),
-                                value: check,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    check = value;
-                                  });
-                                }),
-                            const Text(
-                              "Remember Me",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: Color(0xff03060F)),
-                            ),
-                          ],
-                        ),
 
-                        //SizedBox(width: 20),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/forgot_password');
-                            },
-                            child: const Text(
-                              "Forget password?",
+                          //SizedBox(width: 20),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, '/forgot_password');
+                              },
+                              child: const Text(
+                                "Forget password?",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: Color(0xffED4322)),
+                              )),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          if (_key.currentState!.validate()) {
+                            context.loaderOverlay.show();
+                            setState(() {
+                              _isLoaderVisible = context.loaderOverlay.visible;
+                            });
+                            await UserApis.LoginMethod(
+                                context, user.password, user.email);
+                            if (_isLoaderVisible) {
+                              context.loaderOverlay.hide();
+                            }
+                            setState(() {
+                              _isLoaderVisible = context.loaderOverlay.visible;
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 42.0,
+                          width: 300,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xffED4322),
+                                  Color(0xffFA6931),
+                                ],
+                              )),
+                          child: Center(
+                            child: Text(
+                              'Sign In',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: Color(0xffED4322)),
-                            )),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (_key.currentState!.validate()) {
-                          UserApis.LoginMethod(
-                              context, user.password, user.email);
-                        }
-                      },
-                      child: Container(
-                        height: 42.0,
-                        width: 300,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Color(0xffED4322),
-                                Color(0xffFA6931),
-                              ],
-                            )),
-                        child: Center(
-                          child: Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                  ],
+                      SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 100),
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                      text: 'Already have not an account?',
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: ' Sign up',
-                            style: TextStyle(
-                                color: Color(0xffED4322),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(context, '/signUp');
-                              })
-                      ]),
+                SizedBox(height: 100),
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                        text: 'Already have not an account?',
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 16),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: ' Sign up',
+                              style: const TextStyle(
+                                  color: Color(0xffED4322),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(context, '/signUp');
+                                })
+                        ]),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

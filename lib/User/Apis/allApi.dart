@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hunger_bites/Admin/models/available_items.dart';
 import 'package:hunger_bites/User/model/user_details_model.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Admin/models/available_shops.dart';
@@ -112,6 +113,30 @@ class UserApis {
           'productsId', userDetails.data!.productsId ?? "");
       Navigator.pushNamed(context, "/owner_home_page",
           arguments: [userDetails.data!.catId, userDetails.data!.productsId]);
+    } else if (userDetails.message == "User not register ") {
+      Alert(
+        context: context,
+        type: AlertType.warning,
+        title: "Invalid Email/Password",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              // Navigator.pushReplacementNamed(
+              //     context, "/admin_category_shop_list",
+              //     arguments: [
+              //       shops.category,
+              //       shops.categoryId,
+              //     ]);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
     }
   }
 }
