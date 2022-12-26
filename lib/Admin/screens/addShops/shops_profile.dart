@@ -71,7 +71,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white, 
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,

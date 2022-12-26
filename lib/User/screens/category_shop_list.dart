@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:hunger_bites/Admin/models/available_shops.dart';
+import 'package:hunger_bites/routes.dart';
 
 import '../Apis/allApi.dart';
 
@@ -136,13 +138,18 @@ class _CategoryShopListState extends State<CategoryShopList> {
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                             onTap: () {
-                                              Navigator.pushNamed(
-                                                  context, '/details_page',
+                                              // Navigator.pushNamed(
+                                              //     context, '/details_page',
+                                              //     arguments: _availableShops!
+                                              //         .data!
+                                              //         .productId![index]
+                                              //         .sId);
+                                              // arguments: restaurantImage);
+                                              Get.toNamed(Routes.details_page,
                                                   arguments: _availableShops!
                                                       .data!
                                                       .productId![index]
                                                       .sId);
-                                              // arguments: restaurantImage);
                                             },
                                             child: Column(
                                               children: [
@@ -162,6 +169,16 @@ class _CategoryShopListState extends State<CategoryShopList> {
                                                                   .all(
                                                             Radius.circular(30),
                                                           ),
+                                                          boxShadow: const [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors.grey,
+                                                              offset: Offset(
+                                                                  0.0,
+                                                                  1.0), //(x,y)
+                                                              blurRadius: 2.0,
+                                                            ),
+                                                          ],
                                                           image:
                                                               DecorationImage(
                                                                   image:
@@ -376,6 +393,14 @@ class _CategoryShopListState extends State<CategoryShopList> {
                                                                 .all(
                                                           Radius.circular(30),
                                                         ),
+                                                        boxShadow: const [
+                                                          BoxShadow(
+                                                            color: Colors.grey,
+                                                            offset: Offset(0.0,
+                                                                1.0), //(x,y)
+                                                            blurRadius: 2.0,
+                                                          ),
+                                                        ],
                                                         image: DecorationImage(
                                                             image: NetworkImage(
                                                               'http://157.245.97.144:8000/category/${_productId[index].profile![0]}',

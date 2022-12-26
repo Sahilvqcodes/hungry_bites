@@ -147,7 +147,7 @@ class GroceryItems extends StatelessWidget {
     return Stack(
       children: [
         Card(
-          elevation: 5,
+          elevation: 2,
           child: Container(
             // height: 190,
             width: 350,

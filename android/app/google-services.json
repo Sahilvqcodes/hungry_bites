@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:791552862180:android:29f62d8cad31a805bb49f1",
+        "mobilesdk_app_id": "1:791552862180:android:4edc3d753ed98565bb49f1",
         "android_client_info": {
-          "package_name": "com.hunger_bites.hunger_bites"
+          "package_name": "com.hungerBites.hungerBites"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "791552862180-d3cdsjq9tgl4hhpkqsuaeisk5utoekju.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "791552862180-ev0v0j1s2i8fgdf586235v9j1ljitl5q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hungerBites.hungerBites"
+              }
             }
           ]
         }

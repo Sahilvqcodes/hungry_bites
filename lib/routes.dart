@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:hunger_bites/Admin/screens/addShops/addItems.dart';
 import 'package:hunger_bites/Admin/screens/addShops/add_category_shops.dart';
 import 'package:hunger_bites/Admin/screens/addShops/add_shops.dart';
@@ -16,7 +17,8 @@ import 'package:hunger_bites/sign_in.dart';
 import 'package:hunger_bites/User/screens/splash_screen.dart';
 
 import 'Sign_up.dart';
-import 'User/screens/details_screen.dart';
+import 'User/screens/shopsDetails/bindings/binding.dart';
+import 'User/screens/shopsDetails/view/details_screen.dart';
 import 'User/screens/home/address_page.dart';
 import 'User/screens/home/view/home_page.dart';
 import 'User/screens/home/view/orders.dart';
@@ -40,7 +42,7 @@ class Routes {
   static const String super_market = '/super_market';
   static const String forgot_password = '/forgot_password';
   static const String search_bar = '/search_bar';
-  static const String address_page = '/address_page ';
+  static const String address_page = '/address_page';
   static const String payment_options = '/payment_options';
   static const String orders = '/orders';
   static const String userNotification = '/user_notification';
@@ -48,6 +50,17 @@ class Routes {
   static const String owner_update_shops = '/owner_update_shops';
   static const String owner_update_shops_page2 = '/owner_update_shops_page2';
   static const String user_wishlist = '/user_wishlist';
+
+  static final route = [
+    GetPage(
+        name: Routes.details_page,
+        page: () => DetailsScreen(),
+        binding: ShopsBindings()),
+    GetPage(
+        name: Routes.address_page,
+        page: () => AddressPage(),
+        binding: ShopsBindings()),
+  ];
 
   static Map<String, WidgetBuilder> routes = {
     '/splash': (context) => SplashScreen(),
@@ -65,7 +78,7 @@ class Routes {
     '/super_market': (context) => SuperMarket(),
     '/forgot_password': (context) => ForgotPassword(),
     '/search_bar': (context) => SearchBar(),
-    '/address_page ': (context) => AddressPage(),
+    '/address_page': (context) => AddressPage(),
     '/payment_options': (context) => PaymentOption(),
     '/orders': (context) => Orders(),
     '/user_notification': (context) => UserNotifications(),

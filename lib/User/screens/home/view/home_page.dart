@@ -510,10 +510,11 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(
-                      grocery.length,
-                      (index) => GroceryItems(
-                            allGrocery: grocery[index],
-                          )),
+                    grocery.length,
+                    (index) => GroceryItems(
+                      allGrocery: grocery[index],
+                    ),
+                  ),
                 )),
             const SizedBox(
               height: 20,
@@ -530,6 +531,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: Card(
+                elevation: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -621,6 +623,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: Card(
+                elevation: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

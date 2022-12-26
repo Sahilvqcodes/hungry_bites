@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:readmore/readmore.dart';
 
@@ -72,7 +73,7 @@ class UserWishlist extends StatelessWidget {
                                         ),
                                         SizedBox(height: 2.0),
                                         Text(
-                                          "\$ 100}",
+                                          "\$ 100",
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w800,
                                               fontSize: 18,
@@ -144,12 +145,27 @@ class UserWishlist extends StatelessWidget {
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(30),
                                             ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey,
+                                                offset:
+                                                    Offset(0.0, 1.0), //(x,y)
+                                                blurRadius: 2.0,
+                                              ),
+                                            ],
                                             image: DecorationImage(
                                                 image: AssetImage(
                                                     "assets/images/Rectangle35.png"),
                                                 fit: BoxFit.cover)),
                                       ),
                                     ),
+                                    // Positioned(
+                                    //     bottom: 0,
+                                    //     child: Container(
+                                    //       height: 40,
+                                    //       width: 50,
+                                    //       color: Colors.red,
+                                    //     ))
                                   ],
                                 ),
                               ],

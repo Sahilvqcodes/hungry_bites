@@ -51,6 +51,8 @@ class _MyAppState extends State<MyApp> {
       initialRoute: Routes.splash,
       routes: Routes.routes,
 
+      debugShowCheckedModeBanner: false,
+      defaultTransition: Transition.cupertino,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFF5F5F5),
         colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -58,7 +60,7 @@ class _MyAppState extends State<MyApp> {
           // secondary: const Color(0xFFFFC107),
         ),
       ),
-      debugShowCheckedModeBanner: false,
+
       // home: SplashScreen(),
     );
   }
