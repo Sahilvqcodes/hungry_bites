@@ -744,8 +744,8 @@ class CustomSearch extends SearchDelegate {
                                   ),
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.pushNamed(
-                                          context, '/details_page');
+                                      // Navigator.pushNamed(
+                                      //     context, '/details_page');
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(0.0),

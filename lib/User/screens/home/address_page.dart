@@ -50,22 +50,28 @@ class AddressPage extends GetView<ShopsController> {
   @override
   Widget build(BuildContext context) {
     // print("controller.addedMenuItemsToCart ${controller.addedMenuItemsToCart}");
-    Map<String, dynamic> count = {};
-
+    String shopName = Get.arguments;
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          elevation: 0,
-          title: Text(
-            "${shopName}",
-            style: TextStyle(
-                color: Colors.black,
-                fontFamily: "Poppins",
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          )),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+        title: Text(
+          "${shopName}",
+          style: const TextStyle(
+              color: Colors.black,
+              fontFamily: "Poppins",
+              fontSize: 20,
+              fontWeight: FontWeight.w500),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+      ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // floatingActionButton: Padding(
       //   padding: const EdgeInsets.all(15.0),
@@ -130,8 +136,8 @@ class AddressPage extends GetView<ShopsController> {
       body: Obx(() {
         // addToCartDatas = arguments["cartData"];
         int totalAmount = 0;
-        count.clear();
-        print("count $count");
+
+        Map<String, dynamic> count = {};
         controller.addedMenuItemsToCart!
             .forEach((i) => count[i.sId!] = (count[i.sId] ?? 0) + 1);
         controller.addedMenuItemsToCart!
@@ -154,15 +160,17 @@ class AddressPage extends GetView<ShopsController> {
                       children: [
                         ...List.generate(controller.listSimilarData.length,
                             (index) {
-                          controller.cartMenuItems = controller
+                          print(
+                              "listSimilarData[index].id ${controller.listSimilarData[index].id}");
+                          controller.cartMenuItems.clear();
+                          RxList<MenuItems> cartMenuItems = controller
                               .addedMenuItemsToCart!
                               .where((element) =>
                                   element.sId ==
                                   controller.listSimilarData[index].id)
                               .toList()
                               .obs;
-                          print(
-                              " controller.cartMenuItems ${controller.cartMenuItems}");
+                          print(" controller.cartMenuItems ${cartMenuItems}");
                           return Column(
                             children: [
                               Container(
@@ -182,9 +190,7 @@ class AddressPage extends GetView<ShopsController> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                controller.cartMenuItems[0]
-                                                        .itemName ??
-                                                    "",
+                                                cartMenuItems[0].itemName ?? "",
                                                 style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w500,
@@ -192,8 +198,7 @@ class AddressPage extends GetView<ShopsController> {
                                                     color: Color(0xff03060F)),
                                               ),
                                               Text(
-                                                controller.cartMenuItems[0]
-                                                        .itemDetails ??
+                                                cartMenuItems[0].itemDetails ??
                                                     "",
                                                 style: const TextStyle(
                                                   fontSize: 14,
@@ -231,13 +236,14 @@ class AddressPage extends GetView<ShopsController> {
                                                       .addedMenuItemsToCart
                                                       .indexWhere((e) =>
                                                           e.sId ==
-                                                          controller
-                                                              .cartMenuItems[0]
-                                                              .sId);
+                                                          cartMenuItems[0].sId);
                                                   // print(item);
                                                   controller
                                                       .addedMenuItemsToCart
                                                       .removeAt(item);
+                                                  controller.addedItemToCart
+                                                      .remove(
+                                                          cartMenuItems[0].sId);
                                                   // setState(() {});
                                                 },
                                                 child: const Padding(
@@ -255,7 +261,7 @@ class AddressPage extends GetView<ShopsController> {
                                                 padding: const EdgeInsets.only(
                                                     left: 10.0, right: 10),
                                                 child: Text(
-                                                    "${controller.cartMenuItems.length}",
+                                                    "${cartMenuItems.length}",
                                                     style: const TextStyle(
                                                         color: Color.fromARGB(
                                                             255, 5, 177, 126),
@@ -268,10 +274,12 @@ class AddressPage extends GetView<ShopsController> {
                                                 onTap: () {
                                                   controller
                                                       .addedMenuItemsToCart
-                                                      .add(controller
-                                                              .cartMenuItems[
-                                                          index]);
+                                                      .add(cartMenuItems[0]);
+                                                  print(cartMenuItems[0].sId);
                                                   // setState(() {});
+                                                  controller.addedItemToCart
+                                                      .add(
+                                                          cartMenuItems[0].sId);
                                                 },
                                                 child: const Padding(
                                                   padding: EdgeInsets.only(
@@ -290,7 +298,7 @@ class AddressPage extends GetView<ShopsController> {
                                         Container(
                                           width: 50,
                                           child: Text(
-                                            "\$ ${controller.cartMenuItems.length * int.parse(controller.cartMenuItems[0].price!)}",
+                                            "\$ ${cartMenuItems.length * int.parse(cartMenuItems[0].price!)}",
                                             style: const TextStyle(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.bold,

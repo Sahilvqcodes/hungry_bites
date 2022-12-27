@@ -71,7 +71,7 @@ class _ShopsProfileState extends State<ShopsProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white, 
+        backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
@@ -685,10 +685,7 @@ class CustomSearch extends SearchDelegate {
                                     ],
                                   ),
                                   child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, '/details_page');
-                                    },
+                                    onTap: () {},
                                     child: Padding(
                                       padding: const EdgeInsets.all(0.0),
                                       child: Container(
@@ -956,7 +953,7 @@ class CustomSearch extends SearchDelegate {
                               ),
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context, '/details_page');
+                                  // Navigator.pushNamed(context, '/details_page');
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.0),

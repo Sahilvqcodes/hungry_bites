@@ -142,7 +142,7 @@ class _SearchBarState extends State<SearchBar> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/details_page');
+                      // Navigator.pushNamed(context, '/details_page');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

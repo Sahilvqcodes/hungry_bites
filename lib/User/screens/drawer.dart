@@ -151,7 +151,10 @@ class _UserDrawerState extends State<UserDrawer> {
                     fontFamily: "Poppins",
                     fontWeight: FontWeight.w600),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, "/user_notification");
+              },
             ),
             ListTile(
               title: const Text(

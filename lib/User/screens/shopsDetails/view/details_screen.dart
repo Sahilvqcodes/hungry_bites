@@ -14,7 +14,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../routes.dart';
 
 AvailableItems? _availableItems;
-
+String? productId;
 // class DetailsScreen extends StatefulWidget {
 //   const DetailsScreen({Key? key}) : super(key: key);
 
@@ -31,12 +31,12 @@ class DetailsScreen extends GetView<ShopsController> {
   bool isAdded = false;
   List<String> addedItemToCart = [];
   List<MenuItems> addedMenuItemsToCart = [];
-
+  // String? productId;
   int cartTotalPrice = 0;
+
   @override
   Widget build(BuildContext context) {
-    final args = Get.arguments;
-    String productId = args;
+    // productId = args;
     Size size = MediaQuery.of(context).size;
     cartTotalPrice = 0;
 
@@ -59,19 +59,20 @@ class DetailsScreen extends GetView<ShopsController> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: CustomSearch());
-              },
-              icon: Icon(
-                Icons.search,
-                size: 30,
-              ))
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearch());
+            },
+            icon: const Icon(
+              Icons.search,
+              size: 30,
+            ),
+          )
         ],
       ),
       body: Stack(
         children: [
           FutureBuilder(
-              future: UserApis.getUsersMenuList(productId),
+              future: UserApis.getUsersMenuList(controller.productId.value),
               builder: (context, AsyncSnapshot snapshot) {
                 _availableItems = snapshot.data;
 
@@ -488,12 +489,24 @@ class DetailsScreen extends GetView<ShopsController> {
                                                                           .menuItem![
                                                                               index]
                                                                           .sId);
+                                                                      controller
+                                                                          .wishlisItems
+                                                                          .add(_availableItems!
+                                                                              .data!
+                                                                              .menuItem![index]);
                                                                     } else {
                                                                       controller.wishlisIds.remove(_availableItems!
                                                                           .data!
                                                                           .menuItem![
                                                                               index]
                                                                           .sId);
+                                                                      controller.wishlisItems.removeWhere((element) =>
+                                                                          element
+                                                                              .sId ==
+                                                                          _availableItems!
+                                                                              .data!
+                                                                              .menuItem![index]
+                                                                              .sId);
                                                                     }
                                                                   },
                                                                   child:
@@ -788,10 +801,7 @@ class DetailsScreen extends GetView<ShopsController> {
                                 // );
                                 Get.toNamed(
                                   Routes.address_page,
-                                  // arguments: {
-                                  //   "shopName": _availableItems!.data!.shopName,
-                                  //   "cartData": addedMenuItemsToCart,
-                                  // },
+                                  arguments: _availableItems!.data!.shopName,
                                 );
                               },
                               child: const Text(
@@ -850,6 +860,7 @@ class DetailsScreen extends GetView<ShopsController> {
 }
 
 class CustomSearch extends SearchDelegate {
+  ShopsController controller = Get.put(ShopsController());
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -869,7 +880,8 @@ class CustomSearch extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () {
-        close(context, null);
+        // close(context, null);
+        Get.back();
       },
       icon: const Icon(
         Icons.arrow_back_ios_new,
@@ -881,7 +893,7 @@ class CustomSearch extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<MenuItems>? searchMenuItems;
-    searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
+    searchMenuItems = _availableItems?.data!.menuItem!.where((element) {
       return element.itemName!.toLowerCase().contains(
             query.toLowerCase(),
           );
@@ -891,186 +903,464 @@ class CustomSearch extends SearchDelegate {
             child: CircularProgressIndicator(),
           )
         : searchMenuItems.length != 0
-            ? Container(
-                color: Colors.white,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          "Recommended",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              fontFamily: "Poppins"),
-                        ),
-                      ),
-                      ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: searchMenuItems.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/details_page');
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: Container(
-                                  color: Colors.white,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            flex: 10,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(20.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  //SizedBox(height: 50),
-                                                  Text(
-                                                    searchMenuItems![index]
-                                                            .itemName ??
-                                                        "",
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w800,
-                                                        fontSize: 15,
-                                                        fontFamily: "Poppins"),
-                                                  ),
-                                                  SizedBox(height: 2.0),
-                                                  Text(
-                                                    "\$ ${searchMenuItems![index].price ?? ""}",
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w800,
-                                                        fontSize: 18,
-                                                        fontFamily: "Poppins",
-                                                        color:
-                                                            Color(0xffED4322)),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      RatingBar.builder(
-                                                        initialRating: 3,
-                                                        minRating: 1,
-                                                        direction:
-                                                            Axis.horizontal,
-                                                        allowHalfRating: true,
-                                                        itemCount: 5,
-                                                        itemSize: 15,
-                                                        //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                        itemBuilder:
-                                                            (context, _) =>
-                                                                const Icon(
-                                                          Icons.star,
-                                                          color: Colors.amber,
+            ? GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Recommended",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    fontFamily: "Poppins"),
+                              ),
+                            ),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: searchMenuItems.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      // Navigator.pushNamed(context, '/details_page');
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  flex: 10,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        //SizedBox(height: 50),
+                                                        Text(
+                                                          searchMenuItems![
+                                                                      index]
+                                                                  .itemName ??
+                                                              "",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 15,
+                                                              fontFamily:
+                                                                  "Poppins"),
                                                         ),
-                                                        onRatingUpdate:
-                                                            (rating) {
-                                                          print(rating);
-                                                        },
-                                                      ),
-                                                      Text("(3.9)")
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
+                                                        SizedBox(height: 2.0),
+                                                        Text(
+                                                          "\$ ${searchMenuItems![index].price ?? ""}",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 18,
+                                                              fontFamily:
+                                                                  "Poppins",
+                                                              color: Color(
+                                                                  0xffED4322)),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            RatingBar.builder(
+                                                              initialRating: 3,
+                                                              minRating: 1,
+                                                              direction: Axis
+                                                                  .horizontal,
+                                                              allowHalfRating:
+                                                                  true,
+                                                              itemCount: 5,
+                                                              itemSize: 15,
+                                                              //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                              itemBuilder:
+                                                                  (context,
+                                                                          _) =>
+                                                                      const Icon(
+                                                                Icons.star,
+                                                                color: Colors
+                                                                    .amber,
+                                                              ),
+                                                              onRatingUpdate:
+                                                                  (rating) {
+                                                                print(rating);
+                                                              },
+                                                            ),
+                                                            Text("(3.9)")
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
 
-                                                  const ReadMoreText(
-                                                    "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
-                                                    " city of Belfast, Northern Ireland. We want to help people discover"
-                                                    " the magic of tea by sourcing great "
-                                                    "loose leaf tea and brewing delicious kombucha and"
-                                                    " other innovative, healthy tea drinks.",
-                                                    trimLines: 2,
-                                                    // colorClickableText: Colors.pink,
-                                                    trimMode: TrimMode.Line,
-                                                    trimCollapsedText: ' more',
-                                                    trimExpandedText: ' Less',
-                                                    lessStyle: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    moreStyle: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
+                                                        const ReadMoreText(
+                                                          "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                          " city of Belfast, Northern Ireland. We want to help people discover"
+                                                          " the magic of tea by sourcing great "
+                                                          "loose leaf tea and brewing delicious kombucha and"
+                                                          " other innovative, healthy tea drinks.",
+                                                          trimLines: 2,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              ' more',
+                                                          trimExpandedText:
+                                                              ' Less',
+                                                          lessStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          moreStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
 
-                                                  SizedBox(height: 5.0),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Stack(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(15.0),
-                                                child: Container(
-                                                  height: 150,
-                                                  width: 140,
-                                                  decoration: BoxDecoration(
-                                                    // color:
-                                                    //     Colors.red,
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(30),
+                                                        SizedBox(height: 5.0),
+                                                      ],
                                                     ),
-                                                    boxShadow: const [
-                                                      BoxShadow(
-                                                        color: Colors.grey,
-                                                        offset: Offset(
-                                                            0.0, 1.0), //(x,y)
-                                                        blurRadius: 2.0,
-                                                      ),
-                                                    ],
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            "http://157.245.97.144:8000/category/${searchMenuItems[index].profile!}"),
-                                                        fit: BoxFit.cover),
                                                   ),
                                                 ),
+                                                Stack(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              15.0),
+                                                      child: Container(
+                                                        height: 150,
+                                                        width: 140,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          // color:
+                                                          //     Colors.red,
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                          boxShadow: const [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors.grey,
+                                                              offset: Offset(
+                                                                  0.0,
+                                                                  1.0), //(x,y)
+                                                              blurRadius: 2.0,
+                                                            ),
+                                                          ],
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "http://157.245.97.144:8000/category/${searchMenuItems[index].profile!}"),
+                                                              fit:
+                                                                  BoxFit.cover),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Obx(
+                                                      () {
+                                                        controller
+                                                                .similarItems =
+                                                            controller
+                                                                .addedItemToCart
+                                                                .where((element) =>
+                                                                    element ==
+                                                                    searchMenuItems![
+                                                                            index]
+                                                                        .sId)
+                                                                .toList()
+                                                                .obs;
+                                                        print(controller
+                                                            .similarItems);
+                                                        controller.itemCounter =
+                                                            controller
+                                                                .similarItems
+                                                                .length
+                                                                .obs;
+
+                                                        return !controller
+                                                                .addedItemToCart
+                                                                .contains(
+                                                                    searchMenuItems![
+                                                                            index]
+                                                                        .sId)
+                                                            ? Positioned(
+                                                                right: 30.0,
+                                                                left: 30.0,
+
+                                                                //top: 90,
+                                                                bottom: 0,
+                                                                child:
+                                                                    Container(
+                                                                  height: 45,
+                                                                  // width: 120,
+                                                                  child: Card(
+                                                                    elevation:
+                                                                        5,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            controller.addedItemToCart.add(searchMenuItems![index].sId);
+                                                                            controller.addedMenuItemsToCart.add(searchMenuItems![index]);
+                                                                            // setState(() {
+                                                                            // print(addedMenuItemsToCart);
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Text(
+                                                                            "Add",
+                                                                            style: TextStyle(
+                                                                                color: Color.fromARGB(255, 5, 177, 126),
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontFamily: "Poppins"),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Positioned(
+                                                                right: 30.0,
+                                                                left: 30.0,
+
+                                                                //top: 90,
+                                                                bottom: 0,
+                                                                child:
+                                                                    Container(
+                                                                  height: 45,
+                                                                  // width: 120,
+                                                                  child: Card(
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            // setState(() {
+                                                                            final item = controller.addedMenuItemsToCart.indexWhere((e) =>
+                                                                                e.sId ==
+                                                                                searchMenuItems![index].sId);
+                                                                            print("item $item");
+                                                                            controller.addedMenuItemsToCart.removeAt(item);
+                                                                            // addedMenuItemsToCart.removeWhere((element) => element.sId == _availableItems!.data!.menuItem![index].sId);
+                                                                            controller.addedItemToCart.remove(searchMenuItems![index].sId!);
+                                                                            print("controller.addedMenuItemsToCart ${controller.addedMenuItemsToCart}");
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Icon(
+                                                                            Icons.remove,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                5,
+                                                                                177,
+                                                                                126),
+                                                                            size:
+                                                                                25,
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                              left: 10.0,
+                                                                              right: 10),
+                                                                          child: Text(
+                                                                              '${controller.itemCounter.value}',
+                                                                              style: const TextStyle(
+                                                                                color: Color.fromARGB(255, 5, 177, 126),
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              )),
+                                                                        ),
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            controller.addedItemToCart.add(searchMenuItems![index].sId!);
+                                                                            controller.addedMenuItemsToCart.add(searchMenuItems![index]);
+                                                                            print("controller.addedMenuItemsToCart ${controller.addedMenuItemsToCart}");
+                                                                            // setState(() {
+                                                                            // print(addedMenuItemsToCart);
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Icon(
+                                                                            Icons.add,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                5,
+                                                                                177,
+                                                                                126),
+                                                                            size:
+                                                                                25,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            Container(
+                                              // width: size.width * 0.9,
+                                              child: const Divider(
+                                                height: 1,
+                                                color: Colors.black,
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Container(
-                                        // width: size.width * 0.9,
-                                        child: const Divider(
-                                          height: 1,
-                                          color: Colors.black,
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            )
+                                          ],
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 20,
-                                      )
+                                    ),
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Obx(
+                      () {
+                        int cartTotalPrice = 0;
+                        controller.addedMenuItemsToCart.forEach((element) {
+                          cartTotalPrice += int.parse(element.price!);
+                        });
+                        return controller.addedItemToCart.length > 0
+                            ? Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                      right: 20.0,
+                                      left: 20,
+                                      top: 10,
+                                      bottom: 10),
+                                  height: 80,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      color: Color.fromARGB(255, 5, 177, 126)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 36),
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "${controller.addedItemToCart.length} Item |",
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.0),
+                                            ),
+                                            TextSpan(
+                                              text: " \$ ${cartTotalPrice}",
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.0),
+                                            ),
+                                            const TextSpan(
+                                              text: "\nExtra Charges may apply",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontSize: 10.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Navigator.pushNamed(
+                                          //   context,
+                                          //   '/address_page',
+                                          //   arguments: {
+                                          //     "shopName": _availableItems!.data!.shopName,
+                                          //     "cartData": addedMenuItemsToCart,
+                                          //   },
+                                          // );
+                                          Get.back();
+                                          Get.toNamed(
+                                            Routes.address_page,
+                                            arguments:
+                                                searchMenuItems![0].itemName,
+                                          );
+                                        },
+                                        child: const Text(
+                                          "View Cart",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Poppins",
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
+                              )
+                            : Container(
+                                height: 20,
+                              );
+                      },
+                    )
+                  ],
                 ),
               )
             : Container(
@@ -1089,7 +1379,7 @@ class CustomSearch extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     List<MenuItems>? searchMenuItems;
-    searchMenuItems = _availableItems!.data!.menuItem!.where((element) {
+    searchMenuItems = _availableItems?.data!.menuItem!.where((element) {
       return element.itemName!.toLowerCase().contains(
             query.toLowerCase(),
           );
@@ -1098,174 +1388,477 @@ class CustomSearch extends SearchDelegate {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "Recommended",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        fontFamily: "Poppins"),
-                  ),
-                ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: searchMenuItems.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/details_page');
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      flex: 10,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
+        : searchMenuItems.length != 0
+            ? GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text(
+                                "Recommended",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    fontFamily: "Poppins"),
+                              ),
+                            ),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: searchMenuItems.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      // Navigator.pushNamed(context, '/details_page');
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Container(
+                                        color: Colors.white,
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            //SizedBox(height: 50),
-                                            Text(
-                                              searchMenuItems![index]
-                                                      .itemName ??
-                                                  "",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 15,
-                                                  fontFamily: "Poppins"),
-                                            ),
-                                            SizedBox(height: 2.0),
-                                            Text(
-                                              "\$ ${searchMenuItems![index].price ?? ""}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 18,
-                                                  fontFamily: "Poppins",
-                                                  color: Color(0xffED4322)),
-                                            ),
+                                          children: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                RatingBar.builder(
-                                                  initialRating: 3,
-                                                  minRating: 1,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: true,
-                                                  itemCount: 5,
-                                                  ignoreGestures: true,
-                                                  // itemSize: 15,
+                                                Expanded(
+                                                  flex: 10,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        //SizedBox(height: 50),
+                                                        Text(
+                                                          searchMenuItems![
+                                                                      index]
+                                                                  .itemName ??
+                                                              "",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 15,
+                                                              fontFamily:
+                                                                  "Poppins"),
+                                                        ),
+                                                        SizedBox(height: 2.0),
+                                                        Text(
+                                                          "\$ ${searchMenuItems![index].price ?? ""}",
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              fontSize: 18,
+                                                              fontFamily:
+                                                                  "Poppins",
+                                                              color: Color(
+                                                                  0xffED4322)),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            RatingBar.builder(
+                                                              initialRating: 3,
+                                                              minRating: 1,
+                                                              direction: Axis
+                                                                  .horizontal,
+                                                              allowHalfRating:
+                                                                  true,
+                                                              itemCount: 5,
+                                                              itemSize: 15,
+                                                              //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                              itemBuilder:
+                                                                  (context,
+                                                                          _) =>
+                                                                      const Icon(
+                                                                Icons.star,
+                                                                color: Colors
+                                                                    .amber,
+                                                              ),
+                                                              onRatingUpdate:
+                                                                  (rating) {
+                                                                print(rating);
+                                                              },
+                                                            ),
+                                                            Text("(3.9)")
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
 
-                                                  //itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                  itemBuilder: (context, _) =>
-                                                      const Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
+                                                        const ReadMoreText(
+                                                          "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
+                                                          " city of Belfast, Northern Ireland. We want to help people discover"
+                                                          " the magic of tea by sourcing great "
+                                                          "loose leaf tea and brewing delicious kombucha and"
+                                                          " other innovative, healthy tea drinks.",
+                                                          trimLines: 2,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              ' more',
+                                                          trimExpandedText:
+                                                              ' Less',
+                                                          lessStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                          moreStyle: TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+
+                                                        SizedBox(height: 5.0),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  onRatingUpdate: (rating) {
-                                                    print(rating);
-                                                  },
                                                 ),
-                                                Text("(3.9)")
+                                                Stack(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              15.0),
+                                                      child: Container(
+                                                        height: 150,
+                                                        width: 140,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          // color:
+                                                          //     Colors.red,
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                          boxShadow: const [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors.grey,
+                                                              offset: Offset(
+                                                                  0.0,
+                                                                  1.0), //(x,y)
+                                                              blurRadius: 2.0,
+                                                            ),
+                                                          ],
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  "http://157.245.97.144:8000/category/${searchMenuItems[index].profile!}"),
+                                                              fit:
+                                                                  BoxFit.cover),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Obx(
+                                                      () {
+                                                        controller
+                                                                .similarItems =
+                                                            controller
+                                                                .addedItemToCart
+                                                                .where((element) =>
+                                                                    element ==
+                                                                    searchMenuItems![
+                                                                            index]
+                                                                        .sId)
+                                                                .toList()
+                                                                .obs;
+                                                        print(controller
+                                                            .similarItems);
+                                                        controller.itemCounter =
+                                                            controller
+                                                                .similarItems
+                                                                .length
+                                                                .obs;
+
+                                                        return !controller
+                                                                .addedItemToCart
+                                                                .contains(
+                                                                    searchMenuItems![
+                                                                            index]
+                                                                        .sId)
+                                                            ? Positioned(
+                                                                right: 30.0,
+                                                                left: 30.0,
+
+                                                                //top: 90,
+                                                                bottom: 0,
+                                                                child:
+                                                                    Container(
+                                                                  height: 45,
+                                                                  // width: 120,
+                                                                  child: Card(
+                                                                    elevation:
+                                                                        5,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            controller.addedItemToCart.add(searchMenuItems![index].sId);
+                                                                            controller.addedMenuItemsToCart.add(searchMenuItems![index]);
+                                                                            // setState(() {
+                                                                            // print(addedMenuItemsToCart);
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Text(
+                                                                            "Add",
+                                                                            style: TextStyle(
+                                                                                color: Color.fromARGB(255, 5, 177, 126),
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.w600,
+                                                                                fontFamily: "Poppins"),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Positioned(
+                                                                right: 30.0,
+                                                                left: 30.0,
+
+                                                                //top: 90,
+                                                                bottom: 0,
+                                                                child:
+                                                                    Container(
+                                                                  height: 45,
+                                                                  // width: 120,
+                                                                  child: Card(
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            // setState(() {
+                                                                            final item = controller.addedMenuItemsToCart.indexWhere((e) =>
+                                                                                e.sId ==
+                                                                                searchMenuItems![index].sId);
+                                                                            print("item $item");
+                                                                            controller.addedMenuItemsToCart.removeAt(item);
+                                                                            // addedMenuItemsToCart.removeWhere((element) => element.sId == _availableItems!.data!.menuItem![index].sId);
+                                                                            controller.addedItemToCart.remove(searchMenuItems![index].sId!);
+                                                                            print("controller.addedMenuItemsToCart ${controller.addedMenuItemsToCart}");
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Icon(
+                                                                            Icons.remove,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                5,
+                                                                                177,
+                                                                                126),
+                                                                            size:
+                                                                                25,
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.only(
+                                                                              left: 10.0,
+                                                                              right: 10),
+                                                                          child: Text(
+                                                                              '${controller.itemCounter.value}',
+                                                                              style: const TextStyle(
+                                                                                color: Color.fromARGB(255, 5, 177, 126),
+                                                                                fontSize: 18,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              )),
+                                                                        ),
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            controller.addedItemToCart.add(searchMenuItems![index].sId!);
+                                                                            controller.addedMenuItemsToCart.add(searchMenuItems![index]);
+                                                                            print("controller.addedMenuItemsToCart ${controller.addedMenuItemsToCart}");
+                                                                            // setState(() {
+                                                                            // print(addedMenuItemsToCart);
+                                                                            // });
+                                                                          },
+                                                                          child:
+                                                                              const Icon(
+                                                                            Icons.add,
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                5,
+                                                                                177,
+                                                                                126),
+                                                                            size:
+                                                                                25,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 20,
                                             ),
-
-                                            const ReadMoreText(
-                                              "We are a small craft, tea brewery in the Drumbo hills, overlooking the"
-                                              " city of Belfast, Northern Ireland. We want to help people discover"
-                                              " the magic of tea by sourcing great "
-                                              "loose leaf tea and brewing delicious kombucha and"
-                                              " other innovative, healthy tea drinks.",
-                                              trimLines: 2,
-                                              // colorClickableText: Colors.pink,
-                                              trimMode: TrimMode.Line,
-                                              trimCollapsedText: ' more',
-                                              trimExpandedText: ' Less',
-                                              lessStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                              moreStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
+                                            Container(
+                                              // width: size.width * 0.9,
+                                              child: const Divider(
+                                                height: 1,
+                                                color: Colors.black,
+                                              ),
                                             ),
-
-                                            SizedBox(height: 5.0),
+                                            const SizedBox(
+                                              height: 20,
+                                            )
                                           ],
                                         ),
                                       ),
                                     ),
-                                    Stack(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Container(
-                                            height: 150,
-                                            width: 140,
-                                            decoration: const BoxDecoration(
-                                                // color:
-                                                //     Colors.red,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey,
-                                                    offset: Offset(
-                                                        0.0, 1.0), //(x,y)
-                                                    blurRadius: 2.0,
-                                                  ),
-                                                ],
-                                                image: DecorationImage(
-                                                    image: AssetImage(
-                                                        "assets/images/Rectangle35.png"),
-                                                    fit: BoxFit.cover)),
-                                          ),
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Obx(
+                      () {
+                        int cartTotalPrice = 0;
+                        controller.addedMenuItemsToCart.forEach((element) {
+                          cartTotalPrice += int.parse(element.price!);
+                        });
+                        return controller.addedItemToCart.length > 0
+                            ? Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.only(
+                                      right: 20.0,
+                                      left: 20,
+                                      top: 10,
+                                      bottom: 10),
+                                  height: 80,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      color: Color.fromARGB(255, 5, 177, 126)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 36),
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "${controller.addedItemToCart.length} Item |",
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.0),
+                                            ),
+                                            TextSpan(
+                                              text: " \$ ${cartTotalPrice}",
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14.0),
+                                            ),
+                                            const TextSpan(
+                                              text: "\nExtra Charges may apply",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Poppins",
+                                                  fontSize: 10.0),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  // width: size.width * 0.9,
-                                  child: const Divider(
-                                    height: 1,
-                                    color: Colors.black,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Navigator.pushNamed(
+                                          //   context,
+                                          //   '/address_page',
+                                          //   arguments: {
+                                          //     "shopName": _availableItems!.data!.shopName,
+                                          //     "cartData": addedMenuItemsToCart,
+                                          //   },
+                                          // );
+                                          Get.back();
+                                          Get.toNamed(
+                                            Routes.address_page,
+                                            arguments:
+                                                searchMenuItems![0].itemName,
+                                          );
+                                        },
+                                        child: const Text(
+                                          "View Cart",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Poppins",
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              ],
-            ),
-          );
+                              )
+                            : Container(
+                                height: 20,
+                              );
+                      },
+                    )
+                  ],
+                ),
+              )
+            : Container(
+                child: const Center(
+                    child: Text(
+                  "Data Not Found!",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )),
+              );
   }
 }

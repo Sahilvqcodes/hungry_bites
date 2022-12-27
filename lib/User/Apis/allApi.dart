@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:hunger_bites/Admin/models/available_items.dart';
 import 'package:hunger_bites/User/model/user_details_model.dart';
@@ -76,6 +77,72 @@ class UserApis {
     return _availableItems;
   }
 
+  static forgotPasswordApi(
+      BuildContext context, String? password, String? email) async {
+    final http.Response res = await http.post(
+      Uri.parse('https://fd62-122-160-167-80.in.ngrok.io/update_password'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "email": email!,
+        "password": password!,
+      }),
+    );
+    Map<String, dynamic> output = jsonDecode(res.body);
+    if (output["message"] == "Password has been Updated!") {
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Password Changed Successfully!",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigator.pushReplacementNamed(
+              //     context, "/admin_category_shop_list",
+              //     arguments: [
+              //       shops.category,
+              //       shops.categoryId,
+              //     ]);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
+    } else {
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: "User Not Found!",
+        // desc: "Flutter is more awesome with RFlutter Alert.",
+        buttons: [
+          DialogButton(
+            child: const Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              // Navigator.pushReplacementNamed(
+              //     context, "/admin_category_shop_list",
+              //     arguments: [
+              //       shops.category,
+              //       shops.categoryId,
+              //     ]);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+  }
+
   static LoginMethod(
       BuildContext context, String? password, String? email) async {
     final http.Response res = await http.post(
@@ -126,6 +193,7 @@ class UserApis {
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
             onPressed: () {
+              Navigator.pop(context);
               // Navigator.pushReplacementNamed(
               //     context, "/admin_category_shop_list",
               //     arguments: [
@@ -141,18 +209,18 @@ class UserApis {
   }
 }
 
-void _remeberMe() {
-  print("share ${_remeberMe}");
+// void _remeberMe() {
+//   print("share ${_remeberMe}");
 
-  SharedPreferences.getInstance().then(
-    (prefs) {
-      prefs.setBool("remember_me", true);
+//   SharedPreferences.getInstance().then(
+//     (prefs) {
+//       prefs.setBool("remember_me", true);
 
-      prefs.setString('email', user.email ?? "");
-      prefs.setString('password', user.password ?? "");
-      // print("SharedPreferences${_remeberMe}");
-    },
-  );
-}
+//       prefs.setString('email', user.email ?? "");
+//       prefs.setString('password', user.password ?? "");
+//       // print("SharedPreferences${_remeberMe}");
+//     },
+//   );
+// }
 
-User user = User();
+// User user = User();

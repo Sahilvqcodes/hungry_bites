@@ -10,4 +10,12 @@ class ShopsController extends GetxController {
   var itemCounter = 0.obs;
   var listSimilarData = [].obs;
   var cartMenuItems = <MenuItems>[].obs;
+  RxString productId = "".obs;
+  // String? productId = Get.arguments;
+  void onInit() {
+    productId.value = Get.arguments ?? "";
+    // print(Get.arguments);
+    print("productId.... $productId");
+    super.onInit();
+  }
 }

@@ -60,6 +60,10 @@ class Routes {
         name: Routes.address_page,
         page: () => AddressPage(),
         binding: ShopsBindings()),
+    GetPage(
+        name: Routes.user_wishlist,
+        page: () => UserWishlist(),
+        binding: ShopsBindings()),
   ];
 
   static Map<String, WidgetBuilder> routes = {

@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_bites/User/screens/category_shop_list.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'User/Apis/allApi.dart';
 import 'forgot_password.dart';
@@ -26,6 +27,8 @@ class User {
 
 class _SignInState extends State<SignIn> {
   final textFieldFocusNode = FocusNode();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   bool _obscured = true;
   late bool _isLoaderVisible;
   String? _password;
@@ -41,7 +44,31 @@ class _SignInState extends State<SignIn> {
 
   void initState() {
     _isLoaderVisible = false;
+    _loadUserEmailPassword();
     super.initState();
+  }
+
+  void _loadUserEmailPassword() async {
+    try {
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var _email = _prefs.getString("email") ?? "";
+      var _password = _prefs.getString("password") ?? "";
+      var _remeberMe = _prefs.getBool("remember_me") ?? false;
+      print(_remeberMe);
+      print(_email);
+      print(_password);
+      if (_remeberMe) {
+        setState(() {
+          isChecked = true;
+        });
+        _emailController.text = _email;
+        _passwordController.text = _password;
+        user.email = _email;
+        user.password = _password;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   // void _toggle() {
@@ -49,8 +76,21 @@ class _SignInState extends State<SignIn> {
   //     _obscureText = !_obscureText;
   //   });
   // }
-  bool? check = false;
   User user = User();
+  void _handleRemeberme() {
+    print("SharedPreferences");
+
+    SharedPreferences.getInstance().then(
+      (prefs) {
+        prefs.setBool("remember_me", true);
+        prefs.setString('email', user.email!);
+        prefs.setString('password', user.password!);
+      },
+    );
+  }
+
+  bool isCheck = false;
+
   final _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -187,10 +227,10 @@ class _SignInState extends State<SignIn> {
                             children: [
                               Checkbox(
                                   activeColor: const Color(0xffED4322),
-                                  value: check,
+                                  value: isCheck,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      check = value;
+                                      isCheck = value!;
                                     });
                                   }),
                               const Text(
@@ -227,6 +267,9 @@ class _SignInState extends State<SignIn> {
                             });
                             await UserApis.LoginMethod(
                                 context, user.password, user.email);
+                            if (isCheck) {
+                              _handleRemeberme;
+                            }
                             if (_isLoaderVisible) {
                               context.loaderOverlay.hide();
                             }
